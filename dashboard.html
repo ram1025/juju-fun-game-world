@@ -5,94 +5,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Juju Fun World</title>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#FF9800">
+    <meta name="theme-color" content="#3B82F6">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #FFE082 0%, #FF9800 100%);
+            background: #3B82F6;
             min-height: 100vh; padding: 20px;
         }
-      .header {
-            background: white; padding: 20px; border-radius: 25px;
-            border: 4px solid #FFC107; box-shadow: 0 6px 0 #E65100;
-            margin-bottom: 30px; text-align: center;
+     .hamburger {
+            position: fixed; top: 20px; left: 20px;
+            background: white; border: none; border-radius: 12px;
+            padding: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer; z-index: 100;
         }
-      .avatar {
-            width: 80px; height: 80px; border-radius: 50%;
-            border: 4px solid #FFC107; margin: 0 auto 10px;
-            object-fit: cover;
+     .hamburger span {
+            display: block; width: 25px; height: 3px;
+            background: #1F2937; margin: 5px 0; border-radius: 2px;
         }
-      .welcome-text { font-size: 24px; font-weight: 900; color: #E65100; }
-      .grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
-            max-width: 500px; margin: 0 auto;
+     .sidebar {
+            position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+            background: white; box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            transform: translateX(-100%); transition: transform 0.3s;
+            z-index: 99; padding: 80px 20px 20px;
         }
-      .card {
-            background: white; border-radius: 25px; border: 4px solid #FFC107;
-            box-shadow: 0 8px 0 #E65100; padding: 30px 15px; text-align: center;
+     .sidebar.active { transform: translateX(0); }
+     .sidebar-btn {
+            width: 100%; text-align: left; padding: 15px;
+            border: none; background: #F3F4F6; border-radius: 12px;
+            font-size: 18px; font-weight: 800; margin-bottom: 10px;
+            cursor: pointer;
+        }
+     .profile-section {
+            text-align: center; padding: 40px 20px 20px;
+        }
+     .avatar {
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 5px solid white; margin: 0 auto 15px;
+            object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+     .name-text {
+            font-size: 32px; font-weight: 900; color: white;
+            margin-bottom: 5px;
+        }
+     .nick-text {
+            font-size: 18px; font-weight: 700; color: #FEF3C7;
+            margin-bottom: 25px;
+        }
+     .title-text {
+            font-size: 28px; font-weight: 900; color: white;
+            text-align: center; margin-bottom: 25px;
+        }
+     .grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 15px; max-width: 450px; margin: 0 auto;
+        }
+     .card {
+            border-radius: 25px; padding: 25px 15px; text-align: center;
             cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
         }
-      .card:active { transform: translateY(8px); box-shadow: none; }
-      .card-emoji { font-size: 60px; margin-bottom: 10px; }
-      .card-title { font-size: 20px; font-weight: 900; color: #E65100; }
-      .profile-btn {
-            position: fixed; top: 20px; right: 20px;
-            background: white; border: 3px solid #FFC107;
-            border-radius: 50%; width: 50px; height: 50px;
-            font-size: 24px; cursor: pointer; box-shadow: 0 4px 0 #E65100;
+     .card:active { transform: scale(0.95); }
+     .card-icon {
+            width: 60px; height: 60px; background: rgba(255,255,255,0.3);
+            border-radius: 15px; margin: 0 auto 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px;
         }
-      .profile-btn:active { transform: translateY(4px); box-shadow: none; }
+     .card-title {
+            font-size: 20px; font-weight: 900; color: white;
+        }
+     .card-pink { background: linear-gradient(135deg, #EC4899, #F472B6); }
+     .card-blue { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
+     .card-orange { background: linear-gradient(135deg, #F97316, #FB923C); }
+     .card-purple { background: linear-gradient(135deg, #A855F7, #C084FC); }
     </style>
 </head>
 <body>
-    <button class="profile-btn" onclick="location.href='./profile.html'">👤</button>
+    <button class="hamburger" onclick="toggleSidebar()">
+        <span></span><span></span>
+    </button>
 
-    <div class="header">
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-btn" onclick="location.href='./profile.html'">👤 Profile</button>
+        <button class="sidebar-btn" onclick="resetApp()" style="color:#EF4444;">🚪 Reset App</button>
+    </div>
+
+    <div class="profile-section">
         <img src="" class="avatar" id="avatarImg" alt="Avatar">
-        <div class="welcome-text" id="welcomeText">Welcome Cub!</div>
+        <div class="name-text" id="nameText">Juju</div>
+        <div class="nick-text">Set your Nick Name</div>
+        <div class="title-text">Choose Your Adventure!</div>
     </div>
 
     <div class="grid">
-        <!-- OLD ICONS REMOVE CHESAM - IVI MATRAMAE UNCHU -->
-        <div class="card" onclick="location.href='./abc.html'">
-            <div class="card-emoji">🔤</div>
+        <div class="card card-pink" onclick="location.href='./abc.html'">
+            <div class="card-icon">abc</div>
             <div class="card-title">Alphabets</div>
         </div>
-        <div class="card" onclick="location.href='./numbers.html'">
-            <div class="card-emoji">🔢</div>
+        <div class="card card-blue" onclick="location.href='./numbers.html'">
+            <div class="card-icon">12<br>34</div>
             <div class="card-title">Numbers</div>
         </div>
-        <div class="card" onclick="location.href='./painting.html'">
-            <div class="card-emoji">🎨</div>
-            <div class="card-title">Paint A-Z</div>
+        <div class="card card-orange" onclick="location.href='./painting.html'">
+            <div class="card-icon">🎨</div>
+            <div class="card-title">Trace A-Z</div>
         </div>
-        <div class="card" onclick="location.href='./unko.html'">
-            <div class="card-emoji">✏️</div>
+        <div class="card card-purple" onclick="location.href='./unko.html'">
+            <div class="card-icon">🐒</div>
             <div class="card-title">Unko Draw</div>
         </div>
     </div>
 
     <script>
-        // Load profile data from localStorage
+        // Load profile data
         window.addEventListener('load', () => {
-            const name = localStorage.getItem('playerName') || 'Cub';
+            const name = localStorage.getItem('playerName') || 'Juju';
             const pic = localStorage.getItem('playerPic');
 
-            document.getElementById('welcomeText').textContent = `Welcome ${name}!`;
+            document.getElementById('nameText').textContent = name;
             if(pic) {
                 document.getElementById('avatarImg').src = pic;
-            } else {
-                document.getElementById('avatarImg').src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><text y="60" font-size="60">🦁</text></svg>';
             }
         });
 
-        // Back button tho vachina kuda update chey
+        // Sidebar toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Click outside sidebar to close
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.querySelector('.hamburger');
+            if(!sidebar.contains(e.target) &&!hamburger.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Reset app
+        function resetApp() {
+            if(confirm('Reset app? All data will be deleted')) {
+                localStorage.clear();
+                location.href = './index.html';
+            }
+        }
+
+        // Update on back button
         window.addEventListener('pageshow', () => {
-            const name = localStorage.getItem('playerName') || 'Cub';
+            const name = localStorage.getItem('playerName') || 'Juju';
             const pic = localStorage.getItem('playerPic');
-            document.getElementById('welcomeText').textContent = `Welcome ${name}!`;
+            document.getElementById('nameText').textContent = name;
             if(pic) document.getElementById('avatarImg').src = pic;
         });
     </script>
