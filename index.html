@@ -16,14 +16,13 @@
             min-height: 100vh; display: flex; align-items: center;
             justify-content: center; padding: 20px;
         }
-       /* SPLASH SCREEN */
       .splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #3B82F6; display: flex; align-items: center;
             justify-content: center; z-index: 9999;
             animation: fadeOut 0.5s ease 2s forwards;
         }
-      .splash img {
+     .splash img {
             width: 200px; height: 200px; border-radius: 30px;
             animation: zoomIn 1s ease;
         }
@@ -35,15 +34,15 @@
             to { opacity: 0; visibility: hidden; }
         }
         
-      .container {
+     .container {
             background: #fff; padding: 40px 30px; border-radius: 30px;
             max-width: 400px; width: 100%; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-      .welcome-view { display: none; }
-      .login-view { display: none; }
+     .welcome-view { display: none; }
+     .login-view { display: none; }
         
-      .avatar-bounce {
+     .avatar-bounce {
             width: 140px; height: 140px; border-radius: 50%;
             border: 6px solid #EC4899; margin: 0 auto 20px;
             object-fit: cover; background: #E5E7EB;
@@ -55,11 +54,11 @@
             50% { transform: translateY(-20px); }
         }
         
-      .welcome-name {
+     .welcome-name {
             font-size: 36px; font-weight: 900; color: #EC4899;
             margin-bottom: 10px;
         }
-      .welcome-text {
+     .welcome-text {
             font-size: 20px; font-weight: 700; color: #6B7280;
             margin-bottom: 30px;
         }
@@ -68,22 +67,22 @@
             color: #EC4899; font-weight: 900; font-size: 36px;
             margin-bottom: 10px;
         }
-      .subtitle {
+     .subtitle {
             color: #6B7280; font-size: 18px; font-weight: 700;
             margin-bottom: 30px;
         }
         
-      .avatar-wrapper {
+     .avatar-wrapper {
             position: relative; width: 120px; height: 120px;
             margin: 0 auto 25px;
         }
-      .avatar {
+     .avatar {
             width: 120px; height: 120px; border-radius: 50%;
             border: 4px solid #EC4899; object-fit: cover;
             background: #E5E7EB; display: flex; align-items: center;
             justify-content: center; font-size: 50px;
         }
-      .camera-btn {
+     .camera-btn {
             position: absolute; bottom: 0; right: 0;
             background: #F97316; color: white; border: 3px solid white;
             width: 40px; height: 40px; border-radius: 50%;
@@ -101,79 +100,70 @@
             outline: none; border-color: #3B82F6;
         }
         
-      .btn {
+     .btn {
             width: 100%; color: white; border: none; padding: 18px;
             border-radius: 20px; font-size: 20px; font-weight: 900;
             cursor: pointer; margin-bottom: 12px; box-shadow: 0 6px 0 #EA580C;
         }
-      .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #EA580C; }
-      .install-btn { background: #10B981; box-shadow: 0 6px 0 #059669; }
-      .install-btn:active { box-shadow: 0 3px 0 #059669; }
-      .play-btn { background: linear-gradient(135deg, #F97316, #FB923C); }
-      .hidden { display: none; }
+     .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #EA580C; }
+     .install-btn { background: #10B981; box-shadow: 0 6px 0 #059669; }
+     .install-btn:active { box-shadow: 0 3px 0 #059669; }
+     .play-btn { background: linear-gradient(135deg, #F97316, #FB923C); }
+     .hidden { display: none; }
     </style>
 </head>
 <body>
-    <!-- SPLASH SCREEN -->
     <div class="splash" id="splash">
-        <img src="./icon-512.png" alt="Juju">
+        <img src="./icon-192.png" alt="Juju">
     </div>
 
     <div class="container">
-        <!-- Welcome Back View -->
         <div class="welcome-view" id="welcomeView">
-            <img src="" class="avatar-bounce" id="welcomeAvatar" alt="Avatar">
+            <img src="./icon-192.png" class="avatar-bounce" id="welcomeAvatar" alt="Avatar">
             <div class="welcome-name" id="welcomeName">Juju</div>
             <div class="welcome-text">Welcome back! 🎉</div>
-            <button class="btn play-btn" onclick="location.href='./dashboard.html'">Let's Play! 🚀</button>
+            <button class="btn play-btn" onclick="location.href='./dashboard.html'">Touch to Play! 🎮</button>
         </div>
 
-        <!-- First Time Login View -->
         <div class="login-view" id="loginView">
             <h1>🦁 Juju Fun World</h1>
             <p class="subtitle">Let's get started!</p>
             
             <div class="avatar-wrapper">
-                <div class="avatar" id="avatarPreview">🐒</div>
+                <div class="avatar" id="avatarPreview"><img src="./icon-192.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
                 <button class="camera-btn" onclick="document.getElementById('fileInput').click()">📷</button>
                 <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
             </div>
 
             <input type="text" id="nameInput" placeholder="Enter your name" maxlength="20">
-            <button class="btn install-btn hidden" id="installBtn">📱 Install Juju App</button>
+            <button class="btn install-btn" id="installBtn">📱 Install Juju App</button>
             <button class="btn play-btn" onclick="saveLogin()">Start Adventure! 🎮</button>
         </div>
     </div>
 
     <script>
-        let currentPic = null;
+        let currentPic = './icon-192.png';
         let deferredPrompt;
 
-        // Splash + Check login after 2sec
         setTimeout(() => {
             const savedName = localStorage.getItem('playerName');
             const savedPic = localStorage.getItem('playerPic');
             
             if (savedName) {
-                // Show welcome view with bounce
                 document.getElementById('welcomeView').style.display = 'block';
                 document.getElementById('loginView').style.display = 'none';
                 document.getElementById('welcomeName').textContent = savedName;
-                if (savedPic) document.getElementById('welcomeAvatar').src = savedPic;
+                document.getElementById('welcomeAvatar').src = savedPic || './icon-192.png';
             } else {
-                // Show login view
                 document.getElementById('welcomeView').style.display = 'none';
                 document.getElementById('loginView').style.display = 'block';
             }
         }, 2000);
 
-        // PWA Install Logic
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if(localStorage.getItem('juju_installed')!== 'true') {
-                document.getElementById('installBtn').classList.remove('hidden');
-            }
+            document.getElementById('installBtn').style.display = 'block';
         });
 
         document.getElementById('installBtn').addEventListener('click', async () => {
@@ -181,15 +171,17 @@
                 deferredPrompt.prompt();
                 await deferredPrompt.userChoice;
                 deferredPrompt = null;
+                document.getElementById('installBtn').style.display = 'none';
+            } else {
+                alert('To install: Browser Menu → Add to Home Screen');
             }
         });
 
         window.addEventListener('appinstalled', () => {
             localStorage.setItem('juju_installed', 'true');
-            document.getElementById('installBtn').classList.add('hidden');
+            document.getElementById('installBtn').style.display = 'none';
         });
 
-        // Preview image
         function previewImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -202,7 +194,6 @@
             }
         }
 
-        // Save login
         function saveLogin() {
             const name = document.getElementById('nameInput').value.trim();
             if (!name) {
@@ -210,11 +201,7 @@
                 return;
             }
             localStorage.setItem('playerName', name);
-            if (currentPic) {
-                localStorage.setItem('playerPic', currentPic);
-            } else {
-                localStorage.setItem('playerPic', 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23F97316"/%3E%3Ctext x="50" y="65" font-size="50" text-anchor="middle" fill="white"%3E🦁%3C/text%3E%3C/svg%3E');
-            }
+            localStorage.setItem('playerPic', currentPic);
             location.href = './dashboard.html';
         }
 
