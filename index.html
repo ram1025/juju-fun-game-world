@@ -10,15 +10,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
         body { font-family: 'Fredoka', sans-serif; }
-       .btn-pop:active { transform: scale(0.95); }
+      .btn-pop:active { transform: scale(0.95); }
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
         }
-       .bounce { animation: bounce 2s infinite; }
-       .hamburger span { transition: all 0.3s; }
-       .sidebar { transition: transform 0.3s ease; }
-       .sidebar-hidden { transform: translateX(-100%); }
+      .bounce { animation: bounce 2s infinite; }
+      .hamburger span { transition: all 0.3s; }
+      .sidebar { transition: transform 0.3s ease; }
+      .sidebar-hidden { transform: translateX(-100%); }
+      .profile-container { max-width: 400px; margin: 0 auto; padding: 20px; }
     </style>
 </head>
 <body class="bg-blue-500 min-h-screen">
@@ -42,6 +43,13 @@ let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    const installBtn = document.getElementById('installBtn');
+    if(installBtn) installBtn.style.display = 'block';
+});
+
+window.addEventListener('appinstalled', () => {
+    const installBtn = document.getElementById('installBtn');
+    if(installBtn) installBtn.style.display = 'none';
 });
 
 const app = document.getElementById('app');
@@ -82,8 +90,8 @@ function renderWelcome() {
                 <p class="text-2xl font-bold text-gray-700 mt-3">Welcome ${getDisplayName()}!</p>
             </div>
 
-            <button onclick="installApp()" id="installBtn" class="btn-pop w-full bg-gradient-to-r from-green-400 to-green-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg mb-3">
-                📱 Install App
+            <button onclick="installApp()" id="installBtn" class="btn-pop w-full bg-gradient-to-r from-green-400 to-green-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg mb-3" style="display:none;">
+                📱 Install Juju App
             </button>
             <button onclick="goToDashboard()" class="btn-pop w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg">
                 Touch to Play! 🎮
@@ -91,7 +99,10 @@ function renderWelcome() {
         </div>
     </div>`;
     
-    if (!deferredPrompt) document.getElementById('installBtn').style.display = 'none';
+    if (!deferredPrompt) {
+        const btn = document.getElementById('installBtn');
+        if(btn) btn.style.display = 'none';
+    }
 }
 
 function renderDashboard() {
@@ -147,15 +158,16 @@ function renderProfile() {
     app.innerHTML = `
     <div class="min-h-screen p-4 pt-6">
         <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
-        <div class="bg-white rounded-3xl shadow-xl p-6 max-w-2xl mx-auto">
+        <div class="bg-white rounded-3xl shadow-xl p-6 max-w-2xl mx-auto profile-container">
             <h2 class="text-4xl font-bold text-center text-purple-500 mb-6">My Profile 👤</h2>
             
             <div class="text-center mb-6">
                 <img id="profilePreview" src="${getProfileImage()}" class="w-32 h-32 rounded-full mx-auto border-4 border-orange-300 object-cover mb-4">
-                <input type="file" id="imgUpload" accept="image/*" capture="user" class="hidden" onchange="handleImageUpload(event)">
+                <input type="file" id="cameraInput" accept="image/*" capture="user" class="hidden" onchange="handleImageUpload(event)">
+                <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
                 <div class="flex gap-2 justify-center">
-                    <button onclick="document.getElementById('imgUpload').click()" class="btn-pop bg-blue-500 text-white px-4 py-2 rounded-xl">📷 Camera</button>
-                    <button onclick="document.getElementById('imgUpload').click()" class="btn-pop bg-green-500 text-white px-4 py-2 rounded-xl">🖼️ Gallery</button>
+                    <button onclick="document.getElementById('cameraInput').click()" class="btn-pop bg-blue-500 text-white px-4 py-2 rounded-xl">📷 Camera</button>
+                    <button onclick="document.getElementById('galleryInput').click()" class="btn-pop bg-green-500 text-white px-4 py-2 rounded-xl">🖼️ Gallery</button>
                 </div>
             </div>
 
@@ -177,6 +189,12 @@ function renderProfile() {
             </div>
 
             <button onclick="saveProfile()" class="btn-pop w-full bg-gradient-to-r from-green-400 to-green-600 text-white text-2xl font-bold py-4 rounded-2xl shadow-lg mt-6">Save Profile 💾</button>
+            
+            <div style="margin-top:30px;">
+                <button onclick="logout()" class="btn-pop w-full bg-gradient-to-r from-red-400 to-red-600 text-white text-xl font-bold py-3 rounded-2xl shadow-lg">
+                    🚪 Logout
+                </button>
+            </div>
         </div>
     </div>`;
 }
@@ -264,6 +282,8 @@ function installApp() {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then(() => {
             deferredPrompt = null;
+            const installBtn = document.getElementById('installBtn');
+            if(installBtn) installBtn.style.display = 'none';
         });
     }
 }
@@ -293,6 +313,11 @@ function saveProfile() {
     saveUserData();
     alert('Profile Saved! 🦁');
     navigate('dashboard');
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = '/';
 }
 
 // --- INIT ---
