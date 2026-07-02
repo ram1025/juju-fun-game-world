@@ -68,6 +68,11 @@
             card.onclick = () => speak(`${item.l}, ${item.l} for ${item.w}`);
             grid.appendChild(card);
         });
+
+        // Service Worker Register - Add chesanu
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js');
+        }
     </script>
 </body>
 </html>
