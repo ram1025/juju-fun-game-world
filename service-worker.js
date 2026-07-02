@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v2';
+const CACHE_NAME = 'juju-fun-world-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -65,7 +65,7 @@ self.addEventListener('activate', (event) => {
         cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
           .map((cacheName) => caches.delete(cacheName))
       );
-    }).then(() => self.clients.climate())
+    }).then(() => self.clients.claim())
   );
 });
 
