@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juju Fun World</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f59e0b">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+        body { font-family: 'Fredoka', sans-serif; }
+       .btn-pop:active { transform: scale(0.95); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+       .bounce { animation: bounce 2s infinite; }
+       .hamburger span { transition: all 0.3s; }
+       .sidebar { transition: transform 0.3s ease; }
+       .sidebar-hidden { transform: translateX(-100%); }
+    </style>
+</head>
+<body class="bg-blue-500 min-h-screen">
+    <div id="app"></div>
+
+<script>
+// --- DATA MANAGEMENT ---
+let userData = JSON.parse(localStorage.getItem('jujuUserData')) || {
+    name: '',
+    kidId: '',
+    dob: '',
+    email: '',
+    phone: '',
+    bloodGroup: '',
+    father: '',
+    mother: '',
+    profileImg: ''
+};
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+const app = document.getElementById('app');
+let currentPage = 'welcome';
+
+// --- UTILITY ---
+function saveUserData() {
+    localStorage.setItem('jujuUserData', JSON.stringify(userData));
+}
+
+function getDisplayName() {
+    return userData.kidId || userData.name || 'Cub';
+}
+
+function getProfileImage() {
+    return userData.profileImg || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23f59e0b"/%3E%3Ctext x="50" y="65" font-size="50" text-anchor="middle" fill="white"%3E🦁%3C/text%3E%3C/svg%3E';
+}
+
+// --- PAGES ---
+function render() {
+    if (currentPage === 'welcome') renderWelcome();
+    else if (currentPage === 'dashboard') renderDashboard();
+    else if (currentPage === 'profile') renderProfile();
+    else if (currentPage === 'alphabets') renderAlphabets();
+    else if (currentPage === 'numbers') renderNumbers();
+    else if (currentPage === 'painting') renderPainting();
+}
+
+function renderWelcome() {
+    app.innerHTML = `
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+            <img src="icon-512.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext y=\'80\' font-size=\'80\'%3E🦁%3C/text%3E%3C/svg%3E'" class="w-32 h-32 mx-auto mb-4">
+            <h1 class="text-5xl font-bold text-orange-500 mb-4">Juju Fun World</h1>
+            
+            <div class="mb-6">
+                <img src="${getProfileImage()}" class="w-24 h-24 rounded-full mx-auto bounce border-4 border-orange-300 object-cover cursor-pointer" onclick="goToDashboard()">
+                <p class="text-2xl font-bold text-gray-700 mt-3">Welcome ${getDisplayName()}!</p>
+            </div>
+
+            <button onclick="installApp()" id="installBtn" class="btn-pop w-full bg-gradient-to-r from-green-400 to-green-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg mb-3">
+                📱 Install App
+            </button>
+            <button onclick="goToDashboard()" class="btn-pop w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg">
+                Touch to Play! 🎮
+            </button>
+        </div>
+    </div>`;
+    
+    if (!deferredPrompt) document.getElementById('installBtn').style.display = 'none';
+}
+
+function renderDashboard() {
+    app.innerHTML = `
+    <!-- Hamburger Menu -->
+    <button onclick="toggleSidebar()" class="hamburger fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg">
+        <div class="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
+        <div class="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
+        <div class="w-6 h-0.5 bg-gray-700"></div>
+    </button>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar sidebar-hidden fixed top-0 left-0 w-64 h-full bg-white shadow-2xl z-40 p-6">
+        <div class="text-right mb-6">
+            <button onclick="toggleSidebar()" class="text-3xl">&times;</button>
+        </div>
+        <div class="text-center mb-6">
+            <img src="${getProfileImage()}" class="w-20 h-20 rounded-full mx-auto border-4 border-orange-300 object-cover">
+            <p class="font-bold mt-2">${getDisplayName()}</p>
+        </div>
+        <button onclick="navigate('profile')" class="w-full text-left py-3 px-4 rounded-lg hover:bg-orange-100 font-bold text-lg">👤 Profile</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="min-h-screen p-4 pt-20">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <img src="${getProfileImage()}" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover">
+                <h2 class="text-4xl font-bold text-white mt-3">${userData.name || 'Little Cub'}</h2>
+                <p class="text-xl text-yellow-200">${userData.kidId? '@' + userData.kidId : 'Set your Nick Name'}</p>
+            </div>
+            
+            <h3 class="text-3xl font-bold text-white text-center mb-6">Choose Your Adventure!</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="navigate('alphabets')" class="btn-pop bg-gradient-to-br from-pink-400 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
+                    <div class="text-6xl mb-2">🔤</div>
+                    <div class="text-2xl font-bold">Alphabets</div>
+                </button>
+                <button onclick="navigate('numbers')" class="btn-pop bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl p-8 text-white shadow-xl">
+                    <div class="text-6xl mb-2">🔢</div>
+                    <div class="text-2xl font-bold">Numbers</div>
+                </button>
+                <button onclick="navigate('painting')" class="btn-pop bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-8 text-white shadow-xl">
+                    <div class="text-6xl mb-2">🎨</div>
+                    <div class="text-2xl font-bold">Painting</div>
+                </button>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderProfile() {
+    app.innerHTML = `
+    <div class="min-h-screen p-4 pt-6">
+        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
+        <div class="bg-white rounded-3xl shadow-xl p-6 max-w-2xl mx-auto">
+            <h2 class="text-4xl font-bold text-center text-purple-500 mb-6">My Profile 👤</h2>
+            
+            <div class="text-center mb-6">
+                <img id="profilePreview" src="${getProfileImage()}" class="w-32 h-32 rounded-full mx-auto border-4 border-orange-300 object-cover mb-4">
+                <input type="file" id="imgUpload" accept="image/*" capture="user" class="hidden" onchange="handleImageUpload(event)">
+                <div class="flex gap-2 justify-center">
+                    <button onclick="document.getElementById('imgUpload').click()" class="btn-pop bg-blue-500 text-white px-4 py-2 rounded-xl">📷 Camera</button>
+                    <button onclick="document.getElementById('imgUpload').click()" class="btn-pop bg-green-500 text-white px-4 py-2 rounded-xl">🖼️ Gallery</button>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div><label class="font-bold text-gray-700">Name</label><input id="name" value="${userData.name}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
+                <div><label class="font-bold text-gray-700">Date of Birth</label><input id="dob" type="date" value="${userData.dob}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
+                <div><label class="font-bold text-gray-700">Kid ID / Nick Name</label><input id="kidId" value="${userData.kidId}" placeholder="JujuLion" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
+                <div><label class="font-bold text-gray-700">Email</label><input id="email" type="email" value="${userData.email}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
+                <div><label class="font-bold text-gray-700">Phone</label><input id="phone" type="tel" value="${userData.phone}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
+                <div>
+                    <label class="font-bold text-gray-700">Blood Group</label>
+                    <select id="bloodGroup" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1">
+                        <option value="">Select</option>
+                        ${['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(bg => `<option value="${bg}" ${userData.bloodGroup===bg?'selected':''}>${bg}</option>`).join('')}
+                    </select>
+                </div>
+                <div><label class="font-bold text-gray-700">Father Name</label><input id="father" value="${userData.father}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
+                <div><label class="font-bold text-gray-700">Mother Name</label><input id="mother" value="${userData.mother}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
+            </div>
+
+            <button onclick="saveProfile()" class="btn-pop w-full bg-gradient-to-r from-green-400 to-green-600 text-white text-2xl font-bold py-4 rounded-2xl shadow-lg mt-6">Save Profile 💾</button>
+        </div>
+    </div>`;
+}
+
+// --- PATHA FILES CODE IKKADE ---
+function renderAlphabets() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const words = ['Apple','Ball','Cat','Dog','Elephant','Fish','Goat','Hat','Ice','Jug','Kite','Lion','Monkey','Nest','Orange','Parrot','Queen','Rabbit','Sun','Tiger','Umbrella','Van','Whale','Xylophone','Yak','Zebra'];
+    app.innerHTML = `
+    <div class="min-h-screen p-4">
+        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
+        <div class="bg-white rounded-3xl shadow-xl p-6">
+            <h2 class="text-4xl font-bold text-center text-pink-500 mb-6">Alphabets 🔤</h2>
+            <div class="grid grid-cols-3 gap-3">
+                ${letters.map((l,i) => `
+                    <div class="btn-pop bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 text-center border-4 border-pink-300">
+                        <div class="text-5xl font-bold text-pink-600">${l}</div>
+                        <div class="text-sm text-gray-700 mt-1">${words[i]}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderNumbers() {
+    app.innerHTML = `
+    <div class="min-h-screen p-4">
+        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
+        <div class="bg-white rounded-3xl shadow-xl p-6">
+            <h2 class="text-4xl font-bold text-center text-blue-500 mb-6">Numbers 1-20 🔢</h2>
+            <div class="grid grid-cols-4 gap-3">
+                ${Array.from({length:20},(_,i)=>i+1).map(n => `
+                    <div class="btn-pop bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-6 text-center border-4 border-blue-300">
+                        <div class="text-4xl font-bold text-blue-600">${n}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderPainting() {
+    app.innerHTML = `
+    <div class="min-h-screen p-4">
+        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
+        <div class="bg-white rounded-3xl shadow-xl p-8 text-center">
+            <div class="text-8xl mb-4">🎨</div>
+            <h2 class="text-3xl font-bold text-orange-500 mb-4">Painting Game</h2>
+            <p class="text-xl text-gray-600">Simba is preparing colors! Coming Soon...</p>
+        </div>
+    </div>`;
+}
+
+// --- ACTIONS ---
+function goToDashboard() {
+    if (!userData.name) {
+        const name = prompt("Hey Cub! What's your name?");
+        if (name) {
+            userData.name = name;
+            saveUserData();
+        } else return;
+    }
+    currentPage = 'dashboard';
+    render();
+}
+
+function navigate(page) {
+    currentPage = page;
+    render();
+    toggleSidebar(true);
+}
+
+function toggleSidebar(forceClose = false) {
+    const sidebar = document.getElementById('sidebar');
+    if (forceClose ||!sidebar.classList.contains('sidebar-hidden')) {
+        sidebar.classList.add('sidebar-hidden');
+    } else {
+        sidebar.classList.remove('sidebar-hidden');
+    }
+}
+
+function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+            deferredPrompt = null;
+        });
+    }
+}
+
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            userData.profileImg = e.target.result;
+            document.getElementById('profilePreview').src = e.target.result;
+            saveUserData();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function saveProfile() {
+    userData.name = document.getElementById('name').value;
+    userData.dob = document.getElementById('dob').value;
+    userData.kidId = document.getElementById('kidId').value;
+    userData.email = document.getElementById('email').value;
+    userData.phone = document.getElementById('phone').value;
+    userData.bloodGroup = document.getElementById('bloodGroup').value;
+    userData.father = document.getElementById('father').value;
+    userData.mother = document.getElementById('mother').value;
+    saveUserData();
+    alert('Profile Saved! 🦁');
+    navigate('dashboard');
+}
+
+// --- INIT ---
+if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
+render();
+</script>
+</body>
+</html>
