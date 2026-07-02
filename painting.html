@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painting - Juju Fun World</title>
+    <meta name="theme-color" content="#3B82F6">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px}
+       .back-btn{background:#fff;color:#F97316;border:none;padding:10px 20px;border-radius:15px;font-weight:800;font-size:16px;margin-bottom:20px;cursor:pointer}
+       .container{background:#FFFBEB;padding:20px;border-radius:30px;max-width:400px;margin:0 auto;text-align:center}
+        h1{color:#F97316;font-weight:900;font-size:28px;margin-bottom:8px}
+        p{color:#92400E;font-weight:700;margin-bottom:15px}
+        #canvas{border:4px solid #FDBA74;border-radius:20px;background:#fff;touch-action:none;cursor:crosshair}
+       .controls{margin-top:15px;display:flex;gap:10px;justify-content:center}
+       .btn{color:#fff;border:none;padding:12px 20px;border-radius:15px;font-weight:800;font-size:16px;cursor:pointer}
+       .btn:active{transform:scale(.95)}
+       .clear{background:#EF4444}
+       .next{background:#10B981}
+       .prev{background:#3B82F6}
+       .colors{margin-top:15px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+       .color{width:40px;height:40px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+       .color.active{border:3px solid #000;transform:scale(1.1)}
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
+    <div class="container">
+        <h1>Trace Letter: <span id="letter">A</span></h1>
+        <p>Finger tho letter meda draw chey 🦁</p>
+        <canvas id="canvas" width="320" height="320"></canvas>
+        <div class="controls">
+            <button class="btn clear" onclick="clearCanvas()">Clear</button>
+            <button class="btn prev" onclick="prevLetter()">← Back</button>
+            <button class="btn next" onclick="nextLetter()">Next →</button>
+        </div>
+        <div class="colors" id="colors"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        let currentIndex = 0;
+        let isDrawing = false;
+        let currentColor = '#EF4444';
+        
+        const colorList = ['#EF4444','#F97316','#EAB308','#10B981','#3B82F6','#8B5CF6','#EC4899'];
+        const colorDiv = document.getElementById('colors');
+        colorList.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'color';
+            div.style.background = c;
+            if(c === currentColor) div.classList.add('active');
+            div.onclick = () => {
+                currentColor = c;
+                document.querySelectorAll('.color').forEach(el => el.classList.remove('active'));
+                div.classList.add('active');
+            };
+            colorDiv.appendChild(div);
+        });
+
+        function drawLetter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#F3F4F6';
+            ctx.font = '900 220px Nunito';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(letters[currentIndex], canvas.width/2, canvas.height/2);
+            document.getElementById('letter').textContent = letters[currentIndex];
+        }
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
+            return {x: x * (canvas.width/rect.width), y: y * (canvas.height/rect.height)};
+        }
+
+        function startDraw(e) {
+            isDrawing = true;
+            const pos = getPos(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            e.preventDefault();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            
+            // Mask: letter shape lo ne draw avvali
+            ctx.save();
+            ctx.font = '900 220px Nunito';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.beginPath();
+            ctx.fillText(letters[currentIndex], canvas.width/2, canvas.height/2);
+            ctx.clip();
+            
+            ctx.lineTo(pos.x, pos.y);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 25;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+            ctx.restore();
+            e.preventDefault();
+        }
+
+        function stopDraw() { isDrawing = false; }
+
+        function clearCanvas() { drawLetter(); }
+        function nextLetter() { currentIndex = (currentIndex + 1) % 26; drawLetter(); }
+        function prevLetter() { currentIndex = (currentIndex - 1 + 26) % 26; drawLetter(); }
+
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+
+        drawLetter();
+    </script>
+</body>
+</html>
