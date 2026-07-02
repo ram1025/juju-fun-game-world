@@ -89,7 +89,7 @@
 
     <div class="sidebar" id="sidebar">
         <button class="sidebar-btn" onclick="location.href='./profile.html'">👤 Profile</button>
-        <button class="sidebar-btn" onclick="resetApp()" style="color:#EF4444;">🚪 Reset App</button>
+        <button class="sidebar-btn" onclick="logout()" style="color:#EF4444;">🚪 Logout</button>
     </div>
 
     <div class="profile-section">
@@ -110,7 +110,7 @@
         </div>
         <div class="card card-orange" onclick="location.href='./painting.html'">
             <div class="card-icon">🎨</div>
-            <div class="card-title">Trace A-Z</div>
+            <div class="card-title">Painting</div>
         </div>
         <div class="card card-purple" onclick="location.href='./free-draw.html'">
             <div class="card-icon">🐒</div>
@@ -118,18 +118,11 @@
         </div>
     </div>
 
-    <!-- Logout Button Added Here -->
-    <div style="text-align:center;margin-top:20px">
-        <button onclick="logout()" style="background:#EF4444;color:white;border:none;padding:12px 30px;border-radius:15px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 0 #DC2626">
-            🚪 Logout
-        </button>
-    </div>
-
     <script>
         // Load profile data
         window.addEventListener('load', () => {
-            const name = localStorage.getItem('playerName') || localStorage.getItem('jujuName') || 'Juju';
-            const pic = localStorage.getItem('playerPic') || localStorage.getItem('jujuAvatar');
+            const name = localStorage.getItem('jujuName') || 'Juju';
+            const pic = localStorage.getItem('jujuAvatar');
 
             document.getElementById('nameText').textContent = name;
             if(pic) {
@@ -151,14 +144,6 @@
             }
         });
 
-        // Reset app
-        function resetApp() {
-            if(confirm('Reset app? All data will be deleted')) {
-                localStorage.clear();
-                location.href = './index.html';
-            }
-        }
-
         // Logout function
         function logout() {
             localStorage.clear();
@@ -167,8 +152,8 @@
 
         // Update on back button
         window.addEventListener('pageshow', () => {
-            const name = localStorage.getItem('playerName') || localStorage.getItem('jujuName') || 'Juju';
-            const pic = localStorage.getItem('playerPic') || localStorage.getItem('jujuAvatar');
+            const name = localStorage.getItem('jujuName') || 'Juju';
+            const pic = localStorage.getItem('jujuAvatar');
             document.getElementById('nameText').textContent = name;
             if(pic) document.getElementById('avatarImg').src = pic;
         });
