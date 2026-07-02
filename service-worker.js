@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v8';
+const CACHE_NAME = 'juju-fun-world-v9'; // v8 → v9 MARCHALI
 const urlsToCache = [
   './',
   './index.html',
@@ -59,10 +59,10 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting())
   );
 });
 
@@ -77,9 +77,17 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Network first - Fresh content kosam
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => response || fetch(event.request))
+    fetch(event.request)
+      .then(response => {
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseClone);
+        });
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
