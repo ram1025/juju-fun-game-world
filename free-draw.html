@@ -4,95 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Draw - Juju Fun World</title>
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3B82F6">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px}
-      .back-btn{background:#fff;color:#A855F7;border:none;padding:10px 20px;border-radius:15px;font-weight:800;font-size:16px;margin-bottom:20px;cursor:pointer}
-      .container{background:#FAF5FF;padding:20px;border-radius:30px;max-width:400px;margin:0 auto;text-align:center}
-        h1{color:#9333EA;font-weight:900;font-size:28px;margin-bottom:8px}
-        p{color:#6B21A8;font-weight:700;margin-bottom:15px}
-        #canvas{border:4px solid #C4B5FD;border-radius:20px;background:#fff;touch-action:none;cursor:crosshair}
-      .controls{margin-top:15px;display:flex;gap:10px;justify-content:center}
-      .btn{color:#fff;border:none;padding:12px 20px;border-radius:15px;font-weight:800;font-size:16px;cursor:pointer}
-      .btn:active{transform:scale(.95)}
-      .clear{background:#EF4444}
-      .save{background:#10B981}
-      .colors{margin-top:15px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-      .color{width:40px;height:40px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.2)}
-      .color.active{border:3px solid #000;transform:scale(1.1)}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #3B82F6;
+            min-height: 100vh; padding: 20px; display: flex;
+            flex-direction: column;
+        }
+    .header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 15px;
+        }
+    .back-btn {
+            background: white; border: none; width: 50px; height: 50px;
+            border-radius: 15px; font-size: 24px; cursor: pointer;
+            box-shadow: 0 4px 0 #E5E7EB;
+        }
+    .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #E5E7EB; }
+    .title {
+            color: white; font-size: 28px; font-weight: 900;
+        }
+    .tools {
+            background: white; padding: 15px; border-radius: 20px;
+            margin-bottom: 15px; display: flex; gap: 10px;
+            justify-content: center; flex-wrap: wrap;
+        }
+    .color-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 3px solid #E5E7EB; cursor: pointer;
+        }
+    .color-btn.active { border-color: #1F2937; transform: scale(1.2); }
+    .tool-btn {
+            background: #F3F4F6; border: none; padding: 10px 20px;
+            border-radius: 12px; font-weight: 800; font-size: 16px;
+            cursor: pointer;
+        }
+    .tool-btn:active { transform: scale(0.95); }
+    .clear { background: #EF4444; color: white; }
+    .save { background: #10B981; color: white; }
+    .canvas-container {
+            background: white; border-radius: 20px; padding: 10px;
+            flex: 1; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        #canvas {
+            width: 100%; height: 100%; border-radius: 15px;
+            cursor: crosshair; touch-action: none; background: #fff;
+        }
     </style>
 </head>
 <body>
-    <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
-    <div class="container">
-        <h1>🎨 Free Draw</h1>
-        <p>Finger tho nuvvu anukunna drawing chey!</p>
-        <canvas id="canvas" width="320" height="320"></canvas>
-        <div class="controls">
-            <button class="btn clear" onclick="clearCanvas()">Clear</button>
-            <button class="btn save" onclick="saveImage()">Save 💾</button>
-        </div>
-        <div class="colors" id="colors"></div>
+    <div class="header">
+        <button class="back-btn" onclick="location.href='./dashboard.html'">←</button>
+        <div class="title">Free Draw 🎨</div>
+        <div style="width: 50px;"></div>
+    </div>
+
+    <div class="tools">
+        <div class="color-btn active" style="background:#000" onclick="setColor('#000')"></div>
+        <div class="color-btn" style="background:#EF4444" onclick="setColor('#EF4444')"></div>
+        <div class="color-btn" style="background:#3B82F6" onclick="setColor('#3B82F6')"></div>
+        <div class="color-btn" style="background:#10B981" onclick="setColor('#10B981')"></div>
+        <div class="color-btn" style="background:#F59E0B" onclick="setColor('#F59E0B')"></div>
+        <div class="color-btn" style="background:#EC4899" onclick="setColor('#EC4899')"></div>
+        <button class="tool-btn clear" onclick="clearCanvas()">🗑️ Clear</button>
+        <button class="tool-btn save" onclick="saveImage()">💾 Save</button>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="canvas"></canvas>
     </div>
 
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-        let currentColor = '#EF4444';
-        
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        const colorList = ['#EF4444','#F97316','#EAB308','#10B981','#3B82F6','#8B5CF6','#EC4899'];
-        const colorDiv = document.getElementById('colors');
-        colorList.forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'color';
-            div.style.background = c;
-            if(c === currentColor) div.classList.add('active');
-            div.onclick = () => {
-                currentColor = c;
-                document.querySelectorAll('.color').forEach(el => el.classList.remove('active'));
-                div.classList.add('active');
-            };
-            colorDiv.appendChild(div);
-        });
+        let painting = false;
+        let currentColor = '#000';
 
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
-            const y = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
-            return {x: x * (canvas.width/rect.width), y: y * (canvas.height/rect.height)};
-        }
-
-        function startDraw(e) {
-            isDrawing = true;
-            const pos = getPos(e);
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-            e.preventDefault();
-        }
-
-        function draw(e) {
-            if (!isDrawing) return;
-            const pos = getPos(e);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 8;
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.offsetWidth - 20;
+            canvas.height = container.offsetHeight - 20;
+            ctx.lineWidth = 5;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.stroke();
-            e.preventDefault();
+            ctx.strokeStyle = currentColor;
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function setColor(color) {
+            currentColor = color;
+            ctx.strokeStyle = color;
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
         }
 
-        function stopDraw() { isDrawing = false; }
         function clearCanvas() {
             ctx.fillStyle = '#fff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
+
         function saveImage() {
             const link = document.createElement('a');
             link.download = 'juju-drawing.png';
@@ -100,12 +120,40 @@
             link.click();
         }
 
-        canvas.addEventListener('mousedown', startDraw);
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function endPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+            e.preventDefault();
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
         canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
-        canvas.addEventListener('touchstart', startDraw);
+        canvas.addEventListener('touchstart', startPosition);
+        canvas.addEventListener('touchend', endPosition);
         canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDraw);
+
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js');
+        }
     </script>
 </body>
 </html>
