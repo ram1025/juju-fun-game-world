@@ -4,521 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juju Fun World</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f59e0b">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#FF9800">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
-        body { font-family: 'Fredoka', sans-serif; }
-       .btn-pop:active { transform: scale(0.95); }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #FFE082 0%, #FF9800 100%);
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            padding: 20px;
         }
-       .bounce { animation: bounce 2s infinite; }
-       .hamburger span { transition: all 0.3s; }
-       .sidebar { transition: transform 0.3s ease; }
-       .sidebar-hidden { transform: translateX(-100%); }
-       .profile-container { max-width: 400px; margin: 0 auto; padding: 20px; }
+      .container {
+            background: white; padding: 40px 30px; border-radius: 30px;
+            border: 5px solid #FFC107; box-shadow: 0 10px 0 #E65100;
+            max-width: 400px; width: 100%; text-align: center;
+        }
+      .logo { font-size: 80px; margin-bottom: 10px; }
+        h1 { color: #E65100; font-weight: 900; font-size: 32px; margin-bottom: 10px; }
+        p { color: #666; font-weight: 700; margin-bottom: 25px; font-size: 18px; }
+        input {
+            width: 100%; padding: 15px; border: 3px solid #FFC107;
+            border-radius: 15px; font-size: 18px; font-weight: 700;
+            margin-bottom: 15px; font-family: 'Nunito', sans-serif; text-align: center;
+        }
+      .avatar-upload {
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 4px dashed #FFC107; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; cursor: pointer; overflow: hidden;
+        }
+      .avatar-upload img { width: 100%; height: 100%; object-fit: cover; }
+      .btn {
+            width: 100%; background: #4CAF50; color: white; border: none;
+            padding: 18px; border-radius: 15px; font-weight: 900;
+            font-size: 20px; cursor: pointer; border: 3px solid #2E7D32;
+            box-shadow: 0 6px 0 #1B5E20; margin-bottom: 15px;
+        }
+      .btn:active { transform: translateY(6px); box-shadow: none; }
+      .install-btn {
+            background: #FF9800; border-color: #E65100; box-shadow: 0 6px 0 #BF360C;
+        }
+      .hidden { display: none; }
     </style>
 </head>
-<body class="bg-blue-500 min-h-screen">
-    <div id="app"></div>
+<body>
+    <div class="container" id="welcomeContainer">
+        <div class="logo">🦁</div>
+        <h1>Juju Fun World</h1>
+        <p>What's your name, Cub?</p>
 
-<script>
-// --- DATA MANAGEMENT ---
-let userData = JSON.parse(localStorage.getItem('jujuUserData')) || {
-    name: '',
-    kidId: '',
-    dob: '',
-    email: '',
-    phone: '',
-    bloodGroup: '',
-    father: '',
-    mother: '',
-    profileImg: ''
-};
-
-let deferredPrompt;
-let isInstalled = window.matchMedia('(display-mode: standalone)').matches;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const installBtn = document.getElementById('installBtn');
-    if(installBtn &&!isInstalled) installBtn.style.display = 'block';
-});
-
-window.addEventListener('appinstalled', () => {
-    isInstalled = true;
-    const installBtn = document.getElementById('installBtn');
-    if(installBtn) installBtn.style.display = 'none';
-});
-
-const app = document.getElementById('app');
-let currentPage = 'welcome';
-let currentLetterIndex = 0;
-let drawingColor = '#ef4444';
-let freeDrawingColor = '#ef4444';
-
-// --- UTILITY ---
-function saveUserData() {
-    localStorage.setItem('jujuUserData', JSON.stringify(userData));
-}
-
-function getDisplayName() {
-    return userData.kidId || userData.name || 'Cub';
-}
-
-function getProfileImage() {
-    return userData.profileImg || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23f59e0b"/%3E%3Ctext x="50" y="65" font-size="50" text-anchor="middle" fill="white"%3E🦁%3C/text%3E%3C/svg%3E';
-}
-
-// --- PAGES ---
-function render() {
-    if (currentPage === 'welcome') renderWelcome();
-    else if (currentPage === 'dashboard') renderDashboard();
-    else if (currentPage === 'profile') renderProfile();
-    else if (currentPage === 'alphabets') renderAlphabets();
-    else if (currentPage === 'numbers') renderNumbers();
-    else if (currentPage === 'painting') renderPainting();
-    else if (currentPage === 'freedraw') renderFreeDraw();
-}
-
-function renderWelcome() {
-    app.innerHTML = `
-    <div class="min-h-screen flex flex-col items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
-            <img src="icon-512.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ctext y=\'80\' font-size=\'80\'%3E🦁%3C/text%3E%3C/svg%3E'" class="w-32 h-32 mx-auto mb-4">
-            <h1 class="text-5xl font-bold text-orange-500 mb-4">Juju Fun World</h1>
-            
-            <div class="mb-6">
-                <img src="${getProfileImage()}" class="w-24 h-24 rounded-full mx-auto bounce border-4 border-orange-300 object-cover cursor-pointer" onclick="goToDashboard()">
-                <p class="text-2xl font-bold text-gray-700 mt-3">Welcome ${getDisplayName()}!</p>
-            </div>
-
-            <button onclick="installApp()" id="installBtn" class="btn-pop w-full bg-gradient-to-r from-green-400 to-green-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg mb-3" style="display:${isInstalled?'none':'block'};">
-                📱 Install Juju App
-            </button>
-            <button onclick="goToDashboard()" class="btn-pop w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg">
-                Touch to Play! 🎮
-            </button>
+        <div class="avatar-upload" id="avatarUpload">
+            <span id="uploadIcon">📷</span>
+            <img id="previewImg" class="hidden" alt="Avatar">
         </div>
-    </div>`;
-}
+        <input type="file" id="picInput" accept="image/*" class="hidden">
 
-function renderDashboard() {
-    app.innerHTML = `
-    <!-- Hamburger Menu -->
-    <button onclick="toggleSidebar()" class="hamburger fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg">
-        <div class="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
-        <div class="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
-        <div class="w-6 h-0.5 bg-gray-700"></div>
-    </button>
-
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar sidebar-hidden fixed top-0 left-0 w-64 h-full bg-white shadow-2xl z-40 p-6">
-        <div class="text-right mb-6">
-            <button onclick="toggleSidebar()" class="text-3xl">&times;</button>
-        </div>
-        <div class="text-center mb-6">
-            <img src="${getProfileImage()}" class="w-20 h-20 rounded-full mx-auto border-4 border-orange-300 object-cover">
-            <p class="font-bold mt-2">${getDisplayName()}</p>
-        </div>
-        <button onclick="navigate('profile')" class="w-full text-left py-3 px-4 rounded-lg hover:bg-orange-100 font-bold text-lg">👤 Profile</button>
-        <button onclick="logout()" class="w-full text-left py-3 px-4 rounded-lg hover:bg-red-100 font-bold text-lg text-red-600 mt-2">🚪 Logout</button>
+        <input type="text" id="nameInput" placeholder="Enter your name" maxlength="20">
+        <button class="btn" onclick="startGame()">Let's Play!</button>
+        <button class="btn install-btn" id="installBtn">📲 Install Juju App</button>
     </div>
 
-    <!-- Main Content -->
-    <div class="min-h-screen p-4 pt-20">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-8">
-                <img src="${getProfileImage()}" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg object-cover">
-                <h2 class="text-4xl font-bold text-white mt-3">${userData.name || 'Little Cub'}</h2>
-                <p class="text-xl text-yellow-200">${userData.kidId? '@' + userData.kidId : 'Set your Nick Name'}</p>
-            </div>
-            
-            <h3 class="text-3xl font-bold text-white text-center mb-6">Choose Your Adventure!</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button onclick="navigate('alphabets')" class="btn-pop bg-gradient-to-br from-pink-400 to-pink-600 rounded-3xl p-6 text-white shadow-xl">
-                    <div class="text-5xl mb-2">🔤</div>
-                    <div class="text-xl font-bold">Alphabets</div>
-                </button>
-                <button onclick="navigate('numbers')" class="btn-pop bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl p-6 text-white shadow-xl">
-                    <div class="text-5xl mb-2">🔢</div>
-                    <div class="text-xl font-bold">Numbers</div>
-                </button>
-                <button onclick="navigate('painting')" class="btn-pop bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-6 text-white shadow-xl">
-                    <div class="text-5xl mb-2">🎨</div>
-                    <div class="text-xl font-bold">Trace A-Z</div>
-                </button>
-                <button onclick="navigate('freedraw')" class="btn-pop bg-gradient-to-br from-purple-400 to-purple-600 rounded-3xl p-6 text-white shadow-xl">
-                    <div class="text-5xl mb-2">🐒</div>
-                    <div class="text-xl font-bold">Unko Draw</div>
-                </button>
-            </div>
-        </div>
-    </div>`;
-}
+    <script>
+        // AUTO-LOGIN: Already data unte direct dashboard
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('playerName');
+            const savedPic = localStorage.getItem('playerPic');
 
-function renderProfile() {
-    app.innerHTML = `
-    <div class="min-h-screen p-4 pt-6">
-        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
-        <div class="bg-white rounded-3xl shadow-xl p-6 max-w-2xl mx-auto profile-container">
-            <h2 class="text-4xl font-bold text-center text-purple-500 mb-6">My Profile 👤</h2>
-            
-            <div class="text-center mb-6">
-                <img id="profilePreview" src="${getProfileImage()}" class="w-32 h-32 rounded-full mx-auto border-4 border-orange-300 object-cover mb-4">
-                <input type="file" id="cameraInput" accept="image/*" capture="user" class="hidden" onchange="handleImageUpload(event)">
-                <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
-                <div class="flex gap-2 justify-center">
-                    <button onclick="document.getElementById('cameraInput').click()" class="btn-pop bg-blue-500 text-white px-4 py-2 rounded-xl">📷 Camera</button>
-                    <button onclick="document.getElementById('galleryInput').click()" class="btn-pop bg-green-500 text-white px-4 py-2 rounded-xl">🖼️ Gallery</button>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div><label class="font-bold text-gray-700">Name</label><input id="name" value="${userData.name}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
-                <div><label class="font-bold text-gray-700">Date of Birth</label><input id="dob" type="date" value="${userData.dob}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
-                <div><label class="font-bold text-gray-700">Kid ID / Nick Name</label><input id="kidId" value="${userData.kidId}" placeholder="JujuLion" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
-                <div><label class="font-bold text-gray-700">Email</label><input id="email" type="email" value="${userData.email}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
-                <div><label class="font-bold text-gray-700">Phone</label><input id="phone" type="tel" value="${userData.phone}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
-                <div>
-                    <label class="font-bold text-gray-700">Blood Group</label>
-                    <select id="bloodGroup" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1">
-                        <option value="">Select</option>
-                        ${['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(bg => `<option value="${bg}" ${userData.bloodGroup===bg?'selected':''}>${bg}</option>`).join('')}
-                    </select>
-                </div>
-                <div><label class="font-bold text-gray-700">Father Name</label><input id="father" value="${userData.father}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
-                <div><label class="font-bold text-gray-700">Mother Name</label><input id="mother" value="${userData.mother}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl mt-1"></div>
-            </div>
-
-            <button onclick="saveProfile()" class="btn-pop w-full bg-gradient-to-r from-green-400 to-green-600 text-white text-2xl font-bold py-4 rounded-2xl shadow-lg mt-6">Save Profile 💾</button>
-        </div>
-    </div>`;
-}
-
-function renderAlphabets() {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    const words = ['Apple','Ball','Cat','Dog','Elephant','Fish','Goat','Hat','Ice','Jug','Kite','Lion','Monkey','Nest','Orange','Parrot','Queen','Rabbit','Sun','Tiger','Umbrella','Van','Whale','Xylophone','Yak','Zebra'];
-    app.innerHTML = `
-    <div class="min-h-screen p-4">
-        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
-        <div class="bg-white rounded-3xl shadow-xl p-6">
-            <h2 class="text-4xl font-bold text-center text-pink-500 mb-6">Alphabets 🔤</h2>
-            <div class="grid grid-cols-3 gap-3">
-                ${letters.map((l,i) => `
-                    <div class="btn-pop bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-4 text-center border-4 border-pink-300">
-                        <div class="text-5xl font-bold text-pink-600">${l}</div>
-                        <div class="text-sm text-gray-700 mt-1">${words[i]}</div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    </div>`;
-}
-
-function renderNumbers() {
-    app.innerHTML = `
-    <div class="min-h-screen p-4">
-        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
-        <div class="bg-white rounded-3xl shadow-xl p-6">
-            <h2 class="text-4xl font-bold text-center text-blue-500 mb-6">Numbers 1-20 🔢</h2>
-            <div class="grid grid-cols-4 gap-3">
-                ${Array.from({length:20},(_,i)=>i+1).map(n => `
-                    <div class="btn-pop bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-6 text-center border-4 border-blue-300">
-                        <div class="text-4xl font-bold text-blue-600">${n}</div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    </div>`;
-}
-
-function renderPainting() {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    app.innerHTML = `
-    <div class="min-h-screen p-4 bg-yellow-50">
-        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-orange-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
-        <div class="bg-white rounded-3xl shadow-xl p-6 text-center">
-            <h2 class="text-4xl font-bold text-orange-500 mb-2">Trace Letter: ${letters[currentLetterIndex]}</h2>
-            <p class="text-gray-600 mb-4">Finger tho letter meda draw chey 🦁</p>
-            <canvas id="drawCanvas" class="border-4 border-orange-300 rounded-2xl mx-auto touch-none bg-white" width="350" height="400"></canvas>
-            <div class="flex gap-2 justify-center mt-4 flex-wrap">
-                <button onclick="clearCanvas()" class="btn-pop bg-red-500 text-white px-4 py-2 rounded-xl">Clear</button>
-                <button onclick="nextLetter()" class="btn-pop bg-green-500 text-white px-4 py-2 rounded-xl">Next →</button>
-                <button onclick="prevLetter()" class="btn-pop bg-blue-500 text-white px-4 py-2 rounded-xl">← Back</button>
-            </div>
-            <div class="mt-4">
-                <p class="font-bold mb-2">Pick Color:</p>
-                ${['#ef4444','#f59e0b','#22c55e','#3b82f6','#a855f7','#ec4899'].map(c => `<button onclick="setColor('${c}')" style="background:${c}" class="w-10 h-10 rounded-full mx-1 border-2 border-gray-300 ${drawingColor === c? 'ring-4 ring-black' : ''}"></button>`).join('')}
-            </div>
-        </div>
-    </div>`;
-    initCanvasWithLetter(letters[currentLetterIndex]);
-}
-
-function renderFreeDraw() {
-    app.innerHTML = `
-    <div class="min-h-screen p-4 bg-purple-50">
-        <button onclick="navigate('dashboard')" class="btn-pop bg-white text-purple-500 px-6 py-3 rounded-2xl font-bold mb-4">← Back</button>
-        <div class="bg-white rounded-3xl shadow-xl p-6 text-center">
-            <h2 class="text-4xl font-bold text-purple-500 mb-2">🐒 Unko Free Draw</h2>
-            <p class="text-gray-600 mb-4">Finger tho nuvvu anukunna drawing chey!</p>
-            <canvas id="freeCanvas" class="border-4 border-purple-300 rounded-2xl mx-auto touch-none bg-white" width="350" height="450"></canvas>
-            <div class="flex gap-2 justify-center mt-4 flex-wrap">
-                <button onclick="clearFreeCanvas()" class="btn-pop bg-red-500 text-white px-4 py-2 rounded-xl">Clear</button>
-                <button onclick="saveFreeDraw()" class="btn-pop bg-green-500 text-white px-4 py-2 rounded-xl">Save 💾</button>
-            </div>
-            <div class="mt-4">
-                <p class="font-bold mb-2">Pick Color:</p>
-                ${['#ef4444','#f59e0b','#22c55e','#3b82f6','#a855f7','#ec4899','#000000'].map(c => `<button onclick="setFreeColor('${c}')" style="background:${c}" class="w-10 h-10 rounded-full mx-1 border-2 border-gray-300"></button>`).join('')}
-            </div>
-            <div class="mt-3">
-                <p class="font-bold mb-2">Brush Size:</p>
-                <input type="range" id="brushSize" min="2" max="30" value="8" class="w-48">
-            </div>
-        </div>
-    </div>`;
-    initFreeCanvas();
-}
-
-// --- DRAWING WITH LETTER OUTLINE ---
-function initCanvasWithLetter(letter) {
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    
-    ctx.lineWidth = 12;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.strokeStyle = drawingColor;
-    
-    function drawLetterOutline() {
-        ctx.save();
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.font = 'bold 280px Fredoka';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.strokeStyle = '#d1d5db';
-        ctx.lineWidth = 8;
-        ctx.setLineDash([15, 10]);
-        ctx.strokeText(letter, canvas.width/2, canvas.height/2);
-        ctx.setLineDash([]);
-        ctx.restore();
-        ctx.strokeStyle = drawingColor;
-        ctx.lineWidth = 12;
-    }
-    
-    drawLetterOutline();
-    
-    const startDraw = (e) => {
-        isDrawing = true;
-        const pos = getPos(e);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-    };
-    
-    const draw = (e) => {
-        if (!isDrawing) return;
-        e.preventDefault();
-        const pos = getPos(e);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-    };
-    
-    const stopDraw = () => {
-        isDrawing = false;
-    };
-    
-    const getPos = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const touch = e.touches? e.touches[0] : e;
-        return {
-            x: touch.clientX - rect.left,
-            y: touch.clientY - rect.top
-        };
-    };
-    
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDraw);
-    canvas.addEventListener('touchstart', startDraw);
-    canvas.addEventListener('touchmove', draw);
-    canvas.addEventListener('touchend', stopDraw);
-}
-
-function initFreeCanvas() {
-    const canvas = document.getElementById('freeCanvas');
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.strokeStyle = freeDrawingColor;
-    
-    const startDraw = (e) => {
-        isDrawing = true;
-        const pos = getPos(e);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-    };
-    
-    const draw = (e) => {
-        if (!isDrawing) return;
-        e.preventDefault();
-        const pos = getPos(e);
-        ctx.lineWidth = document.getElementById('brushSize').value;
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-    };
-    
-    const stopDraw = () => {
-        isDrawing = false;
-    };
-    
-    const getPos = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const touch = e.touches? e.touches[0] : e;
-        return {
-            x: touch.clientX - rect.left,
-            y: touch.clientY - rect.top
-        };
-    };
-    
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDraw);
-    canvas.addEventListener('touchstart', startDraw);
-    canvas.addEventListener('touchmove', draw);
-    canvas.addEventListener('touchend', stopDraw);
-}
-
-function setColor(color) {
-    drawingColor = color;
-    const canvas = document.getElementById('drawCanvas');
-    if(canvas) canvas.getContext('2d').strokeStyle = color;
-    renderPainting();
-}
-
-function setFreeColor(color) {
-    freeDrawingColor = color;
-    const canvas = document.getElementById('freeCanvas');
-    if(canvas) canvas.getContext('2d').strokeStyle = color;
-}
-
-function clearCanvas() {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    initCanvasWithLetter(letters[currentLetterIndex]);
-}
-
-function clearFreeCanvas() {
-    const canvas = document.getElementById('freeCanvas');
-    if(canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function saveFreeDraw() {
-    const canvas = document.getElementById('freeCanvas');
-    const link = document.createElement('a');
-    link.download = `juju-drawing-${Date.now()}.png`;
-    link.href = canvas.toDataURL();
-    link.click();
-    alert('Drawing Saved! 🦁');
-}
-
-function nextLetter() {
-    currentLetterIndex = (currentLetterIndex + 1) % 26;
-    renderPainting();
-}
-
-function prevLetter() {
-    currentLetterIndex = (currentLetterIndex - 1 + 26) % 26;
-    renderPainting();
-}
-
-// --- ACTIONS ---
-function goToDashboard() {
-    if (!userData.name) {
-        const name = prompt("Hey Cub! What's your name?");
-        if (name) {
-            userData.name = name;
-            saveUserData();
-        } else return;
-    }
-    currentPage = 'dashboard';
-    render();
-}
-
-function navigate(page) {
-    currentPage = page;
-    if(page === 'painting') currentLetterIndex = 0;
-    render();
-    toggleSidebar(true);
-}
-
-function toggleSidebar(forceClose = false) {
-    const sidebar = document.getElementById('sidebar');
-    if (!sidebar) return;
-    if (forceClose ||!sidebar.classList.contains('sidebar-hidden')) {
-        sidebar.classList.add('sidebar-hidden');
-    } else {
-        sidebar.classList.remove('sidebar-hidden');
-    }
-}
-
-function installApp() {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => {
-            deferredPrompt = null;
-            const installBtn = document.getElementById('installBtn');
-            if(installBtn) installBtn.style.display = 'none';
+            if(savedName && savedPic) {
+                // Welcome skip chesi direct dashboard
+                location.href = './dashboard.html';
+                return;
+            }
         });
-    }
-}
 
-function handleImageUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            userData.profileImg = e.target.result;
-            document.getElementById('profilePreview').src = e.target.result;
-            saveUserData();
+        // PWA Install Logic
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Already installed aa check chey
+            if(localStorage.getItem('juju_installed')!== 'true') {
+                installBtn.style.display = 'block';
+            }
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if(deferredPrompt) {
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('juju_installed', 'true');
+            installBtn.style.display = 'none';
+        });
+
+        // Hide install button if already installed
+        window.addEventListener('load', () => {
+            if(localStorage.getItem('juju_installed') === 'true') {
+                installBtn.style.display = 'none';
+            }
+        });
+
+        // Avatar Upload
+        document.getElementById('avatarUpload').onclick = () => {
+            document.getElementById('picInput').click();
         };
-        reader.readAsDataURL(file);
-    }
-}
 
-function saveProfile() {
-    userData.name = document.getElementById('name').value;
-    userData.dob = document.getElementById('dob').value;
-    userData.kidId = document.getElementById('kidId').value;
-    userData.email = document.getElementById('email').value;
-    userData.phone = document.getElementById('phone').value;
-    userData.bloodGroup = document.getElementById('bloodGroup').value;
-    userData.father = document.getElementById('father').value;
-    userData.mother = document.getElementById('mother').value;
-    saveUserData();
-    alert('Profile Saved! 🦁');
-    navigate('dashboard');
-}
+        document.getElementById('picInput').onchange = (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('previewImg').classList.remove('hidden');
+                    document.getElementById('uploadIcon').classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
 
-function logout() {
-    localStorage.clear();
-    userData = { name: '', kidId: '', dob: '', email: '', phone: '', bloodGroup: '', father: '', mother: '', profileImg: '' };
-    currentPage = 'welcome';
-    isInstalled = false;
-    render();
-}
+        // Start Game - Save Profile
+        function startGame() {
+            const name = document.getElementById('nameInput').value.trim() || 'Cub';
+            const picFile = document.getElementById('picInput').files[0];
 
-// --- INIT ---
-if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
-}
-render();
-</script>
+            localStorage.setItem('playerName', name);
+
+            if(picFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    localStorage.setItem('playerPic', e.target.result);
+                    location.href = './dashboard.html';
+                };
+                reader.readAsDataURL(picFile);
+            } else {
+                // Default avatar
+                localStorage.setItem('playerPic', 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text y="75" font-size="75">🦁</text></svg>');
+                location.href = './dashboard.html';
+            }
+        }
+
+        // Service Worker
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js');
+        }
+    </script>
 </body>
 </html>
