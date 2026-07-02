@@ -5,74 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juju Fun World</title>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#FF9800">
+    <meta name="theme-color" content="#3B82F6">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #FFE082 0%, #FF9800 100%);
+            background: #3B82F6;
             min-height: 100vh; display: flex; align-items: center; justify-content: center;
             padding: 20px;
         }
-      .container {
-            background: white; padding: 40px 30px; border-radius: 30px;
-            border: 5px solid #FFC107; box-shadow: 0 10px 0 #E65100;
-            max-width: 400px; width: 100%; text-align: center;
+     .container {
+            background: white; padding: 30px; border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 380px; width: 100%; text-align: center;
         }
-      .logo { font-size: 80px; margin-bottom: 10px; }
-        h1 { color: #E65100; font-weight: 900; font-size: 32px; margin-bottom: 10px; }
-        p { color: #666; font-weight: 700; margin-bottom: 25px; font-size: 18px; }
-        input {
-            width: 100%; padding: 15px; border: 3px solid #FFC107;
-            border-radius: 15px; font-size: 18px; font-weight: 700;
-            margin-bottom: 15px; font-family: 'Nunito', sans-serif; text-align: center;
+     .logo-img {
+            width: 120px; height: 120px; margin: 0 auto 15px;
+            border-radius: 20px;
         }
-      .avatar-upload {
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 4px dashed #FFC107; margin: 0 auto 20px;
+        h1 {
+            color: #F97316; font-weight: 900; font-size: 36px;
+            margin-bottom: 20px; line-height: 1.1;
+        }
+     .avatar-circle {
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 4px solid #F97316; margin: 0 auto 10px;
+            overflow: hidden; cursor: pointer; background: #FEF3C7;
             display: flex; align-items: center; justify-content: center;
-            font-size: 40px; cursor: pointer; overflow: hidden;
         }
-      .avatar-upload img { width: 100%; height: 100%; object-fit: cover; }
-      .btn {
-            width: 100%; background: #4CAF50; color: white; border: none;
-            padding: 18px; border-radius: 15px; font-weight: 900;
-            font-size: 20px; cursor: pointer; border: 3px solid #2E7D32;
-            box-shadow: 0 6px 0 #1B5E20; margin-bottom: 15px;
+     .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+     .avatar-circle span { font-size: 30px; }
+        input {
+            width: 100%; padding: 15px; border: 3px solid #E5E7EB;
+            border-radius: 15px; font-size: 18px; font-weight: 700;
+            margin: 10px 0 20px; font-family: 'Nunito', sans-serif;
+            text-align: center;
         }
-      .btn:active { transform: translateY(6px); box-shadow: none; }
-      .install-btn {
-            background: #FF9800; border-color: #E65100; box-shadow: 0 6px 0 #BF360C;
+     .welcome-text {
+            color: #1F2937; font-weight: 800; font-size: 22px;
+            margin-bottom: 20px;
         }
-      .hidden { display: none; }
+     .btn {
+            width: 100%; color: white; border: none;
+            padding: 18px; border-radius: 20px; font-weight: 900;
+            font-size: 18px; cursor: pointer; margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+     .btn:active { transform: scale(0.96); }
+     .install-btn { background: #10B981; }
+     .play-btn { background: #3B82F6; }
+     .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container" id="welcomeContainer">
-        <div class="logo">🦁</div>
-        <h1>Juju Fun World</h1>
-        <p>What's your name, Cub?</p>
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23C4B5FD'/%3E%3Ctext x='50' y='65' font-size='45' text-anchor='middle' fill='%23A78BFA'%3EJUJU%3C/text%3E%3C/svg%3E" class="logo-img" alt="Juju">
+        <h1>Juju Fun<br>World</h1>
 
-        <div class="avatar-upload" id="avatarUpload">
+        <div class="avatar-circle" id="avatarUpload">
             <span id="uploadIcon">📷</span>
             <img id="previewImg" class="hidden" alt="Avatar">
         </div>
         <input type="file" id="picInput" accept="image/*" class="hidden">
 
         <input type="text" id="nameInput" placeholder="Enter your name" maxlength="20">
-        <button class="btn" onclick="startGame()">Let's Play!</button>
-        <button class="btn install-btn" id="installBtn">📲 Install Juju App</button>
+        <div class="welcome-text" id="welcomeText">Welcome Cub!</div>
+
+        <button class="btn install-btn" id="installBtn">📱 Install Juju App</button>
+        <button class="btn play-btn" onclick="startGame()">Touch to Play! 🎮</button>
     </div>
 
     <script>
-        // AUTO-LOGIN: Already data unte direct dashboard
+        // AUTO-LOGIN: Data unte direct dashboard
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('playerName');
             const savedPic = localStorage.getItem('playerPic');
 
             if(savedName && savedPic) {
-                // Welcome skip chesi direct dashboard
                 location.href = './dashboard.html';
                 return;
             }
@@ -85,7 +95,6 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Already installed aa check chey
             if(localStorage.getItem('juju_installed')!== 'true') {
                 installBtn.style.display = 'block';
             }
@@ -104,7 +113,6 @@
             installBtn.style.display = 'none';
         });
 
-        // Hide install button if already installed
         window.addEventListener('load', () => {
             if(localStorage.getItem('juju_installed') === 'true') {
                 installBtn.style.display = 'none';
@@ -129,6 +137,12 @@
             }
         };
 
+        // Name input live update
+        document.getElementById('nameInput').oninput = (e) => {
+            const name = e.target.value.trim() || 'Cub';
+            document.getElementById('welcomeText').textContent = `Welcome ${name}!`;
+        };
+
         // Start Game - Save Profile
         function startGame() {
             const name = document.getElementById('nameInput').value.trim() || 'Cub';
@@ -144,13 +158,11 @@
                 };
                 reader.readAsDataURL(picFile);
             } else {
-                // Default avatar
-                localStorage.setItem('playerPic', 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text y="75" font-size="75">🦁</text></svg>');
+                localStorage.setItem('playerPic', 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23F97316"/%3E%3Ctext x="50" y="65" font-size="50" text-anchor="middle" fill="white"%3E🦁%3C/text%3E%3C/svg%3E');
                 location.href = './dashboard.html';
             }
         }
 
-        // Service Worker
         if('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./service-worker.js');
         }
