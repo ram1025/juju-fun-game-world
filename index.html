@@ -130,7 +130,7 @@
     <div class="welcome-name" id="welcomeName">Juju</div>
     <div class="welcome-text">Welcome back! 🎉</div>
     <button class="btn play-btn" onclick="location.href='./dashboard.html'">Touch to Play! 🎮</button>
-    <button class="btn install-btn" id="welcomeInstallBtn" style="display:none;">📱 Install Juju App</button>
+    <button class="btn" id="welcomeInstallBtn" style="display:none; margin-top:15px; background:linear-gradient(135deg, #10B981, #059669);">📱 Install Juju App</button>
 </div>
 
         <div class="login-view" id="loginView">
@@ -167,7 +167,7 @@
         document.getElementById('welcomeName').textContent = savedName;
         document.getElementById('welcomeAvatar').src = savedPic;
 
-        // App install kakapothe Install button chupinchu
+        // Install button chupinchu if app install kaledu
         if (!isInstalled()) {
             document.getElementById('welcomeInstallBtn').style.display = 'block';
         }
@@ -180,7 +180,7 @@
     }
 }, 2000);
 
-// Install button click handler - welcome page ki kuda
+// Welcome install button click
 document.getElementById('welcomeInstallBtn').addEventListener('click', async () => {
     if(deferredPrompt) {
         deferredPrompt.prompt();
