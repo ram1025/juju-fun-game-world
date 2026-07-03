@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - Juju Fun World</title>
-    <link rel="icon" type="image/png" href="./icon-192.png">
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3B82F6">
     <style>
@@ -13,117 +12,147 @@
         body {
             font-family: 'Nunito', sans-serif;
             background: #3B82F6;
-            min-height: 100vh; padding: 20px;
+            min-height: 100vh;
+            padding: 20px;
         }
-      .header {
-            display: flex; align-items: center; justify-content: space-between;
+       .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             margin-bottom: 20px;
         }
-      .back-btn {
-            background: white; border: none; width: 50px; height: 50px;
-            border-radius: 15px; font-size: 24px; cursor: pointer;
-            box-shadow: 0 4px 0 #E5E7EB;
+       .back-btn {
+            background: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: pointer;
         }
-      .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #E5E7EB; }
-      .title {
-            color: white; font-size: 28px; font-weight: 900;
+       .header-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
         }
-      .container {
-            background: white; padding: 30px; border-radius: 30px;
-            max-width: 500px; margin: 0 auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+       .container {
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            max-width: 400px;
+            margin: 0 auto;
         }
-      .avatar-section {
-            text-align: center; margin-bottom: 25px;
+       .avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
         }
-      .avatar-wrapper {
-            position: relative; width: 120px; height: 120px;
-            margin: 0 auto 15px;
-        }
-      .avatar {
-            width: 120px; height: 120px; border-radius: 50%;
-            border: 4px solid #EC4899; object-fit: cover;
+       .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #EC4899;
+            object-fit: cover;
             background: #E5E7EB;
         }
-      .camera-btn {
-            position: absolute; bottom: 0; right: 0;
-            background: #F97316; color: white; border: 3px solid white;
-            width: 40px; height: 40px; border-radius: 50%;
-            font-size: 18px; cursor: pointer;
+       .camera-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #F97316;
+            color: white;
+            border: 3px solid white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         #fileInput { display: none; }
-        
-      .form-group {
+        label {
+            display: block;
+            font-size: 16px;
+            font-weight: 800;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
             margin-bottom: 18px;
         }
-      .form-group label {
-            display: block; color: #1F2937; font-weight: 800;
-            font-size: 16px; margin-bottom: 8px;
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3B82F6;
         }
-      .form-group input,.form-group select {
-            width: 100%; padding: 14px; border: 3px solid #E5E7EB;
-            border-radius: 15px; font-size: 16px; font-weight: 700;
-            font-family: 'Nunito', sans-serif;
+       .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
-      .form-group input:focus,.form-group select:focus {
-            outline: none; border-color: #3B82F6;
+       .save-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #047857;
+            margin-top: 10px;
         }
-      .row {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+       .save-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #047857;
         }
-        
-      .save-btn {
-            width: 100%; background: linear-gradient(135deg, #10B981, #34D399);
-            color: white; border: none; padding: 18px; border-radius: 20px;
-            font-size: 20px; font-weight: 900; cursor: pointer;
-            box-shadow: 0 6px 0 #059669; margin-top: 10px;
-        }
-      .save-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #059669; }
     </style>
 </head>
 <body>
     <div class="header">
         <button class="back-btn" onclick="location.href='./dashboard.html'">←</button>
-        <div class="title">My Profile 🦁</div>
-        <div style="width: 50px;"></div>
+        <div class="header-title">My Profile 🦁</div>
     </div>
 
     <div class="container">
-        <div class="avatar-section">
-            <div class="avatar-wrapper">
-                <img src="./icon-192.png" class="avatar" id="profilePic" alt="Profile">
-                <button class="camera-btn" onclick="document.getElementById('fileInput').click()">📷</button>
-                <input type="file" id="fileInput" accept="image/*" onchange="previewPic(event)">
-            </div>
+        <div class="avatar-wrapper">
+            <img src="./icon-192.png" class="avatar" id="profileAvatar">
+            <button class="camera-btn" onclick="document.getElementById('fileInput').click()">📷</button>
+            <input type="file" id="fileInput" accept="image/*" onchange="updateAvatar(event)">
         </div>
 
-        <div class="form-group">
-            <label>Full Name *</label>
-            <input type="text" id="fullName" placeholder="Enter full name">
-        </div>
+        <label>Full Name *</label>
+        <input type="text" id="fullName" placeholder="JUJU" maxlength="20">
 
         <div class="row">
-            <div class="form-group">
+            <div>
                 <label>Nick Name / Kid ID</label>
-                <input type="text" id="nickName" placeholder="Nickname">
+                <input type="text" id="nickname" placeholder="Nickname">
             </div>
-            <div class="form-group">
+            <div>
                 <label>Date of Birth</label>
                 <input type="date" id="dob">
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="email" placeholder="parent@email.com">
-        </div>
+        <label>Email</label>
+        <input type="email" id="email" placeholder="parent@email.com">
 
         <div class="row">
-            <div class="form-group">
+            <div>
                 <label>Phone Number</label>
                 <input type="tel" id="phone" placeholder="9876543210" maxlength="10">
             </div>
-            <div class="form-group">
+            <div>
                 <label>Blood Group</label>
                 <select id="bloodGroup">
                     <option value="">Select</option>
@@ -139,61 +168,55 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Father's Name</label>
-            <input type="text" id="fatherName" placeholder="Father's name">
-        </div>
+        <label>Father's Name</label>
+        <input type="text" id="fatherName" placeholder="Father's name">
 
-        <div class="form-group">
-            <label>Mother's Name</label>
-            <input type="text" id="motherName" placeholder="Mother's name">
-        </div>
-
-        <button class="save-btn" onclick="saveProfile()">Save & Close ✅</button>
+        <button class="save-btn" onclick="saveProfile()">Save Profile ✅</button>
     </div>
 
     <script>
-    let currentPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
+        let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
-    window.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('fullName').value = localStorage.getItem('jujuName') || '';
-        document.getElementById('email').value = localStorage.getItem('jujuEmail') || '';
-        document.getElementById('phone').value = localStorage.getItem('jujuPhone') || '';
-        document.getElementById('nickName').value = localStorage.getItem('jujuNickName') || '';
-        document.getElementById('dob').value = localStorage.getItem('jujuDob') || '';
-        document.getElementById('bloodGroup').value = localStorage.getItem('jujuBloodGroup') || '';
-        document.getElementById('fatherName').value = localStorage.getItem('jujuFatherName') || '';
-        document.getElementById('motherName').value = localStorage.getItem('jujuMotherName') || '';
-        document.getElementById('profilePic').src = localStorage.getItem('jujuAvatar') || './icon-192.png';
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('profileAvatar').src = currentAvatar;
+            document.getElementById('fullName').value = localStorage.getItem('jujuName') || '';
+            document.getElementById('nickname').value = localStorage.getItem('jujuNickname') || '';
+            document.getElementById('dob').value = localStorage.getItem('jujuDob') || '';
+            document.getElementById('email').value = localStorage.getItem('jujuEmail') || '';
+            document.getElementById('phone').value = localStorage.getItem('jujuPhone') || '';
+            document.getElementById('bloodGroup').value = localStorage.getItem('jujuBlood') || '';
+            document.getElementById('fatherName').value = localStorage.getItem('jujuFather') || '';
+        });
 
-        // Camera button hide chey profile page lo
-        document.querySelector('.camera-btn').style.display = 'none';
-    });
-
-    function previewPic(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                currentPic = e.target.result;
-                document.getElementById('profilePic').src = currentPic;
-                localStorage.setItem('jujuAvatar', currentPic);
-            };
-            reader.readAsDataURL(file);
+        function updateAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentAvatar = e.target.result;
+                    document.getElementById('profileAvatar').src = currentAvatar;
+                }
+                reader.readAsDataURL(file);
+            }
         }
-    }
 
-    function saveProfile() {
-    const name = document.getElementById('profileName').value.trim();
-    if (!name) {
-        alert('Please enter your name!');
-        return;
-    }
-    localStorage.setItem('jujuName', name);
-    localStorage.setItem('jujuAvatar', currentAvatar);
-    alert('Profile saved! 🎉');
-    location.href = './dashboard.html'; // Dashboard ki pampu
-}
-</script>
+        function saveProfile() {
+            const name = document.getElementById('fullName').value.trim();
+            if (!name) {
+                alert('Please enter Full Name!');
+                return;
+            }
+            localStorage.setItem('jujuAvatar', currentAvatar);
+            localStorage.setItem('jujuName', name);
+            localStorage.setItem('jujuNickname', document.getElementById('nickname').value.trim());
+            localStorage.setItem('jujuDob', document.getElementById('dob').value);
+            localStorage.setItem('jujuEmail', document.getElementById('email').value.trim());
+            localStorage.setItem('jujuPhone', document.getElementById('phone').value.trim());
+            localStorage.setItem('jujuBlood', document.getElementById('bloodGroup').value);
+            localStorage.setItem('jujuFather', document.getElementById('fatherName').value.trim());
+            alert('Profile saved! 🎉');
+            location.href = './dashboard.html';
+        }
+    </script>
 </body>
 </html>
