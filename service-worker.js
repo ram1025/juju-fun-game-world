@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v15'; // Version bump chey
+const CACHE_NAME = 'juju-fun-world-v16'; // v15 → v16 ki marchu
 const urlsToCache = [
     './',
     './index.html',
