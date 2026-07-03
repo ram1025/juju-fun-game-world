@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juju Fun World</title>
-    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="icon" type="image/png" href="./icon-512.png">
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3B82F6">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <!-- Link Preview Tags -->
-    <meta property="og:title" content="JUJU Fun World 🐒">
-    <meta property="og:description" content="Fun learning games for kids! Paint letters, draw, play & learn 🎨">
-    <meta property="og:image" content="https://ram1025.github.io/juju-fun-game-world/icon-192.png">
+    <meta property="og:title" content="JU Fun World 🐒">
+    <meta property="og:description" content="Fun learning games for toddlers! Paint letters, draw, play & learn 🎨">
+    <meta property="og:image" content="https://ram1025.github.io/juju-fun-game-world/icon-512.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
     <meta property="og:url" content="https://ram1025.github.io/juju-fun-game-world/">
     <meta property="og:type" content="website">
     
@@ -126,17 +128,17 @@
 </head>
 <body>
     <div class="splash" id="splash">
-        <img src="./icon-192.png" alt="Juju">
+        <img src="./icon-512.png" alt="Juju">
     </div>
 
     <div class="container">
         
 <div class="welcome-view" id="welcomeView">
     <div class="avatar-bounce">
-        <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
+        <img src="./icon-512.png" id="welcomeAvatar" alt="Avatar">
     </div>
-    <div class="welcome-name" id="welcomeName">Juju</div>
-    <div class="welcome-text">Welcome back! 🎉</div>
+    <div class="welcome-name" id="welcomeName">Welcome Toddler! 🐒</div>
+    <div class="welcome-text">Tap to touch and learn 🎨</div>
     <button class="btn play-btn" onclick="location.href='./dashboard.html'">Touch to Play! 🎮</button>
     <button class="btn" id="welcomeInstallBtn" style="display:none; margin-top:15px; background:linear-gradient(135deg, #10B981, #059669);">📱 Install Juju App</button>
 </div>
@@ -147,7 +149,7 @@
             
             <div class="avatar-wrapper">
                 <div class="avatar" id="avatarPreview">
-                    <img src="./icon-192.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+                    <img src="./icon-512.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
                 </div>
             </div>
 
@@ -172,7 +174,7 @@
 
     setTimeout(() => {
         const savedName = localStorage.getItem('jujuName');
-        const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
+        const savedPic = localStorage.getItem('jujuAvatar') || './icon-512.png';
 
         if (savedName) {
             document.getElementById('welcomeView').style.display = 'block';
