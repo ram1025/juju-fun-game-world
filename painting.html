@@ -3,178 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painting - Juju Fun World</title>
-    <link rel="icon" type="image/png" href="./icon-192.png">
+    <title>Paint Letter - Juju Fun World</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3B82F6">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px}
-        .back-btn{background:#fff;color:#F97316;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;margin-bottom:20px;cursor:pointer;box-shadow:0 4px 0 #EA580C}
-        .back-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #EA580C}
-        .container{background:#FEFCE8;padding:20px;border-radius:30px;max-width:400px;margin:0 auto}
-        h1{color:#F97316;font-weight:900;font-size:28px;text-align:center;margin-bottom:5px}
-        p{color:#92400E;font-weight:700;text-align:center;margin-bottom:15px}
-        #canvas{border:4px solid #FED7AA;border-radius:20px;background:#fff;display:block;margin:0 auto;touch-action:none}
-        .controls{margin-top:15px;display:flex;gap:10px;justify-content:center}
-        .btn{color:#fff;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
-        .btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
-        .clear{background:#EF4444}
-        .back{background:#3B82F6}
-        .next{background:#10B981}
-        .colors{margin-top:15px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-        .color-btn{width:45px;height:45px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.2)}
-        .color-btn.active{border:3px solid #000;transform:scale(1.15)}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #3B82F6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+      .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+      .back-btn {
+            background: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+      .header-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+        }
+      .container {
+            background: #FEF3C7;
+            padding: 25px;
+            border-radius: 30px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+      .letter-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: #F97316;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+      .letter-sub {
+            font-size: 16px;
+            font-weight: 700;
+            color: #92400E;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+      .canvas-wrap {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        #canvas {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed #E5E7EB;
+            border-radius: 15px;
+            touch-action: none;
+        }
+      .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+      .ctrl-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+      .clear-btn { background: #EF4444; color: white; }
+      .back-btn-2 { background: #3B82F6; color: white; }
+      .next-btn { background: #10B981; color: white; }
+      .colors {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+      .color {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 3px solid white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+      .color.active {
+            border: 4px solid #1F2937;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
-    <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
+    <div class="header">
+        <button class="back-btn" onclick="location.href='./dashboard.html'">←</button>
+        <div class="header-title">Paint Letter: A</div>
+    </div>
+
     <div class="container">
-        <h1>Paint Letter: <span id="letterText">A</span></h1>
-        <p>Letter meda draw chey 🦁</p>
-        <canvas id="canvas" width="300" height="300"></canvas>
-        <div class="controls">
-            <button class="btn clear" onclick="clearCanvas()">Clear</button>
-            <button class="btn back" onclick="prevLetter()">← Back</button>
-            <button class="btn next" onclick="nextLetter()">Next →</button>
+        <div class="letter-title">Paint Letter: A</div>
+        <div class="letter-sub">Letter meda draw chey 🦁</div>
+        
+        <div class="canvas-wrap">
+            <canvas id="canvas"></canvas>
         </div>
+
+        <div class="controls">
+            <button class="ctrl-btn clear-btn" onclick="clearCanvas()">Clear</button>
+            <button class="ctrl-btn back-btn-2" onclick="prevLetter()">← Back</button>
+            <button class="ctrl-btn next-btn" onclick="nextLetter()">Next →</button>
+        </div>
+
         <div class="colors">
-            <button class="color-btn" style="background:#EF4444" onclick="setColor('#EF4444', event)"></button>
-            <button class="color-btn" style="background:#F97316" onclick="setColor('#F97316', event)"></button>
-            <button class="color-btn" style="background:#EAB308" onclick="setColor('#EAB308', event)"></button>
-            <button class="color-btn" style="background:#10B981" onclick="setColor('#10B981', event)"></button>
-            <button class="color-btn" style="background:#3B82F6" onclick="setColor('#3B82F6', event)"></button>
-            <button class="color-btn" style="background:#8B5CF6" onclick="setColor('#8B5CF6', event)"></button>
-            <button class="color-btn" style="background:#EC4899" onclick="setColor('#EC4899', event)"></button>
+            <div class="color active" style="background:#EF4444;" onclick="setColor('#EF4444', this)"></div>
+            <div class="color" style="background:#F97316;" onclick="setColor('#F97316', this)"></div>
+            <div class="color" style="background:#EAB308;" onclick="setColor('#EAB308', this)"></div>
+            <div class="color" style="background:#10B981;" onclick="setColor('#10B981', this)"></div>
+            <div class="color" style="background:#3B82F6;" onclick="setColor('#3B82F6', this)"></div>
+            <div class="color" style="background:#A855F7;" onclick="setColor('#A855F7', this)"></div>
+            <div class="color" style="background:#EC4899;" onclick="setColor('#EC4899', this)"></div>
+            <div class="color" style="background:#1F2937;" onclick="setColor('#1F2937', this)"></div>
         </div>
     </div>
+
     <script>
-        const canvas = document.getElementById('paintCanvas');
-const ctx = canvas.getContext('2d');
-let currentColor = '#FF5733';
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        let currentColor = '#EF4444';
+        let currentLetter = 'A';
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        let letterIndex = 0;
 
-function selectColor(color) {
-    currentColor = color;
-    document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-}
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            drawLetterOutline();
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-canvas.addEventListener('click', function(e) {
-    ctx.fillStyle = currentColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Letter A outline malli draw chey
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 8;
-    ctx.font = 'bold 200px Nunito';
-    ctx.textAlign = 'center';
-    ctx.strokeText('A', canvas.width/2, canvas.height/2 + 70);
-});
+        function drawLetterOutline() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = 'bold 200px Nunito';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.strokeStyle = '#E5E7EB';
+            ctx.lineWidth = 8;
+            ctx.strokeText(currentLetter, canvas.width/2, canvas.height/2);
+        }
 
-// Or flood fill kavali ante - simple way:
-canvas.addEventListener('click', function(e) {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    ctx.fillStyle = currentColor;
-    ctx.beginPath();
-    ctx.arc(x, y, 20, 0, Math.PI * 2);
-    ctx.fill();
-});
+        function setColor(color, el) {
+            currentColor = color;
+            document.querySelectorAll('.color').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            return {
-                x: ((e.clientX || e.touches[0].clientX) - rect.left) * scaleX,
-                y: ((e.clientY || e.touches[0].clientY) - rect.top) * scaleY
-            };
+            if (e.touches) {
+                return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+            }
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
         }
 
         function startDraw(e) {
-            painting = true;
+            drawing = true;
             const pos = getPos(e);
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
-            e.preventDefault();
         }
 
         function draw(e) {
-            if (!painting) return;
+            if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
-
-            // Clip to letter
-            ctx.save();
-            ctx.font = 'bold 220px Nunito';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.beginPath();
-            ctx.rect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'transparent';
-            ctx.fill();
-            ctx.globalCompositeOperation = 'source-over';
-
-            // Draw letter path for clipping
-            ctx.beginPath();
-            ctx.fillText(currentLetter, canvas.width/2, canvas.height/2);
-            ctx.clip();
-
-            // Draw stroke inside clip
-            ctx.lineWidth = 30;
+            ctx.lineTo(pos.x, pos.y);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 8;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.strokeStyle = currentColor;
-            ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
-            ctx.restore();
-
-            // Redraw outline on top
-            loadLetter(currentLetter);
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
         }
 
         function stopDraw() {
-            painting = false;
-            ctx.beginPath();
-        }
-
-        function clearCanvas() {
-            loadLetter(currentLetter);
-        }
-
-        function nextLetter() {
-            letterIndex = (letterIndex + 1) % letters.length;
-            loadLetter(letters[letterIndex]);
-        }
-
-        function prevLetter() {
-            letterIndex = (letterIndex - 1 + letters.length) % letters.length;
-            loadLetter(letters[letterIndex]);
-        }
-
-        function setColor(color, e) {
-            currentColor = color;
-            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
+            drawing = false;
         }
 
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('mouseout', stopDraw);
         canvas.addEventListener('touchstart', startDraw);
         canvas.addEventListener('touchmove', draw);
         canvas.addEventListener('touchend', stopDraw);
 
-        setupCanvas();
-
-        if('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js');
+        function clearCanvas() {
+            drawLetterOutline();
         }
+
+        function nextLetter() {
+            letterIndex = (letterIndex + 1) % letters.length;
+            currentLetter = letters[letterIndex];
+            document.querySelector('.header-title').textContent = `Paint Letter: ${currentLetter}`;
+            document.querySelector('.letter-title').textContent = `Paint Letter: ${currentLetter}`;
+            drawLetterOutline();
+        }
+
+        function prevLetter() {
+            letterIndex = (letterIndex - 1 + letters.length) % letters.length;
+            currentLetter = letters[letterIndex];
+            document.querySelector('.header-title').textContent = `Paint Letter: ${currentLetter}`;
+            document.querySelector('.letter-title').textContent = `Paint Letter: ${currentLetter}`;
+            drawLetterOutline();
+        }
+
+        drawLetterOutline();
     </script>
 </body>
 </html>
