@@ -11,30 +11,53 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;padding:20px}
-     .back-btn{background:#fff;color:#A855F7;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;margin-bottom:20px;cursor:pointer;box-shadow:0 4px 0 #7E22CE}
-     .back-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #7E22CE}
-     .container{background:#FEFCE8;padding:20px;border-radius:30px;max-width:400px;margin:0 auto}
+       .back-btn{background:#fff;color:#A855F7;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;margin-bottom:20px;cursor:pointer;box-shadow:0 4px 0 #7E22CE}
+       .back-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #7E22CE}
+       .container{background:#FEFCE8;padding:20px;border-radius:30px;max-width:400px;margin:0 auto;overflow:hidden} /* 🔑 overflow:hidden add chesa */
         h1{color:#A855F7;font-weight:900;font-size:28px;text-align:center;margin-bottom:5px}
         p{color:#581C87;font-weight:700;text-align:center;margin-bottom:15px}
-     .canvas-wrapper{position:relative;width:320px;height:320px;margin:0 auto;border:4px solid #E9D5FF;border-radius:20px;background:#fff;overflow:hidden}
-        #canvas{position:absolute;top:0;left:0;touch-action:none;cursor:crosshair}
-     .controls{margin-top:15px;display:flex;gap:10px;justify-content:center}
-     .btn{color:#fff;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
-     .btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
-     .clear{background:#EF4444}
-     .save{background:#10B981}
-     .colors{margin-top:15px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-     .color{width:45px;height:45px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.2)}
-     .color.active{border:3px solid #000;transform:scale(1.15)}
+
+        /* 🔑 FIX 1: Wrapper responsive chesa */
+       .canvas-wrapper{
+            position:relative;
+            width:100%; /* 320px nunchi 100% ki marchanu */
+            max-width:320px; /* Max limit pettanu */
+            aspect-ratio: 1/1; /* Square maintain avthundi */
+            margin:0 auto;
+            border:4px solid #E9D5FF;
+            border-radius:20px;
+            background:#fff;
+            overflow:hidden
+        }
+
+        /* 🔑 FIX 2: Canvas full width */
+        #canvas{
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            touch-action:none;
+            cursor:crosshair
+        }
+
+       .controls{margin-top:15px;display:flex;gap:10px;justify-content:center}
+       .btn{color:#fff;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+       .btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+       .clear{background:#EF4444}
+       .save{background:#10B981}
+       .colors{margin-top:15px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+       .color{width:45px;height:45px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+       .color.active{border:3px solid #000;transform:scale(1.15)}
     </style>
 </head>
 <body>
     <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
     <div class="container">
         <h1>🐒 Free Draw</h1>
-       <div>Free drawing! Whatever you like 🎨</div>
+        <p>Free drawing! Whatever you like 🎨</p>
         <div class="canvas-wrapper">
-            <canvas id="canvas" width="320" height="320"></canvas>
+            <canvas id="canvas"></canvas> <!-- 🔑 width/height teesesanu -->
         </div>
         <div class="controls">
             <button class="btn clear" onclick="clearCanvas()">Clear</button>
@@ -46,9 +69,21 @@
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
+
+        // 🔑 FIX 3: Canvas size dynamic ga set chey
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        // Page load ayinappudu + resize ayinappudu run avthundi
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+
         let isDrawing = false;
         let currentColor = '#EF4444';
-        
+
         const colorList = ['#EF4444','#F97316','#EAB308','#10B981','#3B82F6','#8B5CF6','#EC4899','#000000'];
         const colorDiv = document.getElementById('colors');
         colorList.forEach(c => {
@@ -66,8 +101,10 @@
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
-            const x = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
-            const y = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = ((e.touches? e.touches[0].clientX : e.clientX) - rect.left) * scaleX;
+            const y = ((e.touches? e.touches[0].clientY : e.clientY) - rect.top) * scaleY;
             return {x, y};
         }
 
@@ -93,7 +130,7 @@
 
         function stopDraw() { isDrawing = false; }
         function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-        
+
         function saveImage() {
             const link = document.createElement('a');
             link.download = 'juju-drawing.png';
