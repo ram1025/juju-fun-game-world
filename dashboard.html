@@ -148,7 +148,7 @@
     </button>
     <div class="sidebar" id="sidebar">
         <button class="sidebar-btn" onclick="location.href='./profile.html'">👤 Profile</button>
-        <button class="sidebar-btn" onclick="logout()" style="color:#EF4444;">🚪 Logout</button>
+        <button class="sidebar-btn" onclick="exitApp()" style="color:#EF4444;">🚪 Exit App</button>
     </div>
     <div class="profile-section">
         <img src="./icon-192.png" class="dashboard-avatar" id="dashboardAvatar">
@@ -195,8 +195,8 @@
             }
         });
         function logout() {
-            localStorage.removeItem('jujuLoggedIn');
-            location.href = './index.html';
+    localStorage.removeItem('jujuLoggedIn');
+    location.href = './index.html';
         }
     </script>
 </body>
