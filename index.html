@@ -122,14 +122,16 @@
     </div>
 
     <div class="container">
-        <div class="welcome-view" id="welcomeView">
-            <div class="avatar-bounce">
-                <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
-            </div>
-            <div class="welcome-name" id="welcomeName">Juju</div>
-            <div class="welcome-text">Welcome back! 🎉</div>
-            <button class="btn play-btn" onclick="location.href='./dashboard.html'">Touch to Play! 🎮</button>
-        </div>
+        // index.html lo welcome-view div lo button add chey
+<div class="welcome-view" id="welcomeView">
+    <div class="avatar-bounce">
+        <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
+    </div>
+    <div class="welcome-name" id="welcomeName">Juju</div>
+    <div class="welcome-text">Welcome back! 🎉</div>
+    <button class="btn play-btn" onclick="location.href='./dashboard.html'">Touch to Play! 🎮</button>
+    <button class="btn install-btn" id="welcomeInstallBtn" style="display:none;">📱 Install Juju App</button>
+</div>
 
         <div class="login-view" id="loginView">
             <h1>🦁 Juju Fun World</h1>
@@ -156,31 +158,46 @@
         }
 
         setTimeout(() => {
-            const savedName = localStorage.getItem('jujuName');
-            const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
-            
-            if (savedName) {
-                document.getElementById('welcomeView').style.display = 'block';
-                document.getElementById('loginView').style.display = 'none';
-                document.getElementById('welcomeName').textContent = savedName;
-                document.getElementById('welcomeAvatar').src = savedPic;
-            } else {
-                document.getElementById('welcomeView').style.display = 'none';
-                document.getElementById('loginView').style.display = 'block';
-                document.getElementById('avatarPreview').innerHTML = `<img src="${savedPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-                if (!isInstalled()) {
-                    document.getElementById('installBtn').style.display = 'block';
-                }
-            }
-        }, 2000);
+    const savedName = localStorage.getItem('jujuName');
+    const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (!isInstalled()) {
-                document.getElementById('installBtn').style.display = 'block';
-            }
-        });
+    if (savedName) {
+        document.getElementById('welcomeView').style.display = 'block';
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('welcomeName').textContent = savedName;
+        document.getElementById('welcomeAvatar').src = savedPic;
+
+        // App install kakapothe Install button chupinchu
+        if (!isInstalled()) {
+            document.getElementById('welcomeInstallBtn').style.display = 'block';
+        }
+    } else {
+        document.getElementById('welcomeView').style.display = 'none';
+        document.getElementById('loginView').style.display = 'block';
+        if (!isInstalled()) {
+            document.getElementById('installBtn').style.display = 'block';
+        }
+    }
+}, 2000);
+
+// Install button click handler - welcome page ki kuda
+document.getElementById('welcomeInstallBtn').addEventListener('click', async () => {
+    if(deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        if(outcome === 'accepted') {
+            document.getElementById('welcomeInstallBtn').style.display = 'none';
+        }
+    } else {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if(isIOS) {
+            alert('iPhone: Share button 📤 → Add to Home Screen');
+        } else {
+            alert('Browser Menu ⋮ → Install app');
+        }
+    }
+});
 
         document.getElementById('installBtn').addEventListener('click', async () => {
             if(deferredPrompt) {
