@@ -16,12 +16,12 @@
             padding: 20px;
             overscroll-behavior: none;
         }
-  .header {
+ .header {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
         }
-  .back-btn {
+ .back-btn {
             background: white;
             border: none;
             padding: 12px 20px;
@@ -31,28 +31,28 @@
             color: #F97316;
             cursor: pointer;
         }
-  .container {
+ .container {
             background: #FEF3C7;
             padding: 25px;
             border-radius: 30px;
             max-width: 400px;
             margin: 0 auto;
         }
-  .letter-title {
+ .letter-title {
             font-size: 28px;
             font-weight: 900;
             color: #F97316;
             text-align: center;
             margin-bottom: 8px;
         }
-  .letter-sub {
+ .letter-sub {
             font-size: 16px;
             font-weight: 700;
             color: #92400E;
             text-align: center;
             margin-bottom: 15px;
         }
-  .canvas-wrap {
+ .canvas-wrap {
             background: white;
             border: 3px solid #FDBA74;
             border-radius: 20px;
@@ -66,12 +66,12 @@
             touch-action: none;
             display: block;
         }
-  .controls {
+ .controls {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
         }
-  .ctrl-btn {
+ .ctrl-btn {
             flex: 1;
             padding: 14px;
             border: none;
@@ -80,16 +80,16 @@
             font-weight: 800;
             cursor: pointer;
         }
-  .clear-btn { background: #EF4444; color: white; }
-  .back-btn-2 { background: #3B82F6; color: white; }
-  .next-btn { background: #10B981; color: white; }
-  .colors {
+ .clear-btn { background: #EF4444; color: white; }
+ .back-btn-2 { background: #3B82F6; color: white; }
+ .next-btn { background: #10B981; color: white; }
+ .colors {
             display: flex;
             justify-content: center;
             gap: 10px;
             flex-wrap: wrap;
         }
-  .color {
+ .color {
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -97,7 +97,7 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-  .color.active {
+ .color.active {
             border: 4px solid #1F2937;
             transform: scale(1.15);
         }
@@ -110,7 +110,7 @@
 
     <div class="container">
         <div class="letter-title">Paint Letter: <span id="letterText">A</span></div>
-        <div class="letter-sub">Letter meda draw chey 🦁</div>
+        <div class="letter-sub">Letter lopala color chey 🦁</div>
 
         <div class="canvas-wrap">
             <canvas id="canvas"></canvas>
@@ -153,16 +153,18 @@
 
         function drawLetter() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Letter outline - bold black stroke
+            // Step 1: Letter shape draw chey
+            ctx.save();
             ctx.font = `bold ${canvas.width * 0.65}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.strokeStyle = '#1F2937';
-            ctx.lineWidth = 8;
-            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.fillStyle = '#1F2937';
+            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
+
+            // Step 2: Composite mode - letter lopala matrame draw avthundi
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.restore();
 
             document.getElementById('letterText').textContent = letters[letterIndex];
         }
@@ -202,10 +204,22 @@
             const pos = getPos(e);
             ctx.lineTo(pos.x, pos.y);
             ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 12;
+            ctx.lineWidth = 20;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();
+
+            // Letter outline malli pina draw chey
+            ctx.save();
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.font = `bold ${canvas.width * 0.65}px Nunito`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.strokeStyle = '#1F2937';
+            ctx.lineWidth = 8;
+            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.restore();
+            ctx.globalCompositeOperation = 'source-atop';
         }
 
         function stopDraw(e) {
