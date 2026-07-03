@@ -12,22 +12,37 @@
         .container{background:#fff;padding:20px;border-radius:30px;max-width:400px;margin:0 auto}
         h1{color:#2563EB;font-weight:900;font-size:32px;text-align:center;margin-bottom:20px}
         h1 span{background:#DBEAFE;color:#3B82F6;padding:4px 8px;border-radius:8px;font-size:18px;margin-left:8px}
-        .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-        .num-box{background:#DBEAFE;border:3px solid #93C5FD;border-radius:15px;padding:20px;text-align:center;cursor:pointer;transition:all .2s}
-        .num-box:active{transform:scale(.95);background:#BFDBFE}
-        .num{color:#1D4ED8;font-weight:900;font-size:28px}
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 10px;
+        }
+        .number-item {
+            background: white;
+            border: 3px solid #3B82F6;
+            border-radius: 15px;
+            padding: 20px 5px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #3B82F6;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
     <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
     <div class="container">
         <h1>Numbers 1-20 <span>1 2<br>3 4</span></h1>
-        <div class="grid" id="numGrid"></div>
+        <div class="numbers-grid" id="numGrid"></div>
     </div>
-
     <script>
         const grid = document.getElementById('numGrid');
-        
         function speak(text){
             if('speechSynthesis' in window){
                 window.speechSynthesis.cancel();
@@ -40,8 +55,8 @@
 
         for(let i=1; i<=20; i++){
             const box = document.createElement('div');
-            box.className = 'num-box';
-            box.innerHTML = `<div class="num">${i}</div>`;
+            box.className = 'number-item';
+            box.innerHTML = `<div>${i}</div>`;
             box.onclick = () => speak(i.toString());
             grid.appendChild(box);
         }
