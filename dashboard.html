@@ -151,12 +151,17 @@
         }
 
         // Update on back button
-        window.addEventListener('pageshow', () => {
-            const name = localStorage.getItem('jujuName') || 'Juju';
-            const pic = localStorage.getItem('jujuAvatar');
-            document.getElementById('nameText').textContent = name;
-            if(pic) document.getElementById('avatarImg').src = pic;
-        });
+        window.addEventListener('DOMContentLoaded', () => {
+    const savedName = localStorage.getItem('jujuName');
+    const savedPic = localStorage.getItem('jujuAvatar');
+    
+    if(savedName) {
+        document.querySelectorAll('.user-name').forEach(el => el.textContent = savedName);
+    }
+    if(savedPic) {
+        document.querySelectorAll('.user-avatar').forEach(el => el.src = savedPic);
+    }
+});
     </script>
 </body>
 </html>
