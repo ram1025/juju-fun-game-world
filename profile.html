@@ -186,30 +186,50 @@
             }
         }
 
-        // Save all data
-        function saveProfile() {
-            const fullName = document.getElementById('fullName').value.trim();
-            
-            if (!fullName) {
-                alert('Please enter Full Name');
-                return;
-            }
+            // Global variable for image
+    let currentPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
-            // Save to localStorage
-            localStorage.setItem('playerName', fullName); // For dashboard
-            localStorage.setItem('playerPic', profileImage); // For dashboard
-            localStorage.setItem('fullName', fullName);
-            localStorage.setItem('nickName', document.getElementById('nickName').value.trim());
-            localStorage.setItem('dob', document.getElementById('dob').value);
-            localStorage.setItem('email', document.getElementById('email').value.trim());
-            localStorage.setItem('phone', document.getElementById('phone').value.trim());
-            localStorage.setItem('bloodGroup', document.getElementById('bloodGroup').value);
-            localStorage.setItem('fatherName', document.getElementById('fatherName').value.trim());
-            localStorage.setItem('motherName', document.getElementById('motherName').value.trim());
-
-            alert('Profile saved successfully! 🎉');
-            location.href = './dashboard.html';
+    // Load ayyappudu fill chey
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('fullName').value = localStorage.getItem('jujuName') || '';
+        document.getElementById('email').value = localStorage.getItem('jujuEmail') || '';
+        document.getElementById('phone').value = localStorage.getItem('jujuPhone') || '';
+        document.getElementById('nickName').value = localStorage.getItem('jujuNickName') || '';
+        document.getElementById('dob').value = localStorage.getItem('jujuDob') || '';
+        document.getElementById('bloodGroup').value = localStorage.getItem('jujuBloodGroup') || '';
+        document.getElementById('fatherName').value = localStorage.getItem('jujuFatherName') || '';
+        document.getElementById('motherName').value = localStorage.getItem('jujuMotherName') || '';
+        
+        const pic = localStorage.getItem('jujuAvatar');
+        if(pic) {
+            document.getElementById('profilePic').src = pic;
+            currentPic = pic;
         }
+    });
+
+    // Save all data
+    function saveProfile() {
+        const fullName = document.getElementById('fullName').value.trim();
+        
+        if (!fullName) {
+            alert('Please enter Full Name');
+            return;
+        }
+
+        // Save to localStorage - juju prefix tho
+        localStorage.setItem('jujuName', fullName);
+        localStorage.setItem('jujuAvatar', currentPic);
+        localStorage.setItem('jujuEmail', document.getElementById('email').value);
+        localStorage.setItem('jujuPhone', document.getElementById('phone').value);
+        localStorage.setItem('jujuNickName', document.getElementById('nickName').value);
+        localStorage.setItem('jujuDob', document.getElementById('dob').value);
+        localStorage.setItem('jujuBloodGroup', document.getElementById('bloodGroup').value);
+        localStorage.setItem('jujuFatherName', document.getElementById('fatherName').value);
+        localStorage.setItem('jujuMotherName', document.getElementById('motherName').value);
+
+        alert('Profile saved successfully! 🎉');
+        location.href = './dashboard.html';
+    }
     </script>
 </body>
 </html>
