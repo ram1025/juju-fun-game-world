@@ -50,33 +50,39 @@
         </div>
     </div>
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let painting = false;
-        let currentColor = '#EF4444';
-        let currentLetter = 'A';
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-        let letterIndex = 0;
+        const canvas = document.getElementById('paintCanvas');
+const ctx = canvas.getContext('2d');
+let currentColor = '#FF5733';
 
-        function setupCanvas() {
-            canvas.width = 300;
-            canvas.height = 300;
-            loadLetter(currentLetter);
-        }
+function selectColor(color) {
+    currentColor = color;
+    document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+}
 
-        function loadLetter(letter) {
-            currentLetter = letter;
-            document.getElementById('letterText').textContent = letter;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+canvas.addEventListener('click', function(e) {
+    ctx.fillStyle = currentColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Letter A outline malli draw chey
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 8;
+    ctx.font = 'bold 200px Nunito';
+    ctx.textAlign = 'center';
+    ctx.strokeText('A', canvas.width/2, canvas.height/2 + 70);
+});
 
-            // Draw dark black outline
-            ctx.font = 'bold 220px Nunito';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 8;
-            ctx.strokeText(letter, canvas.width/2, canvas.height/2);
-        }
+// Or flood fill kavali ante - simple way:
+canvas.addEventListener('click', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    ctx.fillStyle = currentColor;
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, Math.PI * 2);
+    ctx.fill();
+});
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
