@@ -153,43 +153,8 @@
     </div>
 
     <script>
-        let profileImage = './icon-192.png';
-
-        // Load saved data
-        window.addEventListener('load', () => {
-            const savedPic = localStorage.getItem('playerPic') || './icon-192.png';
-            const savedName = localStorage.getItem('playerName') || '';
-            
-            document.getElementById('profilePic').src = savedPic;
-            document.getElementById('fullName').value = localStorage.getItem('fullName') || savedName;
-            document.getElementById('nickName').value = localStorage.getItem('nickName') || '';
-            document.getElementById('dob').value = localStorage.getItem('dob') || '';
-            document.getElementById('email').value = localStorage.getItem('email') || '';
-            document.getElementById('phone').value = localStorage.getItem('phone') || '';
-            document.getElementById('bloodGroup').value = localStorage.getItem('bloodGroup') || '';
-            document.getElementById('fatherName').value = localStorage.getItem('fatherName') || '';
-            document.getElementById('motherName').value = localStorage.getItem('motherName') || '';
-            
-            profileImage = savedPic;
-        });
-
-        // Preview pic
-        function previewPic(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profileImage = e.target.result;
-                    document.getElementById('profilePic').src = profileImage;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-            // Global variable for image
     let currentPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
-    // Load ayyappudu fill chey
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('fullName').value = localStorage.getItem('jujuName') || '';
         document.getElementById('email').value = localStorage.getItem('jujuEmail') || '';
@@ -199,23 +164,31 @@
         document.getElementById('bloodGroup').value = localStorage.getItem('jujuBloodGroup') || '';
         document.getElementById('fatherName').value = localStorage.getItem('jujuFatherName') || '';
         document.getElementById('motherName').value = localStorage.getItem('jujuMotherName') || '';
-        
-        const pic = localStorage.getItem('jujuAvatar');
-        if(pic) {
-            document.getElementById('profilePic').src = pic;
-            currentPic = pic;
-        }
+        document.getElementById('profilePic').src = localStorage.getItem('jujuAvatar') || './icon-192.png';
+
+        // Camera button hide chey profile page lo
+        document.querySelector('.camera-btn').style.display = 'none';
     });
 
-    // Save all data
+    function previewPic(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentPic = e.target.result;
+                document.getElementById('profilePic').src = currentPic;
+                localStorage.setItem('jujuAvatar', currentPic);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
     function saveProfile() {
         const fullName = document.getElementById('fullName').value.trim();
-        
         if (!fullName) {
             alert('Please enter Full Name');
             return;
         }
-
         // Save to localStorage - juju prefix tho
         localStorage.setItem('jujuName', fullName);
         localStorage.setItem('jujuAvatar', currentPic);
@@ -226,10 +199,9 @@
         localStorage.setItem('jujuBloodGroup', document.getElementById('bloodGroup').value);
         localStorage.setItem('jujuFatherName', document.getElementById('fatherName').value);
         localStorage.setItem('jujuMotherName', document.getElementById('motherName').value);
-
         alert('Profile saved successfully! 🎉');
         location.href = './dashboard.html';
     }
-    </script>
+</script>
 </body>
 </html>
