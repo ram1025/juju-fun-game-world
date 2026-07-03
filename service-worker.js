@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v25';
+const CACHE_NAME = 'juju-fun-world-v26';
 const urlsToCache = [
     './',
     './index.html',
