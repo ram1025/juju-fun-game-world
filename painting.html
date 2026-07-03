@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trace A-Z - Juju Fun World</title>
+    <title>Painting - Juju Fun World</title>
     <link rel="icon" type="image/png" href="./icon-192.png">
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3B82F6">
@@ -11,83 +11,85 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px}
-       .back-btn{background:#fff;color:#F97316;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;margin-bottom:20px;cursor:pointer;box-shadow:0 4px 0 #EA580C}
-       .back-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #EA580C}
-       .container{background:#FEFCE8;padding:20px;border-radius:30px;max-width:400px;margin:0 auto}
+        .back-btn{background:#fff;color:#F97316;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;margin-bottom:20px;cursor:pointer;box-shadow:0 4px 0 #EA580C}
+        .back-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #EA580C}
+        .container{background:#FEFCE8;padding:20px;border-radius:30px;max-width:400px;margin:0 auto}
         h1{color:#F97316;font-weight:900;font-size:28px;text-align:center;margin-bottom:5px}
         p{color:#92400E;font-weight:700;text-align:center;margin-bottom:15px}
-       .canvas-wrapper{position:relative;width:320px;height:320px;margin:0 auto;border:4px solid #FED7AA;border-radius:20px;background:#fff;overflow:hidden}
-        #bgLetter{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:220px;font-weight:900;color:#E5E7EB;user-select:none;pointer-events:none;font-family:'Nunito',sans-serif}
-        #canvas{position:absolute;top:0;left:0;touch-action:none;cursor:crosshair}
-       .controls{margin-top:15px;display:flex;gap:10px;justify-content:center}
-       .btn{color:#fff;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
-       .btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
-       .clear{background:#EF4444}
-       .back{background:#3B82F6}
-       .next{background:#10B981}
-       .colors{margin-top:15px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-       .color{width:45px;height:45px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.2)}
-       .color.active{border:3px solid #000;transform:scale(1.15)}
+        #canvas{border:4px solid #FED7AA;border-radius:20px;background:#fff;display:block;margin:0 auto;touch-action:none}
+        .controls{margin-top:15px;display:flex;gap:10px;justify-content:center}
+        .btn{color:#fff;border:none;padding:12px 24px;border-radius:15px;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+        .btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+        .clear{background:#EF4444}
+        .back{background:#3B82F6}
+        .next{background:#10B981}
+        .colors{margin-top:15px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+        .color-btn{width:45px;height:45px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+        .color-btn.active{border:3px solid #000;transform:scale(1.15)}
     </style>
 </head>
 <body>
     <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
     <div class="container">
-        <h1>Trace Letter: <span id="currentLetter">A</span></h1>
-        <p>Finger tho letter meda draw chey 🦁</p>
-        <div class="canvas-wrapper">
-            <div id="bgLetter">A</div>
-            <canvas id="canvas" width="320" height="320"></canvas>
-        </div>
+        <h1>Paint Letter: <span id="letterText">A</span></h1>
+        <p>Letter meda draw chey 🦁</p>
+        <canvas id="canvas" width="300" height="300"></canvas>
         <div class="controls">
             <button class="btn clear" onclick="clearCanvas()">Clear</button>
             <button class="btn back" onclick="prevLetter()">← Back</button>
             <button class="btn next" onclick="nextLetter()">Next →</button>
         </div>
-        <div class="colors" id="colors"></div>
+        <div class="colors">
+            <button class="color-btn" style="background:#EF4444" onclick="setColor('#EF4444', event)"></button>
+            <button class="color-btn" style="background:#F97316" onclick="setColor('#F97316', event)"></button>
+            <button class="color-btn" style="background:#EAB308" onclick="setColor('#EAB308', event)"></button>
+            <button class="color-btn" style="background:#10B981" onclick="setColor('#10B981', event)"></button>
+            <button class="color-btn" style="background:#3B82F6" onclick="setColor('#3B82F6', event)"></button>
+            <button class="color-btn" style="background:#8B5CF6" onclick="setColor('#8B5CF6', event)"></button>
+            <button class="color-btn" style="background:#EC4899" onclick="setColor('#EC4899', event)"></button>
+        </div>
     </div>
-
     <script>
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-        let currentIndex = 0;
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const bgLetter = document.getElementById('bgLetter');
-        const currentLetterSpan = document.getElementById('currentLetter');
-        let isDrawing = false;
+        let painting = false;
         let currentColor = '#EF4444';
-        
-        const colorList = ['#EF4444','#F97316','#EAB308','#10B981','#3B82F6','#8B5CF6','#EC4899'];
-        const colorDiv = document.getElementById('colors');
-        colorList.forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'color';
-            div.style.background = c;
-            if(c === currentColor) div.classList.add('active');
-            div.onclick = () => {
-                currentColor = c;
-                document.querySelectorAll('.color').forEach(el => el.classList.remove('active'));
-                div.classList.add('active');
-            };
-            colorDiv.appendChild(div);
-        });
+        let currentLetter = 'A';
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        let letterIndex = 0;
 
-        function loadLetter() {
-            const letter = letters[currentIndex];
-            bgLetter.textContent = letter;
-            currentLetterSpan.textContent = letter;
-            clearCanvas();
+        function setupCanvas() {
+            canvas.width = 300;
+            canvas.height = 300;
+            loadLetter(currentLetter);
+        }
+
+        function loadLetter(letter) {
+            currentLetter = letter;
+            document.getElementById('letterText').textContent = letter;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw dark black outline
+            ctx.font = 'bold 220px Nunito';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 8;
+            ctx.strokeText(letter, canvas.width/2, canvas.height/2);
         }
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
-            const x = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
-            const y = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
-            return {x, y};
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            return {
+                x: ((e.clientX || e.touches[0].clientX) - rect.left) * scaleX,
+                y: ((e.clientY || e.touches[0].clientY) - rect.top) * scaleY
+            };
         }
 
         function startDraw(e) {
-            isDrawing = true;
+            painting = true;
             const pos = getPos(e);
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
@@ -95,30 +97,64 @@
         }
 
         function draw(e) {
-            if (!isDrawing) return;
+            if (!painting) return;
+            e.preventDefault();
             const pos = getPos(e);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 15;
+
+            // Clip to letter
+            ctx.save();
+            ctx.font = 'bold 220px Nunito';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.beginPath();
+            ctx.rect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'transparent';
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Draw letter path for clipping
+            ctx.beginPath();
+            ctx.fillText(currentLetter, canvas.width/2, canvas.height/2);
+            ctx.clip();
+
+            // Draw stroke inside clip
+            ctx.lineWidth = 30;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
+            ctx.strokeStyle = currentColor;
+            ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
-            e.preventDefault();
+            ctx.restore();
+
+            // Redraw outline on top
+            loadLetter(currentLetter);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
         }
 
-        function stopDraw() { isDrawing = false; }
-        function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-        function nextLetter() { 
-            if(currentIndex < letters.length - 1) {
-                currentIndex++; 
-                loadLetter(); 
-            }
+        function stopDraw() {
+            painting = false;
+            ctx.beginPath();
         }
-        function prevLetter() { 
-            if(currentIndex > 0) {
-                currentIndex--; 
-                loadLetter(); 
-            }
+
+        function clearCanvas() {
+            loadLetter(currentLetter);
+        }
+
+        function nextLetter() {
+            letterIndex = (letterIndex + 1) % letters.length;
+            loadLetter(letters[letterIndex]);
+        }
+
+        function prevLetter() {
+            letterIndex = (letterIndex - 1 + letters.length) % letters.length;
+            loadLetter(letters[letterIndex]);
+        }
+
+        function setColor(color, e) {
+            currentColor = color;
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
         }
 
         canvas.addEventListener('mousedown', startDraw);
@@ -128,7 +164,7 @@
         canvas.addEventListener('touchmove', draw);
         canvas.addEventListener('touchend', stopDraw);
 
-        loadLetter();
+        setupCanvas();
 
         if('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./service-worker.js');
