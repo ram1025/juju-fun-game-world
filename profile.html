@@ -94,10 +94,18 @@
             border-color: #3B82F6;
         }
        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.row > div {
+    display: flex;
+    flex-direction: column;
+}
+.row label {
+    margin-bottom: 8px!important;
+}
        .save-btn {
             width: 100%;
             background: linear-gradient(135deg, #10B981, #059669);
