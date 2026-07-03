@@ -15,13 +15,13 @@
             min-height: 100vh;
             padding: 20px;
         }
-      .header {
+  .header {
             display: flex;
             align-items: center;
             gap: 15px;
             margin-bottom: 20px;
         }
-      .back-btn {
+  .back-btn {
             background: white;
             border: none;
             width: 45px;
@@ -31,31 +31,31 @@
             font-weight: 900;
             cursor: pointer;
         }
-      .header-title {
+  .header-title {
             font-size: 28px;
             font-weight: 900;
             color: white;
         }
-      .container {
+  .container {
             background: white;
             padding: 25px 20px;
             border-radius: 30px;
             max-width: 400px;
             margin: 0 auto;
         }
-      .title {
+  .title {
             font-size: 28px;
             font-weight: 900;
             color: #3B82F6;
             text-align: center;
             margin-bottom: 20px;
-      }
-      .grid {
+        }
+  .grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
-      .num-btn {
+  .num-btn {
             aspect-ratio: 1;
             background: white;
             border: 3px solid #3B82F6;
@@ -69,7 +69,7 @@
             align-items: center;
             justify-content: center;
         }
-      .num-btn:active {
+  .num-btn:active {
             transform: scale(0.9);
             background: #3B82F6;
             color: white;
@@ -89,6 +89,16 @@
 
     <script>
         const grid = document.getElementById('numbersGrid');
+        let speechReady = false;
+
+        // Unlock speech on first tap - iOS/Android fix
+        document.body.addEventListener('click', () => {
+            if (!speechReady) {
+                speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+                speechReady = true;
+            }
+        }, { once: true });
+
         for(let i = 1; i <= 20; i++) {
             const btn = document.createElement('button');
             btn.className = 'num-btn';
@@ -98,8 +108,13 @@
         }
 
         function playSound(num) {
-            const audio = new Audio(`./assets/audio/number-${num}.mp3`);
-            audio.play().catch(e => console.log('Audio error:', e));
+            speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(num.toString());
+            msg.lang = 'en-US';
+            msg.rate = 0.85;
+            msg.pitch = 1.1;
+            msg.volume = 1;
+            speechSynthesis.speak(msg);
         }
     </script>
 </body>
