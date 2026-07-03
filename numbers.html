@@ -3,69 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numbers - Juju Fun World</title>
+    <title>Numbers 1-20 - Juju Fun World</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#3B82F6">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px}
-        .back-btn{background:#fff;color:#F97316;border:none;padding:10px 20px;border-radius:15px;font-weight:800;font-size:16px;margin-bottom:20px;cursor:pointer}
-        .container{background:#fff;padding:20px;border-radius:30px;max-width:400px;margin:0 auto}
-        h1{color:#2563EB;font-weight:900;font-size:32px;text-align:center;margin-bottom:20px}
-        h1 span{background:#DBEAFE;color:#3B82F6;padding:4px 8px;border-radius:8px;font-size:18px;margin-left:8px}
-
-       .numbers-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    padding: 20px;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-.number-btn {
-    aspect-ratio: 1;
-    min-width: 0; /* Important - overflow fix */
-    font-size: 20px;
-}
-        .number-item {
-            background: white;
-            border: 3px solid #3B82F6;
-            border-radius: 15px;
-            padding: 20px 5px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 900;
-            color: #3B82F6;
-            aspect-ratio: 1;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #3B82F6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+      .header {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+      .back-btn {
+            background: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+      .header-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+        }
+      .container {
+            background: white;
+            padding: 25px;
+            border-radius: 30px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+      .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+      .num-btn {
+            aspect-ratio: 1;
+            background: #EFF6FF;
+            border: 3px solid #3B82F6;
+            border-radius: 15px;
+            font-size: 28px;
+            font-weight: 900;
+            color: #3B82F6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+      .num-btn:active {
+            transform: scale(0.9);
+            background: #3B82F6;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
-    <div class="container">
-        <h1>Numbers 1-20 <span>1 2<br>3 4</span></h1>
-        <div class="numbers-grid" id="numGrid"></div>
+    <div class="header">
+        <button class="back-btn" onclick="location.href='./dashboard.html'">←</button>
+        <div class="header-title">Numbers 1-20</div>
     </div>
+
+    <div class="container">
+        <div class="grid" id="numbersGrid"></div>
+    </div>
+
     <script>
-        const grid = document.getElementById('numGrid');
-        function speak(text){
-            if('speechSynthesis' in window){
-                window.speechSynthesis.cancel();
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.rate = 0.9;
-                msg.pitch = 1.2;
-                window.speechSynthesis.speak(msg);
-            }
+        const grid = document.getElementById('numbersGrid');
+        for(let i = 1; i <= 20; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'num-btn';
+            btn.textContent = i;
+            btn.onclick = () => playSound(i);
+            grid.appendChild(btn);
         }
 
-        for(let i=1; i<=20; i++){
-            const box = document.createElement('div');
-            box.className = 'number-item';
-            box.innerHTML = `<div>${i}</div>`;
-            box.onclick = () => speak(i.toString());
-            grid.appendChild(box);
+        function playSound(num) {
+            const audio = new Audio(`./assets/audio/number-${num}.mp3`);
+            audio.play().catch(e => console.log('Audio error:', e));
         }
     </script>
 </body>
