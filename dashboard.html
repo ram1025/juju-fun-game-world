@@ -183,9 +183,9 @@
         });
 
         function logout() {
-            localStorage.clear();
-            location.href = './index.html';
-        }
+    localStorage.removeItem('jujuLoggedIn'); // Name/Avatar delete avvadhu
+    location.href = './index.html';
+}
     </script>
 </body>
 </html>
