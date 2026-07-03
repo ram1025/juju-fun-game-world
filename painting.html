@@ -152,28 +152,34 @@
         window.addEventListener('resize', initCanvas);
 
         function drawLetter() {
+    ctx.function drawLetter() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // White background
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // HOLLOW LETTER - STROKE ONLY
     ctx.save();
     ctx.font = `bold ${canvas.width * 0.65}px Nunito`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.strokeStyle = '#1F2937'; // Black outline
+
+    // 1. MUNDU WHITE THO FILL CHEY - idhe key 🔑
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
+
+    // 2. TARVATHA BLACK OUTLINE
+    ctx.strokeStyle = '#1F2937';
     ctx.lineWidth = 12;
     ctx.lineJoin = 'round';
     ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
 
-    // Color letter lopale undali
+    // 3. Color lopale undali
     ctx.globalCompositeOperation = 'source-atop';
     ctx.restore();
 
     document.getElementById('letterText').textContent = letters[letterIndex];
-        }
+                                }
 
         function setColor(color, el) {
             currentColor = color;
