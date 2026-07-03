@@ -214,13 +214,16 @@
     if (!drawing) return;
     e.preventDefault();
     const pos = getPos(e);
+    
+    ctx.globalCompositeOperation = 'source-atop'; // <-- EE LINE ADD CHEY 🔑
+    
     ctx.lineTo(pos.x, pos.y);
     ctx.strokeStyle = currentColor;
     ctx.lineWidth = 20;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.stroke();
-} // <-- ikkada close chey
+        }
 
         function stopDraw(e) {
             if (e) e.preventDefault();
