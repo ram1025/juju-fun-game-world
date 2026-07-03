@@ -48,7 +48,9 @@
             z-index: 99;
             padding: 80px 20px 20px;
         }
-        .sidebar.active { transform: translateX(0); }
+        .sidebar.active {
+            transform: translateX(0);
+        }
         .sidebar-btn {
             width: 100%;
             text-align: left;
@@ -61,18 +63,20 @@
             margin-bottom: 10px;
             cursor: pointer;
         }
-        .profile-section { text-align: center; padding: 40px 20px 20px; }
-        .avatar {
-            width: 100px;
-            height: 100px;
+        .profile-section {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+        .dashboard-avatar {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            border: 5px solid white;
+            border: 3px solid white;
             margin: 0 auto 15px;
             object-fit: cover;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        .name-text {
-            font-size: 32px;
+        .dashboard-name {
+            font-size: 24px;
             font-weight: 900;
             color: white;
             margin-bottom: 5px;
@@ -105,7 +109,9 @@
             transition: all 0.2s;
             box-shadow: 0 6px 15px rgba(0,0,0,0.2);
         }
-        .card:active { transform: scale(0.95); }
+        .card:active {
+            transform: scale(0.95);
+        }
         .card-icon {
             width: 60px;
             height: 60px;
@@ -122,10 +128,18 @@
             font-weight: 900;
             color: white;
         }
-        .card-pink { background: linear-gradient(135deg, #EC4899, #F472B6); }
-        .card-blue { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
-        .card-orange { background: linear-gradient(135deg, #F97316, #FB923C); }
-        .card-purple { background: linear-gradient(135deg, #A855F7, #C084FC); }
+        .card-pink {
+            background: linear-gradient(135deg, #EC4899, #F472B6);
+        }
+        .card-blue {
+            background: linear-gradient(135deg, #3B82F6, #60A5FA);
+        }
+        .card-orange {
+            background: linear-gradient(135deg, #F97316, #FB923C);
+        }
+        .card-purple {
+            background: linear-gradient(135deg, #A855F7, #C084FC);
+        }
     </style>
 </head>
 <body>
@@ -137,43 +151,41 @@
         <button class="sidebar-btn" onclick="logout()" style="color:#EF4444;">🚪 Logout</button>
     </div>
     <div class="profile-section">
-        <img src="./icon-192.png" class="avatar" id="avatarImg" alt="Avatar">
-        <div class="name-text" id="nameText">Juju</div>
-        <div class="nick-text">Set your Nick Name</div>
-        <div class="title-text">Choose Your Adventure!</div>
-    </div>
-    <div class="grid">
-        <div class="card card-pink" onclick="location.href='./alphabets.html'">
-            <div class="card-icon">abc</div>
-            <div class="card-title">Alphabets</div>
-        </div>
-        <div class="card card-blue" onclick="location.href='./numbers.html'">
-            <div class="card-icon">12<br>34</div>
-            <div class="card-title">Numbers</div>
-        </div>
-        <div class="card card-orange" onclick="location.href='./painting.html'">
-            <div class="card-icon">🎨</div>
-            <div class="card-title">Painting</div>
-        </div>
-        <div class="card card-purple" onclick="location.href='./free-draw.html'">
-            <div class="card-icon">🐒</div>
-            <div class="card-title">Unko Draw</div>
+        <img src="./icon-192.png" class="dashboard-avatar" id="dashboardAvatar">
+        <div class="dashboard-name" id="dashboardName">JUJU</div>
+        <div class="nick-text">Choose Your Adventure! 🎮</div>
+        <div class="grid">
+            <div class="card card-pink" onclick="location.href='./alphabets.html'">
+                <div class="card-icon">abc</div>
+                <div class="card-title">Alphabets</div>
+            </div>
+            <div class="card card-blue" onclick="location.href='./numbers.html'">
+                <div class="card-icon">12<br>34</div>
+                <div class="card-title">Numbers</div>
+            </div>
+            <div class="card card-orange" onclick="location.href='./painting.html'">
+                <div class="card-icon">🎨</div>
+                <div class="card-title">Painting</div>
+            </div>
+            <div class="card card-purple" onclick="location.href='./free-draw.html'">
+                <div class="card-icon">🐒</div>
+                <div class="card-title">Unko Draw</div>
+            </div>
         </div>
     </div>
 
     <script>
-        window.addEventListener('load', () => {
-            const savedName = localStorage.getItem('jujuName') || 'Juju';
+        window.addEventListener('DOMContentLoaded', () => {
             const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
+            const savedName = localStorage.getItem('jujuName') || 'JUJU';
 
-            document.getElementById('nameText').textContent = savedName;
-            document.getElementById('avatarImg').src = savedPic;
+            document.getElementById('dashboardAvatar').src = savedPic;
+            document.getElementById('dashboardName').textContent = savedName;
         });
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
-
         document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('sidebar');
             const hamburger = document.querySelector('.hamburger');
@@ -181,11 +193,10 @@
                 sidebar.classList.remove('active');
             }
         });
-
         function logout() {
-    localStorage.removeItem('jujuLoggedIn'); // Name/Avatar delete avvadhu
-    location.href = './index.html';
-}
+            localStorage.removeItem('jujuLoggedIn');
+            location.href = './index.html';
+        }
     </script>
 </body>
 </html>
