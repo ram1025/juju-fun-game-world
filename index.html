@@ -209,27 +209,27 @@
         });
 
         function previewImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    currentPic = e.target.result;
-                    document.getElementById('avatarPreview').innerHTML = `<img src="${currentPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-                };
-                reader.readAsDataURL(file);
-            }
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentPic = e.target.result;
+            document.getElementById('avatarPreview').innerHTML = `<img src="${currentPic}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
         }
+        reader.readAsDataURL(file);
+    }
+}
 
-        function saveLogin() {
-            const name = document.getElementById('nameInput').value.trim();
-            if (!name) {
-                alert('Please enter your name');
-                return;
-            }
-            localStorage.setItem('jujuName', name);
-            localStorage.setItem('jujuAvatar', currentPic);
-            location.href = './dashboard.html';
-        }
+function saveLogin() {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) {
+        alert('Please enter your name!');
+        return;
+    }
+    localStorage.setItem('jujuName', name);
+    localStorage.setItem('jujuAvatar', currentPic);
+    location.href = './dashboard.html';
+}
 
         if('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./service-worker.js');
