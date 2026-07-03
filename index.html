@@ -122,7 +122,7 @@
     </div>
 
     <div class="container">
-        // index.html lo welcome-view div lo button add chey
+        
 <div class="welcome-view" id="welcomeView">
     <div class="avatar-bounce">
         <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
@@ -150,35 +150,39 @@
     </div>
 
     <script>
-        let deferredPrompt;
+    let deferredPrompt;
 
-        function isInstalled() {
-            return window.matchMedia('(display-mode: standalone)').matches || 
-                   window.navigator.standalone === true;
-        }
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
 
-        setTimeout(() => {
-    const savedName = localStorage.getItem('jujuName');
-    const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
-
-    if (savedName) {
-        document.getElementById('welcomeView').style.display = 'block';
-        document.getElementById('loginView').style.display = 'none';
-        document.getElementById('welcomeName').textContent = savedName;
-        document.getElementById('welcomeAvatar').src = savedPic;
-
-        // Install button chupinchu if app install kaledu
-        if (!isInstalled()) {
-            document.getElementById('welcomeInstallBtn').style.display = 'block';
-        }
-    } else {
-        document.getElementById('welcomeView').style.display = 'none';
-        document.getElementById('loginView').style.display = 'block';
-        if (!isInstalled()) {
-            document.getElementById('installBtn').style.display = 'block';
-        }
+    function isInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches || 
+               window.navigator.standalone === true;
     }
-}, 2000);
+
+    setTimeout(() => {
+        const savedName = localStorage.getItem('jujuName');
+        const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
+
+        if (savedName) {
+            document.getElementById('welcomeView').style.display = 'block';
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('welcomeName').textContent = savedName;
+            document.getElementById('welcomeAvatar').src = savedPic;
+
+            if (!isInstalled()) {
+                document.getElementById('welcomeInstallBtn').style.display = 'block';
+            }
+        } else {
+            document.getElementById('welcomeView').style.display = 'none';
+            document.getElementById('loginView').style.display = 'block';
+            if (!isInstalled()) {
+                document.getElementById('installBtn').style.display = 'block';
+            }
+        }
+    }, 2000);
 
 // Welcome install button click
 document.getElementById('welcomeInstallBtn').addEventListener('click', async () => {
