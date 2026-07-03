@@ -187,13 +187,10 @@
         </div>
         <!-- CODE END -->
 
-        <button class="save-btn" onclick="saveProfile()">Save Profile ✅</button>
+                <button class="save-btn" onclick="saveProfile()">Save Profile ✅</button>
     </div>
 
     <script>
-        // nee JS code as it is
-    </script>
-</body>
         let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -205,6 +202,7 @@
             document.getElementById('phone').value = localStorage.getItem('jujuPhone') || '';
             document.getElementById('bloodGroup').value = localStorage.getItem('jujuBlood') || '';
             document.getElementById('fatherName').value = localStorage.getItem('jujuFather') || '';
+            document.getElementById('motherName').value = localStorage.getItem('jujuMother') || '';
         });
 
         function updateAvatar(event) {
@@ -233,6 +231,7 @@
             localStorage.setItem('jujuPhone', document.getElementById('phone').value.trim());
             localStorage.setItem('jujuBlood', document.getElementById('bloodGroup').value);
             localStorage.setItem('jujuFather', document.getElementById('fatherName').value.trim());
+            localStorage.setItem('jujuMother', document.getElementById('motherName').value.trim());
             alert('Profile saved! 🎉');
             location.href = './dashboard.html';
         }
