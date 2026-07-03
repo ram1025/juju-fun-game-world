@@ -51,6 +51,12 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             animation: bounce 2s infinite;
         }
+        .avatar-bounce img {
+    width: 100%; 
+    height: 100%; 
+    border-radius: 50%; 
+    object-fit: cover;
+}
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-20px); }
@@ -121,11 +127,13 @@
 
     <div class="container">
         <div class="welcome-view" id="welcomeView">
-            <img src="./icon-192.png" class="avatar-bounce" id="welcomeAvatar" alt="Avatar">
-            <div class="welcome-name" id="welcomeName">Juju</div>
-            <div class="welcome-text">Welcome back! 🎉</div>
-            <button class="btn play-btn" onclick="location.href='./dashboard.html'">Touch to Play! 🎮</button>
-        </div>
+    <div class="avatar-bounce">
+        <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
+    </div>
+    <div class="welcome-name" id="welcomeName">Juju</div>
+    <div class="welcome-text">Welcome back! 🎉</div>
+    <button class="btn play-btn" onclick="location.href='./dashboard.html'">Touch to Play! 🎮</button>
+</div>
 
         <div class="login-view" id="loginView">
             <h1>🦁 Juju Fun World</h1>
