@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v67'; // <-- Ikkada v number marchu
+const CACHE_NAME = 'juju-fun-world-v68'; // <-- Ikkada v number marchu
 const urlsToCache = [
     './',
     './index.html',
