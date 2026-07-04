@@ -41,37 +41,28 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=101');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=103');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
-        // KEY: All 10 Shapes = 100% Closed Paths
+        // KEY: Removed Cloud, Diamond, Moon. Added Hexagon, Pentagon, Cone
         const data = [
             {n:'Square', e:'🟥', path: (p,cx,cy,r) => {p.rect(cx-r,cy-r,r*2,r*2);}},
             {n:'Circle', e:'🔵', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2);}},
             {n:'Triangle', e:'🔺', path: (p,cx,cy,r) => {p.moveTo(cx,cy-r); p.lineTo(cx-r,cy+r); p.lineTo(cx+r,cy+r); p.closePath();}},
             {n:'Star', e:'⭐', path: (p,cx,cy,r) => {for(let i=0;i<10;i++){let ang=(18+i*36)*Math.PI/180; let rad=i%2?r*0.5:r; p.lineTo(cx+rad*Math.cos(ang), cy+rad*Math.sin(ang));} p.closePath();}},
             {n:'Heart', e:'❤️', path: (p,cx,cy,r) => {p.moveTo(cx,cy+r*0.3); p.bezierCurveTo(cx,cy-r*0.3, cx-r,cy-r*0.3, cx-r,cy+r*0.1); p.bezierCurveTo(cx-r,cy+r*0.5, cx,cy+r*0.8, cx,cy+r*0.8); p.bezierCurveTo(cx,cy+r*0.8, cx+r,cy+r*0.5, cx+r,cy+r*0.1); p.bezierCurveTo(cx+r,cy-r*0.3, cx,cy-r*0.3, cx,cy+r*0.3); p.closePath();}},
-            {n:'Sun', e:'☀️', path: (p,cx,cy,r) => { // Cartoon Sun
-                p.arc(cx,cy,r*0.6,0,Math.PI*2); p.closePath(); // Center
-                for(let i=0;i<8;i++){ // 8 Fat Rays
-                    let ang=i*Math.PI/4;
-                    p.moveTo(cx+r*0.6*Math.cos(ang),cy+r*0.6*Math.sin(ang));
-                    p.lineTo(cx+r*1.1*Math.cos(ang),cy+r*1.1*Math.sin(ang));
-                }
-            }},
-            {n:'Cloud', e:'☁️', path: (p,cx,cy,r) => { // Puffy Cloud
-                p.arc(cx-r*0.4,cy,r*0.4,0,Math.PI*2);
-                p.arc(cx,cy-r*0.2,r*0.5,0,Math.PI*2);
-                p.arc(cx+r*0.4,cy,r*0.4,0,Math.PI*2);
-            }},
+            {n:'Sun', e:'☀️', path: (p,cx,cy,r) => {p.arc(cx,cy,r*0.6,0,Math.PI*2); p.closePath(); for(let i=0;i<8;i++){let ang=i*Math.PI/4; p.moveTo(cx+r*0.6*Math.cos(ang),cy+r*0.6*Math.sin(ang)); p.lineTo(cx+r*1.1*Math.cos(ang),cy+r*1.1*Math.sin(ang));}}},
             {n:'Rectangle', e:'🟫', path: (p,cx,cy,r) => {p.rect(cx-r*1.2,cy-r,r*2.4,r*2);}},
-            {n:'Diamond', e:'💎', path: (p,cx,cy,r) => {p.moveTo(cx,cy-r); p.lineTo(cx+r,cy); p.lineTo(cx,cy+r); p.lineTo(cx-r,cy); p.closePath();}},
-            {n:'Moon', e:'🌙', path: (p,cx,cy,r) => { // FINAL FIX: Perfect Crescent
-                p.arc(cx,cy,r,0,Math.PI*2);
-                p.arc(cx+r*0.5,cy,r*0.9,Math.PI*0.5,Math.PI*1.5,true); // Inner cut, bigger
-                p.closePath();
+            {n:'Hexagon', e:'⬡', path: (p,cx,cy,r) => { // NEW 7/10
+                for(let i=0;i<6;i++){let ang=(i*60-30)*Math.PI/180; p.lineTo(cx+r*Math.cos(ang), cy+r*Math.sin(ang));} p.closePath();
+            }},
+            {n:'Pentagon', e:'⬟', path: (p,cx,cy,r) => { // NEW 8/10
+                for(let i=0;i<5;i++){let ang=(i*72-90)*Math.PI/180; p.lineTo(cx+r*Math.cos(ang), cy+r*Math.sin(ang));} p.closePath();
+            }},
+            {n:'Cone', e:'🍦', path: (p,cx,cy,r) => { // NEW 9/10
+                p.moveTo(cx,cy-r); p.lineTo(cx-r*0.8,cy+r*0.8); p.lineTo(cx+r*0.8,cy+r*0.8); p.closePath();
             }},
         ];
         let idx = 0, drawing = false, curCol = '#EF4444';
@@ -115,7 +106,7 @@
             const pos = getPos(e);
             drawing = true;
             ctx.save();
-            ctx.clip(getItemPath(), 'evenodd'); // KEY: Magic
+            ctx.clip(getItemPath(), 'evenodd');
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
         }
