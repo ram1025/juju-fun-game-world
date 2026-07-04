@@ -35,9 +35,11 @@
             animation: fadeOut 0.5s ease 2s forwards;
         }
         .splash img {
-            width: 200px; height: 200px; border-radius: 30px;
-            animation: zoomIn 1s ease;
-        }
+    width: 120px;   /* 200px → 120px */
+    height: 120px;  /* 200px → 120px */
+    border-radius: 30px;
+    animation: zoomIn 1s ease;
+}
         @keyframes zoomIn {
             from { transform: scale(0.5); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
@@ -128,14 +130,14 @@
 </head>
 <body>
     <div class="splash" id="splash">
-        <img src="./icon-512.png" alt="Juju">
-    </div>
+    <img src="./icon-192.png" alt="Juju">
+</div>
 
     <div class="container">
         
 <div class="welcome-view" id="welcomeView">
     <div class="avatar-bounce">
-        <img src="./icon-512.png" id="welcomeAvatar" alt="Avatar">
+       <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
     </div>
     <div class="welcome-name" id="welcomeName">Welcome Toddler! 🐒</div>
     <div class="welcome-text">Tap to touch and learn 🎨</div>
