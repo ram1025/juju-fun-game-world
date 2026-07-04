@@ -32,7 +32,10 @@
     <div class="container">
         <div class="letter-title">Paint Letter: <span id="letterText">A</span></div>
         <div class="letter-sub">A lopala matrame rayi 🖍️</div>
-        <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
+        <div class="canvas-wrap">
+            <canvas id="canvas"></canvas>
+            <canvas id="maskCanvas" style="display:none;"></canvas>
+        </div>
         <div class="controls">
             <button class="ctrl-btn clear-btn" onclick="clearCanvas()">Clear</button>
             <button class="ctrl-btn back-btn-2" onclick="prevLetter()">← Back</button>
@@ -50,41 +53,62 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=78');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=80');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
+        const maskCanvas = document.getElementById('maskCanvas'); // KEY: Hidden mask
+        const maskCtx = maskCanvas.getContext('2d');
         let drawing = false;
         let currentColor = '#EF4444';
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
         const fontSizeRatio = 0.55;
-        const outlineThickness = 10; // Visible red line
-        const clipTolerance = 4; // KEY: Outline cross cheyakunda 4px tolerance
+        const outerStroke = 12;
+        const innerStroke = 8; // Gap = 4px
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width - 30;
             canvas.height = 320;
-            document.fonts.ready.then(drawLetter);
+            maskCanvas.width = canvas.width; // Mask size same
+            maskCanvas.height = canvas.height;
+            document.fonts.ready.then(() => { drawLetter(); createMask(); });
         }
 
         function drawLetter() {
-            // 1. White bg
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // 2. Red solid A
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#EF4444';
-            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
-            // 3. Center erase = Thin outline
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.font = `bold ${canvas.width * (fontSizeRatio - 0.06)}px Nunito`;
-            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
-            ctx.globalCompositeOperation = 'source-over';
+            ctx.strokeStyle = '#000';
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.lineWidth = outerStroke;
+            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.lineWidth = innerStroke;
+            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
             document.getElementById('letterText').textContent = letters[letterIndex];
+        }
+
+        function createMask() {
+            // KEY LOGIC: Gap matrame Black. Migata motham White = Block
+            maskCtx.fillStyle = '#FFFFFF';
+            maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+            maskCtx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
+            maskCtx.textAlign = 'center';
+            maskCtx.textBaseline = 'middle';
+            maskCtx.strokeStyle = '#000'; // Idhe allow area
+            maskCtx.lineJoin = 'round';
+            maskCtx.lineCap = 'round';
+            maskCtx.lineWidth = outerStroke - innerStroke; // 12 - 8 = 4px
+            maskCtx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+        }
+
+        function isInGap(x, y) {
+            const pixel = maskCtx.getImageData(x, y, 1, 1).data;
+            return pixel[0] < 50; // Black aithe true
         }
 
         function setColor(color, el) {
@@ -106,40 +130,32 @@
         function startDraw(e) {
             e.preventDefault();
             const pos = getPos(e);
-            drawing = true;
-
-            ctx.save();
-            // KEY FIX: Clip area ni outline kanna 4px pedda ga chesam
-            ctx.beginPath();
-            ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.lineWidth = outlineThickness + clipTolerance; // 10 + 4 = 14px
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2); // Stroke clip = easy
-            ctx.clip();
-
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
+            if (isInGap(pos.x, pos.y)) { // Gap lo ne start
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
         }
 
         function draw(e) {
             if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 20;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.stroke();
+            if (isInGap(pos.x, pos.y)) { // Gap lo unte matrame
+                ctx.lineTo(pos.x, pos.y);
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+            } else {
+                drawing = false; // Black touch cheste stop
+            }
         }
 
         function stopDraw(e) {
             if (e) e.preventDefault();
             drawing = false;
-            ctx.restore();
         }
 
         canvas.addEventListener('mousedown', startDraw);
@@ -150,9 +166,9 @@
         canvas.addEventListener('touchmove', draw, {passive: false});
         canvas.addEventListener('touchend', stopDraw, {passive: false});
 
-        function clearCanvas() { drawLetter(); } // Clear = Malli red outline
-        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; drawLetter(); }
-        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; drawLetter(); }
+        function clearCanvas() { drawLetter(); }
+        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; drawLetter(); createMask(); }
+        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; drawLetter(); createMask(); }
 
         window.addEventListener('load', initCanvas);
         window.addEventListener('resize', initCanvas);
