@@ -196,6 +196,7 @@
     </div>
 
     <script>
+        
          if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=61'); }
         let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
@@ -228,12 +229,16 @@ window.addEventListener('load', () => {
             }
         }
 
-        function saveProfile() {
-            const name = document.getElementById('fullName').value.trim();
-            if (!name) {
-                alert('Please enter Full Name!');
-                return;
-            }
+       function saveProfile() {
+  const name = document.getElementById('fullName').value.trim();
+  if (!name) {
+    alert('Please enter Full Name!');
+    return;
+  }
+  localStorage.setItem('jujuName', name);
+localStorage.setItem('jujuAvatar', currentAvatar);
+  // ... (nee rest of the code undi kanuka)
+}
             localStorage.setItem('jujuAvatar', currentAvatar);
             localStorage.setItem('jujuName', name);
             localStorage.setItem('jujuNickname', document.getElementById('nickname').value.trim());
