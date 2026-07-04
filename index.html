@@ -133,9 +133,16 @@
             cursor: pointer; margin-bottom: 12px; box-shadow: 0 6px 0 #EA580C;
         }
         .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #EA580C; }
-        .install-btn { background: #10B981; box-shadow: 0 6px 0 #059669; display: none; }
+        .install-btn { 
+    background: #10B981; /* Green chesa */
+    box-shadow: 0 6px 0 #059669; 
+    display: none; 
+}
         .install-btn:active { box-shadow: 0 3px 0 #059669; }
-        .play-btn { background: linear-gradient(135deg, #F97316, #FB923C); }
+        .play-btn { 
+    background: #F97316; /* Orange chesa */
+    box-shadow: 0 6px 0 #EA580C; 
+}
         .hidden { display: none; }
     </style>
 </head>
@@ -147,13 +154,13 @@
     <div class="container">
         
 <div class="welcome-view" id="welcomeView">
-    <div class="avatar-bounce">
-       <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
-    </div>
-    <div class="welcome-name" id="welcomeName">Welcome Toddler! 🐒</div>
-    <div class="welcome-text">Tap to touch and learn 🎨</div>
-    <button class="btn play-btn" onclick="location.href='./dashboard.html'">Touch to Play! 🎮</button>
-    <button class="btn" id="welcomeInstallBtn" style="display:none; margin-top:15px; background:linear-gradient(135deg, #10B981, #059669);">📱 Install Juju App</button>
+  <div class="avatar-bounce">
+    <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
+  </div>
+  <div class="welcome-name" id="welcomeName">Juju</div> <!-- Heyansh -> Juju -->
+  <div class="welcome-text">Welcome back! 🎉</div> <!-- Tap to touch -> Welcome back -->
+  <button class="btn play-btn" onclick="location.href='./dashboard.html'">Let's Play! 🚀</button> <!-- Touch to Play -> Let's Play -->
+  <button class="btn install-btn" id="welcomeInstallBtn" style="margin-top:12px;">📱 Install Juju App</button> <!-- Kindha green button -->
 </div>
 
         <div class="login-view" id="loginView">
@@ -186,26 +193,20 @@
     }
 
     setTimeout(() => {
-        const savedName = localStorage.getItem('jujuName');
-        const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
-
-        if (savedName) {
-            document.getElementById('welcomeView').style.display = 'block';
-            document.getElementById('loginView').style.display = 'none';
-            document.getElementById('welcomeName').textContent = savedName;
-            document.getElementById('welcomeAvatar').src = savedPic;
-
-            if (!isInstalled()) {
-                document.getElementById('welcomeInstallBtn').style.display = 'block';
-            }
-        } else {
-            document.getElementById('welcomeView').style.display = 'none';
-            document.getElementById('loginView').style.display = 'block';
-            if (!isInstalled()) {
-                document.getElementById('installBtn').style.display = 'block';
-            }
+    const savedName = localStorage.getItem('jujuName');
+    const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
+    if (savedName) {
+        document.getElementById('welcomeView').style.display = 'block';
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('welcomeName').textContent = 'Juju'; // Name Juju fix chesa
+        document.getElementById('welcomeAvatar').src = savedPic;
+        if (!isInstalled()) {
+            document.getElementById('welcomeInstallBtn').style.display = 'block'; // Install button show
         }
-    }, 2000);
+    } else {
+        // ... login view same
+    }
+}, 2000);
 
 // Welcome install button click
 document.getElementById('welcomeInstallBtn').addEventListener('click', async () => {
