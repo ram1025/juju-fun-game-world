@@ -31,7 +31,7 @@
     <div class="header"><button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button></div>
     <div class="container">
         <div class="letter-title">Paint Letter: <span id="letterText">A</span></div>
-        <div class="letter-sub">A lopala matrame rayi 🖍️</div>
+        <div class="letter-sub">A bayata matrame rayi 🖍️</div>
         <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
         <div class="controls">
             <button class="ctrl-btn clear-btn" onclick="clearCanvas()">Clear</button>
@@ -50,7 +50,7 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=82');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=83');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -59,68 +59,32 @@
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
         const fontSizeRatio = 0.55;
-        const outerStroke = 16; // 8px Gap
-        const innerStroke = 8;
-        const brushSize = 6;
-
-        let outerPath = new Path2D(); // KEY: Gap path ni memory lo pettam
-        let innerPath = new Path2D();
+        const brushSize = 20; // Easy fill kosam pedda brush
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width - 30;
             canvas.height = 320;
-            document.fonts.ready.then(() => { buildPaths(); drawLetter(); });
-        }
-
-        function buildPaths() {
-            // KEY: Rendu paths create chesam. Prati letter change ki okkasari matrame.
-            const x = canvas.width/2, y = canvas.height/2;
-            const font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
-
-            outerPath = new Path2D();
-            innerPath = new Path2D();
-            ctx.font = font;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            outerPath.addPath(new Path2D(ctx.fillText(letters[letterIndex], x, y))); // Dummy
-            // Stroke ni path ga convert cheyalem, so trick vadutham
-            ctx.save();
-            ctx.lineWidth = outerStroke;
-            ctx.strokeStyle = '#000';
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-            outerPath = new Path2D();
-            outerPath.stroke(ctx, letters[letterIndex]); // Chrome lo work avutundi
-
-            ctx.lineWidth = innerStroke;
-            innerPath = new Path2D();
-            innerPath.stroke(ctx, letters[letterIndex]);
-            ctx.restore();
+            document.fonts.ready.then(drawLetter);
         }
 
         function drawLetter() {
+            // KEY CHANGE: Single Black Outline. Lopala White.
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.strokeStyle = '#000';
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-            ctx.lineWidth = outerStroke;
-            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
-            ctx.lineWidth = innerStroke;
-            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.fillStyle = '#000'; // Black fill
+            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
             document.getElementById('letterText').textContent = letters[letterIndex];
         }
 
-        function isInGap(x, y) {
-            // KEY: Super Fast Check. No getImageData
-            const inOuter = ctx.isPointInStroke(outerPath, x, y);
-            const inInner = ctx.isPointInStroke(innerPath, x, y);
-            return inOuter &&!inInner; // Outer lo undi, Inner lo ledu = Gap
+        function isOnWhite(x, y) {
+            // KEY: Ee pixel white na? Okkasari check
+            if(x < 0 || y < 0 || x >= canvas.width || y >= canvas.height) return false;
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            return pixel[0] > 200 && pixel[1] > 200 && pixel[2] > 200; // White
         }
 
         function setColor(color, el) {
@@ -142,7 +106,7 @@
         function startDraw(e) {
             e.preventDefault();
             const pos = getPos(e);
-            if (isInGap(pos.x, pos.y)) {
+            if (isOnWhite(pos.x, pos.y)) { // White meeda start cheste matrame
                 drawing = true;
                 ctx.beginPath();
                 ctx.moveTo(pos.x, pos.y);
@@ -153,7 +117,7 @@
             if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
-            if (isInGap(pos.x, pos.y)) {
+            if (isOnWhite(pos.x, pos.y)) { // White lo unte matrame
                 ctx.lineTo(pos.x, pos.y);
                 ctx.strokeStyle = currentColor;
                 ctx.lineWidth = brushSize;
@@ -161,7 +125,7 @@
                 ctx.lineJoin = 'round';
                 ctx.stroke();
             } else {
-                drawing = false;
+                drawing = false; // Black touch cheste stop
             }
         }
 
@@ -179,8 +143,8 @@
         canvas.addEventListener('touchend', stopDraw, {passive: false});
 
         function clearCanvas() { drawLetter(); }
-        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; buildPaths(); drawLetter(); }
-        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; buildPaths(); drawLetter(); }
+        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; drawLetter(); }
+        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; drawLetter(); }
 
         window.addEventListener('load', initCanvas);
         window.addEventListener('resize', initCanvas);
