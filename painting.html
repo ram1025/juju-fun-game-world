@@ -10,21 +10,21 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Nunito', sans-serif; background: #3B82F6; min-height: 100vh; padding: 20px; overscroll-behavior: none; }
- .header { display: flex; align-items: center; margin-bottom: 20px; }
- .back-btn { background: white; border: none; padding: 12px 20px; border-radius: 15px; font-size: 18px; font-weight: 900; color: #F97316; cursor: pointer; }
- .container { background: #FEF3C7; padding: 25px; border-radius: 30px; max-width: 400px; margin: 0 auto; }
- .letter-title { font-size: 28px; font-weight: 900; color: #F97316; text-align: center; margin-bottom: 8px; }
- .letter-sub { font-size: 16px; font-weight: 700; color: #92400E; text-align: center; margin-bottom: 15px; }
- .canvas-wrap { background: #FFFFFF; border: 3px solid #FDBA74; border-radius: 20px; padding: 15px; margin-bottom: 15px; position: relative; }
+.header { display: flex; align-items: center; margin-bottom: 20px; }
+.back-btn { background: white; border: none; padding: 12px 20px; border-radius: 15px; font-size: 18px; font-weight: 900; color: #F97316; cursor: pointer; }
+.container { background: #FEF3C7; padding: 25px; border-radius: 30px; max-width: 400px; margin: 0 auto; }
+.letter-title { font-size: 28px; font-weight: 900; color: #F97316; text-align: center; margin-bottom: 8px; }
+.letter-sub { font-size: 16px; font-weight: 700; color: #92400E; text-align: center; margin-bottom: 15px; }
+.canvas-wrap { background: #FFFFFF; border: 3px solid #FDBA74; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
         #canvas { width: 100%; height: 320px; border-radius: 15px; touch-action: none; display: block; background: #FFFFFF; }
- .controls { display: flex; gap: 10px; margin-bottom: 15px; }
- .ctrl-btn { flex: 1; padding: 14px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; }
- .clear-btn { background: #EF4444; color: white; }
- .back-btn-2 { background: #3B82F6; color: white; }
- .next-btn { background: #10B981; color: white; }
- .colors { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
- .color { width: 45px; height: 45px; border-radius: 50%; border: 3px solid white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
- .color.active { border: 4px solid #1F2937; transform: scale(1.15); }
+.controls { display: flex; gap: 10px; margin-bottom: 15px; }
+.ctrl-btn { flex: 1; padding: 14px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; }
+.clear-btn { background: #EF4444; color: white; }
+.back-btn-2 { background: #3B82F6; color: white; }
+.next-btn { background: #10B981; color: white; }
+.colors { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.color { width: 45px; height: 45px; border-radius: 50%; border: 3px solid white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.color.active { border: 4px solid #1F2937; transform: scale(1.15); }
     </style>
 </head>
 <body>
@@ -32,10 +32,7 @@
     <div class="container">
         <div class="letter-title">Paint Letter: <span id="letterText">A</span></div>
         <div class="letter-sub">A lopala matrame rayi 🖍️</div>
-        <div class="canvas-wrap">
-            <canvas id="canvas"></canvas>
-            <canvas id="mask" style="display:none;"></canvas> <!-- Hidden mask canvas -->
-        </div>
+        <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
         <div class="controls">
             <button class="ctrl-btn clear-btn" onclick="clearCanvas()">Clear</button>
             <button class="ctrl-btn back-btn-2" onclick="prevLetter()">← Back</button>
@@ -53,55 +50,37 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=69');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=70');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const maskCanvas = document.getElementById('mask');
-        const mctx = maskCanvas.getContext('2d');
         let drawing = false;
         let currentColor = '#EF4444';
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
-        const fontSizeRatio = 0.65;
-        let maskData; // A pixels data
+        const fontSizeRatio = 0.55; // KEY 1: A ni chinna cheddam = White space pedda
+        const visibleStroke = 8; // KEY 2: Grey line thin
+        const maskStroke = 6; // KEY 3: Mask line inka thin = Gray meeda kuda color vastundi
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
-            const w = rect.width - 30;
-            canvas.width = w;
+            canvas.width = rect.width - 30;
             canvas.height = 320;
-            maskCanvas.width = w;
-            maskCanvas.height = 320;
-            document.fonts.ready.then(setupMask);
-        }
-
-        function setupMask() {
-            // 1. Mask canvas lo A ni white tho fill chey
-            mctx.fillStyle = '#FFFFFF';
-            mctx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
-            mctx.font = `bold ${maskCanvas.width * fontSizeRatio}px Nunito`;
-            mctx.textAlign = 'center';
-            mctx.textBaseline = 'middle';
-            mctx.fillStyle = '#000'; // Nalla = Draw cheyochu
-            mctx.fillText(letters[letterIndex], maskCanvas.width/2, maskCanvas.height/2);
-            maskData = mctx.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-
-            drawLetter();
+            document.fonts.ready.then(drawLetter);
         }
 
         function drawLetter() {
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.strokeStyle = '#9CA3AF'; // KEY CHANGE: Black -> Grey
-    ctx.lineWidth = 12;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
-    document.getElementById('letterText').textContent = letters[letterIndex];
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.strokeStyle = '#9CA3AF'; // Grey outline
+            ctx.lineWidth = visibleStroke;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            document.getElementById('letterText').textContent = letters[letterIndex];
         }
 
         function setColor(color, el) {
@@ -117,21 +96,29 @@
             let x, y;
             if (e.touches && e.touches[0]) { x = (e.touches[0].clientX - rect.left) * scaleX; y = (e.touches[0].clientY - rect.top) * scaleY; }
             else { x = (e.clientX - rect.left) * scaleX; y = (e.clientY - rect.top) * scaleY; }
-            return { x: Math.floor(x), y: Math.floor(y) };
+            return { x, y };
         }
 
-        // KEY: Mask lo nalla pixel unda leda check
-        function isInsideA(x, y) {
-            if (x < 0 || y < 0 || x >= maskCanvas.width || y >= maskCanvas.height) return false;
-            const idx = (y * maskCanvas.width + x) * 4;
-            return maskData[idx] === 0; // R=0 ante nalla = A lopala
-        }
-
+        // SUPER FAST: Clip Method - Lag undadu
         function startDraw(e) {
             e.preventDefault();
             const pos = getPos(e);
-            if (!isInsideA(pos.x, pos.y)) return;
             drawing = true;
+
+            ctx.save(); // State save
+
+            // STEP 1: Thin stroke tho clip path create chey
+            ctx.beginPath();
+            ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.lineWidth = maskStroke; // Thin mask
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.clip(); // Idhe magic: Clip area = A stroke lopala + koncham bayataki
+
+            // STEP 2: Brush start
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
         }
@@ -140,19 +127,19 @@
             if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
-            if (!isInsideA(pos.x, pos.y)) {
-                drawing = false; // Line cut aipotundi bayataki vellagaane
-                return;
-            }
             ctx.lineTo(pos.x, pos.y);
             ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 18;
+            ctx.lineWidth = 18; // Brush thick
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();
         }
 
-        function stopDraw(e) { if (e) e.preventDefault(); drawing = false; }
+        function stopDraw(e) {
+            if (e) e.preventDefault();
+            drawing = false;
+            ctx.restore(); // Clip remove chey
+        }
 
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
@@ -163,11 +150,11 @@
         canvas.addEventListener('touchend', stopDraw, {passive: false});
 
         function clearCanvas() { drawLetter(); }
-        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; setupMask(); }
-        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; setupMask(); }
+        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; drawLetter(); }
+        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; drawLetter(); }
 
         window.addEventListener('load', initCanvas);
-        window.addEventListener('resize', () => { initCanvas(); });
+        window.addEventListener('resize', initCanvas);
     </script>
 </body>
 </html>
