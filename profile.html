@@ -196,6 +196,7 @@
     </div>
 
     <script>
+         if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=61'); }
         let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
        window.addEventListener('DOMContentLoaded', () => {
