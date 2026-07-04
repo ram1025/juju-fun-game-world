@@ -176,6 +176,7 @@
     </div>
         
     <script>
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=61'); }
         window.addEventListener('DOMContentLoaded', () => {
             const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
             const savedName = localStorage.getItem('jujuName') || 'JUJU';
