@@ -15,37 +15,57 @@
         background: #3B82F6;
         min-height: 100vh;
         padding: 20px;
-        display: flex; /* KEY: Center card */
-        align-items: center;
-        justify-content: center;
     }
-   .container {
+  .header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        max-width: 400px;
+        margin: 0 auto 20px;
+    }
+  .back-btn { 
         background: white;
-        padding: 40px 30px 30px; /* Top padding ekkuva logo kosam */
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        font-size: 24px;
+        font-weight: 900;
+        cursor: pointer;
+    }
+  .header-title { 
+        font-size: 28px;
+        font-weight: 900;
+        color: white;
+    }
+  .container {
+        background: white;
+        padding: 30px; /* Logo kosam top padding teesesam */
         border-radius: 30px;
         max-width: 400px;
         width: 100%;
-        margin-top: 40px; /* Logo space */
-        position: relative;
+        margin: 0 auto;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
-   .avatar-wrapper {
-        position: absolute;
-        top: -60px; /* KEY: Logo ni paiki float cheyadam */
-        left: 50%;
-        transform: translateX(-50%);
+  .avatar-wrapper {
+        position: relative; /* absolute -> relative marcham */
+        top: 0;
+        left: 0;
+        transform: none;
         width: 120px;
         height: 120px;
+        margin: 0 auto 30px; /* center ki */
     }
-   .avatar {
+  .avatar {
         width: 120px;
         height: 120px;
         border-radius: 50%;
-        border: 5px solid #FDBA74; /* Old laga orange border */
+        border: 5px solid #FDBA74;
         object-fit: cover;
         background: #E5E7EB;
     }
-   .camera-btn {
+  .camera-btn {
         position: absolute;
         bottom: 5px;
         right: 5px;
@@ -78,21 +98,22 @@
         font-size: 16px;
         font-weight: 700;
         font-family: 'Nunito', sans-serif;
+        background: white;
     }
     input:focus, select:focus {
         outline: none;
         border-color: #3B82F6;
     }
-   .row {
+  .row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
         margin-bottom: 18px;
     }
-   .field,.form-group {
+  .field,.form-group {
         margin-bottom: 18px;
     }
-   .save-btn {
+  .save-btn {
         width: 100%;
         background: linear-gradient(135deg, #10B981, #059669);
         color: white;
@@ -105,31 +126,19 @@
         box-shadow: 0 6px 0 #047857;
         margin-top: 10px;
     }
-   .save-btn:active {
+  .save-btn:active {
         transform: translateY(3px);
         box-shadow: 0 3px 0 #047857;
-    }
-    /* Header teeseyam - Back button kavali ante card lopala pettam */
-   .back-btn-card {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        background: #F3F4F6;
-        border: none;
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        font-size: 20px;
-        font-weight: 900;
-        cursor: pointer;
-        color: #1F2937;
     }
 </style>
 </head>
 <body>
-    <div class="container">
-        <button class="back-btn-card" onclick="location.href='./dashboard.html'">←</button>
+    <div class="header">
+        <button class="back-btn" onclick="location.href='./dashboard.html'">←</button>
+        <div class="header-title">My Profile 🦁</div>
+    </div>
 
+    <div class="container">
         <div class="avatar-wrapper">
             <img src="./icon-192.png" class="avatar" id="profileAvatar">
             <button class="camera-btn" onclick="document.getElementById('fileInput').click()">📷</button>
@@ -182,11 +191,11 @@
             <input type="text" id="motherName" placeholder="Mother's name">
         </div>
 
-        <button class="save-btn" onclick="saveProfile()">Save & Close ✅</button>
+        <button class="save-btn" onclick="saveProfile()">Save Profile ✅</button>
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=105'); }
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=106'); }
         let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
        window.addEventListener('DOMContentLoaded', () => {
