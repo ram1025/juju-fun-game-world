@@ -6,7 +6,7 @@
     <title>My Profile - Juju Fun World</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3B82F6">
-  
+
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -15,61 +15,51 @@
         background: #3B82F6;
         min-height: 100vh;
         padding: 20px;
-    }
- .header {
-        display: flex;
+        display: flex; /* KEY: Center card */
         align-items: center;
-        gap: 15px;
-        margin-bottom: 20px;
+        justify-content: center;
     }
- .back-btn 
+   .container {
         background: white;
-        border: none;
-        width: 45px;
-        height: 45px;
-        border-radius: 12px;
-        font-size: 24px;
-        font-weight: 900;
-        cursor: pointer;
-    }
- .header-title 
-        font-size: 28px;
-        font-weight: 900;
-        color: white;
-    }
- .container 
-        background: white;
-        padding: 30px;
+        padding: 40px 30px 30px; /* Top padding ekkuva logo kosam */
         border-radius: 30px;
         max-width: 400px;
-        margin: 0 auto;
-    }
- .avatar-wrapper 
+        width: 100%;
+        margin-top: 40px; /* Logo space */
         position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+   .avatar-wrapper {
+        position: absolute;
+        top: -60px; /* KEY: Logo ni paiki float cheyadam */
+        left: 50%;
+        transform: translateX(-50%);
         width: 120px;
         height: 120px;
-        margin: 0 auto 30px;
     }
- .avatar 
+   .avatar {
         width: 120px;
         height: 120px;
         border-radius: 50%;
-        border: 4px solid #EC4899;
+        border: 5px solid #FDBA74; /* Old laga orange border */
         object-fit: cover;
         background: #E5E7EB;
     }
- .camera-btn {
+   .camera-btn {
         position: absolute;
-        bottom: 0;
-        right: 0;
+        bottom: 5px;
+        right: 5px;
         background: #F97316;
         color: white;
         border: 3px solid white;
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         font-size: 18px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
     #fileInput { display: none; }
@@ -93,20 +83,16 @@
         outline: none;
         border-color: #3B82F6;
     }
- .row {
+   .row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
         margin-bottom: 18px;
     }
- .row > div {
-        display: flex;
-        flex-direction: column;
-    }
- .field {
+   .field,.form-group {
         margin-bottom: 18px;
     }
- .save-btn {
+   .save-btn {
         width: 100%;
         background: linear-gradient(135deg, #10B981, #059669);
         color: white;
@@ -119,29 +105,40 @@
         box-shadow: 0 6px 0 #047857;
         margin-top: 10px;
     }
- .save-btn:active {
+   .save-btn:active {
         transform: translateY(3px);
         box-shadow: 0 3px 0 #047857;
     }
-    </style>
+    /* Header teeseyam - Back button kavali ante card lopala pettam */
+   .back-btn-card {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: #F3F4F6;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        font-size: 20px;
+        font-weight: 900;
+        cursor: pointer;
+        color: #1F2937;
+    }
+</style>
 </head>
 <body>
-    <div class="header">
-        <button class="back-btn" onclick="location.href='./dashboard.html'">←</button>
-        <div class="header-title">My Profile 🦁</div>
-    </div>
-
     <div class="container">
+        <button class="back-btn-card" onclick="location.href='./dashboard.html'">←</button>
+
         <div class="avatar-wrapper">
             <img src="./icon-192.png" class="avatar" id="profileAvatar">
             <button class="camera-btn" onclick="document.getElementById('fileInput').click()">📷</button>
             <input type="file" id="fileInput" accept="image/*" onchange="updateAvatar(event)">
         </div>
 
-        <!-- IDHI NUVVU ICHINA CODE IKKADE PETTALI -->
         <div class="field">
             <label>Full Name *</label>
-            <input type="text" id="fullName" placeholder="JUJU" maxlength="20">
+            <input type="text" id="fullName" placeholder="JU" maxlength="20">
         </div>
 
         <div class="row">
@@ -169,53 +166,40 @@
                 <label>Blood Group</label>
                 <select id="bloodGroup">
                     <option value="">Select</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
+                    <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                    <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
                 </select>
             </div>
         </div>
 
         <div class="form-group">
-    <label>Father's Name</label>
-    <input type="text" id="fatherName" placeholder="Father's name">
-</div>
+            <label>Father's Name</label>
+            <input type="text" id="fatherName" placeholder="Father's name">
+        </div>
 
-<div class="form-group">
-    <label>Mother's Name</label>
-    <input type="text" id="motherName" placeholder="Mother's name">
-</div>
-        <!-- CODE END -->
+        <div class="form-group">
+            <label>Mother's Name</label>
+            <input type="text" id="motherName" placeholder="Mother's name">
+        </div>
 
-                <button class="save-btn" onclick="saveProfile()">Save Profile ✅</button>
+        <button class="save-btn" onclick="saveProfile()">Save & Close ✅</button>
     </div>
 
     <script>
-        
-         if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=62'); }
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=105'); }
         let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
        window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('profileAvatar').src = localStorage.getItem('jujuAvatar') || './default.png';
-  document.getElementById('fullName').value = localStorage.getItem('jujuName') || '';
-  document.getElementById('nickname').value = localStorage.getItem('jujuNickname') || '';
-  document.getElementById('dob').value = localStorage.getItem('jujuDob') || '';
-  document.getElementById('email').value = localStorage.getItem('jujuEmail') || '';
-  document.getElementById('phone').value = localStorage.getItem('jujuPhone') || '';
-  document.getElementById('bloodGroup').value = localStorage.getItem('jujuBlood') || '';
-  document.getElementById('fatherName').value = localStorage.getItem('jujuFather') || '';
-  document.getElementById('motherName').value = localStorage.getItem('jujuMother') || '';
-});
-
-window.addEventListener('load', () => {
-  document.getElementById('nameInput').value = localStorage.getItem('jujuName') || '';
-  document.getElementById('avatarPreview').src = localStorage.getItem('jujuAvatar') || './default.png';
-});
+          document.getElementById('profileAvatar').src = localStorage.getItem('jujuAvatar') || './icon-192.png';
+          document.getElementById('fullName').value = localStorage.getItem('jujuName') || '';
+          document.getElementById('nickname').value = localStorage.getItem('jujuNickname') || '';
+          document.getElementById('dob').value = localStorage.getItem('jujuDob') || '';
+          document.getElementById('email').value = localStorage.getItem('jujuEmail') || '';
+          document.getElementById('phone').value = localStorage.getItem('jujuPhone') || '';
+          document.getElementById('bloodGroup').value = localStorage.getItem('jujuBlood') || '';
+          document.getElementById('fatherName').value = localStorage.getItem('jujuFather') || '';
+          document.getElementById('motherName').value = localStorage.getItem('jujuMother') || '';
+        });
 
         function updateAvatar(event) {
             const file = event.target.files[0];
@@ -229,29 +213,21 @@ window.addEventListener('load', () => {
             }
         }
 
-       function saveProfile() {
-  const name = document.getElementById('fullName').value.trim();
-  if (!name) {
-    alert('Please enter Full Name!');
-    return;
-  }
-  
-  localStorage.setItem('jujuName', name);
-  localStorage.setItem('jujuAvatar', currentAvatar);
-  
-  // ✅ Nee migatha code motham ikkada pettu
-  localStorage.setItem('jujuNickname', document.getElementById('nickname').value.trim());
-  localStorage.setItem('jujuDob', document.getElementById('dob').value);
-  localStorage.setItem('jujuEmail', document.getElementById('email').value.trim());
-  localStorage.setItem('jujuPhone', document.getElementById('phone').value.trim());
-  localStorage.setItem('jujuBlood', document.getElementById('bloodGroup').value);
-  localStorage.setItem('jujuFather', document.getElementById('fatherName').value.trim());
-  localStorage.setItem('jujuMother', document.getElementById('motherName').value.trim());
-  
-  alert('Profile saved! 🎉');
-  location.href = './dashboard.html';
-
-} // ✅ Ippudu function ikkada close chey
+        function saveProfile() {
+          const name = document.getElementById('fullName').value.trim();
+          if (!name) { alert('Please enter Full Name!'); return; }
+          localStorage.setItem('jujuName', name);
+          localStorage.setItem('jujuAvatar', currentAvatar);
+          localStorage.setItem('jujuNickname', document.getElementById('nickname').value.trim());
+          localStorage.setItem('jujuDob', document.getElementById('dob').value);
+          localStorage.setItem('jujuEmail', document.getElementById('email').value.trim());
+          localStorage.setItem('jujuPhone', document.getElementById('phone').value.trim());
+          localStorage.setItem('jujuBlood', document.getElementById('bloodGroup').value);
+          localStorage.setItem('jujuFather', document.getElementById('fatherName').value.trim());
+          localStorage.setItem('jujuMother', document.getElementById('motherName').value.trim());
+          alert('Profile saved! 🎉');
+          location.href = './dashboard.html';
+        }
     </script>
 </body>
 </html>
