@@ -32,10 +32,7 @@
     <div class="container">
         <div class="letter-title">Paint Letter: <span id="letterText">A</span></div>
         <div class="letter-sub">A lopala matrame rayi 🖍️</div>
-        <div class="canvas-wrap">
-            <canvas id="canvas"></canvas>
-            <canvas id="maskCanvas" style="display:none;"></canvas>
-        </div>
+        <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
         <div class="controls">
             <button class="ctrl-btn clear-btn" onclick="clearCanvas()">Clear</button>
             <button class="ctrl-btn back-btn-2" onclick="prevLetter()">← Back</button>
@@ -53,28 +50,54 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=81');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=82');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const maskCanvas = document.getElementById('maskCanvas');
-        const maskCtx = maskCanvas.getContext('2d');
         let drawing = false;
         let currentColor = '#EF4444';
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
         const fontSizeRatio = 0.55;
-        const outerStroke = 16; // KEY FIX 1: Pedda gap kosam
-        const innerStroke = 8; // Gap = 8px now
-        const brushSize = 6; // KEY FIX 2: Gap kanna chinna brush
+        const outerStroke = 16; // 8px Gap
+        const innerStroke = 8;
+        const brushSize = 6;
+
+        let outerPath = new Path2D(); // KEY: Gap path ni memory lo pettam
+        let innerPath = new Path2D();
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width - 30;
             canvas.height = 320;
-            maskCanvas.width = canvas.width;
-            maskCanvas.height = canvas.height;
-            document.fonts.ready.then(() => { drawLetter(); createMask(); });
+            document.fonts.ready.then(() => { buildPaths(); drawLetter(); });
+        }
+
+        function buildPaths() {
+            // KEY: Rendu paths create chesam. Prati letter change ki okkasari matrame.
+            const x = canvas.width/2, y = canvas.height/2;
+            const font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
+
+            outerPath = new Path2D();
+            innerPath = new Path2D();
+            ctx.font = font;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            outerPath.addPath(new Path2D(ctx.fillText(letters[letterIndex], x, y))); // Dummy
+            // Stroke ni path ga convert cheyalem, so trick vadutham
+            ctx.save();
+            ctx.lineWidth = outerStroke;
+            ctx.strokeStyle = '#000';
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            outerPath = new Path2D();
+            outerPath.stroke(ctx, letters[letterIndex]); // Chrome lo work avutundi
+
+            ctx.lineWidth = innerStroke;
+            innerPath = new Path2D();
+            innerPath.stroke(ctx, letters[letterIndex]);
+            ctx.restore();
         }
 
         function drawLetter() {
@@ -93,28 +116,11 @@
             document.getElementById('letterText').textContent = letters[letterIndex];
         }
 
-        function createMask() {
-            maskCtx.fillStyle = '#FFFFFF';
-            maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
-            maskCtx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
-            maskCtx.textAlign = 'center';
-            maskCtx.textBaseline = 'middle';
-            maskCtx.strokeStyle = '#000';
-            maskCtx.lineJoin = 'round';
-            maskCtx.lineCap = 'round';
-            maskCtx.lineWidth = outerStroke - innerStroke; // 8px gap
-            maskCtx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
-        }
-
-        function isInGap(x, y, tolerance = 0) {
-            // KEY FIX 3: Tolerance add chesam
-            for(let dx = -tolerance; dx <= tolerance; dx++){
-                for(let dy = -tolerance; dy <= tolerance; dy++){
-                    const pixel = maskCtx.getImageData(x+dx, y+dy, 1, 1).data;
-                    if(pixel[0] < 50) return true; // Black dorikithe
-                }
-            }
-            return false;
+        function isInGap(x, y) {
+            // KEY: Super Fast Check. No getImageData
+            const inOuter = ctx.isPointInStroke(outerPath, x, y);
+            const inInner = ctx.isPointInStroke(innerPath, x, y);
+            return inOuter &&!inInner; // Outer lo undi, Inner lo ledu = Gap
         }
 
         function setColor(color, el) {
@@ -136,7 +142,7 @@
         function startDraw(e) {
             e.preventDefault();
             const pos = getPos(e);
-            if (isInGap(pos.x, pos.y, 3)) { // 3px tolerance tho start
+            if (isInGap(pos.x, pos.y)) {
                 drawing = true;
                 ctx.beginPath();
                 ctx.moveTo(pos.x, pos.y);
@@ -147,7 +153,7 @@
             if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
-            if (isInGap(pos.x, pos.y, 0)) { // Drag chesthunnapudu strict
+            if (isInGap(pos.x, pos.y)) {
                 ctx.lineTo(pos.x, pos.y);
                 ctx.strokeStyle = currentColor;
                 ctx.lineWidth = brushSize;
@@ -173,8 +179,8 @@
         canvas.addEventListener('touchend', stopDraw, {passive: false});
 
         function clearCanvas() { drawLetter(); }
-        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; drawLetter(); createMask(); }
-        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; drawLetter(); createMask(); }
+        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; buildPaths(); drawLetter(); }
+        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; buildPaths(); drawLetter(); }
 
         window.addEventListener('load', initCanvas);
         window.addEventListener('resize', initCanvas);
