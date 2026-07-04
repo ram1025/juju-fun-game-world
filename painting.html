@@ -15,7 +15,7 @@
 .container { background: #FEF3C7; padding: 25px; border-radius: 30px; max-width: 400px; margin: 0 auto; }
 .letter-title { font-size: 28px; font-weight: 900; color: #F97316; text-align: center; margin-bottom: 8px; }
 .letter-sub { font-size: 16px; font-weight: 700; color: #92400E; text-align: center; margin-bottom: 15px; }
-.canvas-wrap { background: #FFFFFF; border: 3px solid #FDBA74; border-radius: 20px; padding: 15px; margin-bottom: 15px; position: relative; }
+.canvas-wrap { background: #FFFFFF; border: 3px solid #FDBA74; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
         #canvas { width: 100%; height: 320px; border-radius: 15px; touch-action: none; display: block; background: #FFFFFF; }
 .controls { display: flex; gap: 10px; margin-bottom: 15px; }
 .ctrl-btn { flex: 1; padding: 14px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; }
@@ -32,10 +32,7 @@
     <div class="container">
         <div class="letter-title">Paint Letter: <span id="letterText">A</span></div>
         <div class="letter-sub">A lopala matrame rayi 🖍️</div>
-        <div class="canvas-wrap">
-            <canvas id="canvas"></canvas>
-            <canvas id="maskCanvas" style="display:none;"></canvas>
-        </div>
+        <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
         <div class="controls">
             <button class="ctrl-btn clear-btn" onclick="clearCanvas()">Clear</button>
             <button class="ctrl-btn back-btn-2" onclick="prevLetter()">← Back</button>
@@ -53,58 +50,39 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=74');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=75');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const maskCanvas = document.getElementById('maskCanvas');
-        const maskCtx = maskCanvas.getContext('2d');
         let drawing = false;
         let currentColor = '#EF4444';
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
         const fontSizeRatio = 0.55; // White space pedda
-        const outlineStroke = 8; // Grey line thin
+        const outlineStroke = 8; // Grey outline thin
+
+        let isDrawingLayer = false; // KEY: Maa drawing layer on/off
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width - 30;
             canvas.height = 320;
-            maskCanvas.width = canvas.width;
-            maskCanvas.height = canvas.height;
-            document.fonts.ready.then(() => { drawLetter(); createMask(); });
+            document.fonts.ready.then(drawLetter);
         }
 
         function drawLetter() {
-            // Visible Layer: White bg + Grey outline
+            isDrawingLayer = false; // Normal mode
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.strokeStyle = '#9CA3AF';
+            ctx.strokeStyle = '#9CA3AF'; // Grey outline kanipinchali
             ctx.lineWidth = outlineStroke;
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
             ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
             document.getElementById('letterText').textContent = letters[letterIndex];
-        }
-
-        function createMask() {
-            // Hidden Mask Layer: Lopala black, bayata white
-            maskCtx.fillStyle = '#FFFFFF'; // Bayata white = block
-            maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
-            maskCtx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
-            maskCtx.textAlign = 'center';
-            maskCtx.textBaseline = 'middle';
-            maskCtx.fillStyle = '#000'; // Lopala black = allow
-            maskCtx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
-        }
-
-        function isInsideA(x, y) {
-            // Mask lo ee pixel black na ani check chey
-            const pixel = maskCtx.getImageData(x, y, 1, 1).data;
-            return pixel[0] < 50; // Black ante 0
         }
 
         function setColor(color, el) {
@@ -126,32 +104,46 @@
         function startDraw(e) {
             e.preventDefault();
             const pos = getPos(e);
-            if (isInsideA(pos.x, pos.y)) {
-                drawing = true;
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            }
+            drawing = true;
+            isDrawingLayer = true; // KEY ON: Ippudu drawing mode
+
+            ctx.save();
+            // STEP 1: Full canvas ni color tho fill chey
+            ctx.fillStyle = currentColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // STEP 2: A outline matrame unchukoni, migata color delete chey
+            ctx.globalCompositeOperation = 'destination-in'; // A unna chota matrame color unchuko
+            ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.lineWidth = outlineStroke + 4; // 4px extra = Easy ga rayadaniki
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2); // Outline mask
+
+            ctx.globalCompositeOperation = 'source-over'; // Malli normal mode
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
         }
 
         function draw(e) {
-            if (!drawing) return;
+            if (!drawing ||!isDrawingLayer) return;
             e.preventDefault();
             const pos = getPos(e);
-            if (isInsideA(pos.x, pos.y)) {
-                ctx.lineTo(pos.x, pos.y);
-                ctx.strokeStyle = currentColor;
-                ctx.lineWidth = 20; // Thick brush = Easy fill
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.stroke();
-            } else {
-                drawing = false; // Bayataki vaste aapesey
-            }
+            ctx.lineTo(pos.x, pos.y);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 20; // Thick brush
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
         }
 
         function stopDraw(e) {
             if (e) e.preventDefault();
             drawing = false;
+            isDrawingLayer = false;
+            ctx.restore(); // Mask teesey
         }
 
         canvas.addEventListener('mousedown', startDraw);
@@ -163,8 +155,8 @@
         canvas.addEventListener('touchend', stopDraw, {passive: false});
 
         function clearCanvas() { drawLetter(); }
-        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; drawLetter(); createMask(); }
-        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; drawLetter(); createMask(); }
+        function nextLetter() { letterIndex = (letterIndex + 1) % letters.length; drawLetter(); }
+        function prevLetter() { letterIndex = (letterIndex - 1 + letters.length) % letters.length; drawLetter(); }
 
         window.addEventListener('load', initCanvas);
         window.addEventListener('resize', initCanvas);
