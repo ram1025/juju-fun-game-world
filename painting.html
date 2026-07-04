@@ -53,25 +53,26 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=80');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=81');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const maskCanvas = document.getElementById('maskCanvas'); // KEY: Hidden mask
+        const maskCanvas = document.getElementById('maskCanvas');
         const maskCtx = maskCanvas.getContext('2d');
         let drawing = false;
         let currentColor = '#EF4444';
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
         const fontSizeRatio = 0.55;
-        const outerStroke = 12;
-        const innerStroke = 8; // Gap = 4px
+        const outerStroke = 16; // KEY FIX 1: Pedda gap kosam
+        const innerStroke = 8; // Gap = 8px now
+        const brushSize = 6; // KEY FIX 2: Gap kanna chinna brush
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width - 30;
             canvas.height = 320;
-            maskCanvas.width = canvas.width; // Mask size same
+            maskCanvas.width = canvas.width;
             maskCanvas.height = canvas.height;
             document.fonts.ready.then(() => { drawLetter(); createMask(); });
         }
@@ -93,22 +94,27 @@
         }
 
         function createMask() {
-            // KEY LOGIC: Gap matrame Black. Migata motham White = Block
             maskCtx.fillStyle = '#FFFFFF';
             maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
             maskCtx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             maskCtx.textAlign = 'center';
             maskCtx.textBaseline = 'middle';
-            maskCtx.strokeStyle = '#000'; // Idhe allow area
+            maskCtx.strokeStyle = '#000';
             maskCtx.lineJoin = 'round';
             maskCtx.lineCap = 'round';
-            maskCtx.lineWidth = outerStroke - innerStroke; // 12 - 8 = 4px
+            maskCtx.lineWidth = outerStroke - innerStroke; // 8px gap
             maskCtx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
         }
 
-        function isInGap(x, y) {
-            const pixel = maskCtx.getImageData(x, y, 1, 1).data;
-            return pixel[0] < 50; // Black aithe true
+        function isInGap(x, y, tolerance = 0) {
+            // KEY FIX 3: Tolerance add chesam
+            for(let dx = -tolerance; dx <= tolerance; dx++){
+                for(let dy = -tolerance; dy <= tolerance; dy++){
+                    const pixel = maskCtx.getImageData(x+dx, y+dy, 1, 1).data;
+                    if(pixel[0] < 50) return true; // Black dorikithe
+                }
+            }
+            return false;
         }
 
         function setColor(color, el) {
@@ -130,7 +136,7 @@
         function startDraw(e) {
             e.preventDefault();
             const pos = getPos(e);
-            if (isInGap(pos.x, pos.y)) { // Gap lo ne start
+            if (isInGap(pos.x, pos.y, 3)) { // 3px tolerance tho start
                 drawing = true;
                 ctx.beginPath();
                 ctx.moveTo(pos.x, pos.y);
@@ -141,15 +147,15 @@
             if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
-            if (isInGap(pos.x, pos.y)) { // Gap lo unte matrame
+            if (isInGap(pos.x, pos.y, 0)) { // Drag chesthunnapudu strict
                 ctx.lineTo(pos.x, pos.y);
                 ctx.strokeStyle = currentColor;
-                ctx.lineWidth = 14;
+                ctx.lineWidth = brushSize;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.stroke();
             } else {
-                drawing = false; // Black touch cheste stop
+                drawing = false;
             }
         }
 
