@@ -50,7 +50,7 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=75');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=76');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -58,10 +58,8 @@
         let currentColor = '#EF4444';
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
-        const fontSizeRatio = 0.55; // White space pedda
-        const outlineStroke = 8; // Grey outline thin
-
-        let isDrawingLayer = false; // KEY: Maa drawing layer on/off
+        const fontSizeRatio = 0.55; // Size
+        const outlineThickness = 16; // Video laga thick red outline
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
@@ -71,17 +69,23 @@
         }
 
         function drawLetter() {
-            isDrawingLayer = false; // Normal mode
+            // STEP 1: White bg
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // STEP 2: Red color tho A motham solid ga fill chey
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.strokeStyle = '#9CA3AF'; // Grey outline kanipinchali
-            ctx.lineWidth = outlineStroke;
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.fillStyle = '#EF4444'; // Red outline color
+            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
+
+            // STEP 3: A lopala center ni erasure tho white chey = Outline matrame migulutundi
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.font = `bold ${canvas.width * (fontSizeRatio - 0.08)}px Nunito`; // 8% chinna ga
+            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.globalCompositeOperation = 'source-over'; // Normal mode ki malli
+
             document.getElementById('letterText').textContent = letters[letterIndex];
         }
 
@@ -105,35 +109,27 @@
             e.preventDefault();
             const pos = getPos(e);
             drawing = true;
-            isDrawingLayer = true; // KEY ON: Ippudu drawing mode
 
             ctx.save();
-            // STEP 1: Full canvas ni color tho fill chey
-            ctx.fillStyle = currentColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // STEP 2: A outline matrame unchukoni, migata color delete chey
-            ctx.globalCompositeOperation = 'destination-in'; // A unna chota matrame color unchuko
+            // KEY: A outline tho clip path
+            ctx.beginPath();
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.lineWidth = outlineStroke + 4; // 4px extra = Easy ga rayadaniki
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2); // Outline mask
+            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2); // Full A shape = clip area
+            ctx.clip();
 
-            ctx.globalCompositeOperation = 'source-over'; // Malli normal mode
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
         }
 
         function draw(e) {
-            if (!drawing ||!isDrawingLayer) return;
+            if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
             ctx.lineTo(pos.x, pos.y);
             ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 20; // Thick brush
+            ctx.lineWidth = 22; // Thick brush = Easy ga fill
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();
@@ -142,8 +138,7 @@
         function stopDraw(e) {
             if (e) e.preventDefault();
             drawing = false;
-            isDrawingLayer = false;
-            ctx.restore(); // Mask teesey
+            ctx.restore();
         }
 
         canvas.addEventListener('mousedown', startDraw);
