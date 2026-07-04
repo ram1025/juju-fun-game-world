@@ -10,21 +10,21 @@
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Nunito', sans-serif; background: #3B82F6; min-height: 100vh; padding: 20px; overscroll-behavior: none; }
-    .header { display: flex; align-items: center; margin-bottom: 20px; }
-    .back-btn { background: white; border: none; padding: 12px 20px; border-radius: 15px; font-size: 18px; font-weight: 900; color: #F97316; cursor: pointer; }
-    .container { background: #FEF3C7; padding: 25px; border-radius: 30px; max-width: 400px; margin: 0 auto; }
-    .letter-title { font-size: 28px; font-weight: 900; color: #F97316; text-align: center; margin-bottom: 8px; }
-    .letter-sub { font-size: 16px; font-weight: 700; color: #92400E; text-align: center; margin-bottom: 15px; }
-    .canvas-wrap { background: #FFFFFF; border: 3px solid #FDBA74; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+   .header { display: flex; align-items: center; margin-bottom: 20px; }
+   .back-btn { background: white; border: none; padding: 12px 20px; border-radius: 15px; font-size: 18px; font-weight: 900; color: #F97316; cursor: pointer; }
+   .container { background: #FEF3C7; padding: 25px; border-radius: 30px; max-width: 400px; margin: 0 auto; }
+   .letter-title { font-size: 28px; font-weight: 900; color: #F97316; text-align: center; margin-bottom: 8px; }
+   .letter-sub { font-size: 16px; font-weight: 700; color: #92400E; text-align: center; margin-bottom: 15px; }
+   .canvas-wrap { background: #FFFFFF; border: 3px solid #FDBA74; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
         #canvas { width: 100%; height: 320px; border-radius: 15px; touch-action: none; display: block; background: #FFFFFF; }
-    .controls { display: flex; gap: 10px; margin-bottom: 15px; }
-    .ctrl-btn { flex: 1; padding: 14px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; }
-    .clear-btn { background: #EF4444; color: white; }
-    .back-btn-2 { background: #3B82F6; color: white; }
-    .next-btn { background: #10B981; color: white; }
-    .colors { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-    .color { width: 45px; height: 45px; border-radius: 50%; border: 3px solid white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-    .color.active { border: 4px solid #1F2937; transform: scale(1.15); }
+   .controls { display: flex; gap: 10px; margin-bottom: 15px; }
+   .ctrl-btn { flex: 1; padding: 14px; border: none; border-radius: 15px; font-size: 16px; font-weight: 800; cursor: pointer; }
+   .clear-btn { background: #EF4444; color: white; }
+   .back-btn-2 { background: #3B82F6; color: white; }
+   .next-btn { background: #10B981; color: white; }
+   .colors { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+   .color { width: 45px; height: 45px; border-radius: 50%; border: 3px solid white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+   .color.active { border: 4px solid #1F2937; transform: scale(1.15); }
     </style>
 </head>
 <body>
@@ -50,7 +50,7 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=67');} // v=67
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=68');} // v=68
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -64,15 +64,38 @@
             const rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width - 30;
             canvas.height = 320;
-            drawLetter();
+            document.fonts.ready.then(drawLetter); // Font load ayyaka draw chey
+        }
+
+        function getLetterPath() {
+            const fontSize = canvas.width * fontSizeRatio;
+            ctx.font = `bold ${fontSize}px Nunito`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const text = letters[letterIndex];
+            const metrics = ctx.measureText(text);
+            const x = canvas.width/2 - metrics.width/2;
+            const y = canvas.height/2 + fontSize/2.5; // baseline adjust
+
+            // Offscreen canvas to create path from text
+            const off = document.createElement('canvas');
+            off.width = canvas.width;
+            off.height = canvas.height;
+            const octx = off.getContext('2d');
+            octx.font = ctx.font;
+            octx.textAlign = 'center';
+            octx.textBaseline = 'middle';
+            octx.fillText(text, canvas.width/2, canvas.height/2);
+
+            const path = new Path2D();
+            // Path2D ki text direct ga ivvalem, so strokeText ni path ga use chestham
+            // Easiest hack: use isPointInPath check while drawing
+            return null; // Hack use chestham kindha
         }
 
         function drawLetter() {
-            // 1. Full White Background
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // 2. Nalla A Outline matrame kanipinchali
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -100,23 +123,20 @@
             return { x, y };
         }
 
-        // KEY FIX: fillText tho clip cheyadam
-        function startDraw(e) {
-            e.preventDefault();
-            drawing = true;
-            const pos = getPos(e);
-
-            ctx.save(); // Canvas state save
-
-            // STEP 1: A ni fillText tho path ga marchi clip chey
-            ctx.beginPath();
+        // SUPER SIMPLE FIX: isPointInPath use chestham
+        function isInsideA(x, y) {
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2); // fillText important
-            ctx.clip(); // Idhe: A shape lopala matrame draw avvadaniki
+            return ctx.isPointInPath(x, y, letters[letterIndex]); // Canvas 2D API
+        }
 
-            // STEP 2: Ippudu brush start chey
+        function startDraw(e) {
+            e.preventDefault();
+            const pos = getPos(e);
+            if (!isInsideA(pos.x, pos.y)) return; // A bayata tap cheste aapesey
+
+            drawing = true;
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
         }
@@ -125,19 +145,20 @@
             if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
+            // Prati point A lopala unda check chey
+            if (!isInsideA(pos.x, pos.y)) {
+                drawing = false; // Bayataki vellagaane aapi vey
+                return;
+            }
             ctx.lineTo(pos.x, pos.y);
             ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 18; // Brush size - thick pettam
+            ctx.lineWidth = 18;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();
         }
 
-        function stopDraw(e) {
-            if (e) e.preventDefault();
-            drawing = false;
-            ctx.restore(); // Clip remove. Leka pothe nalla border kuda rayadu.
-        }
+        function stopDraw(e) { if (e) e.preventDefault(); drawing = false; }
 
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
