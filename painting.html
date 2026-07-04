@@ -50,7 +50,7 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=71');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=73');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -58,8 +58,9 @@
         let currentColor = '#EF4444';
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
-        const fontSizeRatio = 0.55; // White space pedda
-        const visibleStroke = 8; // Grey line thin
+        const fontSizeRatio = 0.55; // A size taggincham = White space ekkuva
+        const outlineStroke = 8; // Grey line kanipinchadaniki
+        const clipStroke = 10; // Clip area koncham thick = Easy ga rayadaniki
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
@@ -69,16 +70,20 @@
         }
 
         function drawLetter() {
+            // 1. Background white
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Grey Outline matrame draw chey
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.strokeStyle = '#9CA3AF'; // Grey outline
-            ctx.lineWidth = visibleStroke;
+            ctx.strokeStyle = '#9CA3AF';
+            ctx.lineWidth = outlineStroke;
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
             ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+
             document.getElementById('letterText').textContent = letters[letterIndex];
         }
 
@@ -98,27 +103,25 @@
             return { x, y };
         }
 
-        // KEY FIX: Mask layer method - 0 Lag
         function startDraw(e) {
             e.preventDefault();
             const pos = getPos(e);
             drawing = true;
 
-            ctx.save();
-            // STEP 1: Full canvas color tho fill chey
-            ctx.fillStyle = currentColor; 
-            ctx.fillRect(0,0, canvas.width, canvas.height);
+            ctx.save(); // Save state
 
-            // STEP 2: A shape matrame unchuko, migata delete chey
-            ctx.globalCompositeOperation = 'destination-in'; 
+            // KEY: Outline tho clip path create chey
+            ctx.beginPath();
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#000';
-            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2); // Fill = Mask
-            
-            ctx.globalCompositeOperation = 'source-over'; // Malli normal mode ki
-            
+            ctx.lineWidth = clipStroke; // 10px = Outline + lopala 1px space
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.clip(); // Ippudu ee area lo matrame draw avutundi
+
+            // Brush start
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
         }
@@ -129,7 +132,7 @@
             const pos = getPos(e);
             ctx.lineTo(pos.x, pos.y);
             ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 18; // Brush thick
+            ctx.lineWidth = 20; // Brush chala thick = Easy ga fill cheyadaniki
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();
@@ -138,7 +141,7 @@
         function stopDraw(e) {
             if (e) e.preventDefault();
             drawing = false;
-            ctx.restore(); // Mask teesey
+            ctx.restore(); // Clip teesey
         }
 
         canvas.addEventListener('mousedown', startDraw);
