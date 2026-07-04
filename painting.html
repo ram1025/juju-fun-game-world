@@ -31,7 +31,7 @@
     <div class="header"><button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button></div>
     <div class="container">
         <div class="letter-title">Paint Letter: <span id="letterText">A</span></div>
-        <div class="letter-sub">A bayata matrame rayi 🖍️</div>
+        <div class="letter-sub">Dots lopala matrame rayi 🖍️</div>
         <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
         <div class="controls">
             <button class="ctrl-btn clear-btn" onclick="clearCanvas()">Clear</button>
@@ -50,7 +50,7 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=83');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=85');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -59,7 +59,8 @@
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let letterIndex = 0;
         const fontSizeRatio = 0.55;
-        const brushSize = 20; // Easy fill kosam pedda brush
+        const dotSize = 8; // Dotted size
+        const gapSize = 4; // Dots madhyalo gap
 
         function initCanvas() {
             const rect = canvas.parentElement.getBoundingClientRect();
@@ -69,22 +70,23 @@
         }
 
         function drawLetter() {
-            // KEY CHANGE: Single Black Outline. Lopala White.
+            // KEY: Dotted A
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#000'; // Black fill
-            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
-            document.getElementById('letterText').textContent = letters[letterIndex];
-        }
+            ctx.fillStyle = '#000';
 
-        function isOnWhite(x, y) {
-            // KEY: Ee pixel white na? Okkasari check
-            if(x < 0 || y < 0 || x >= canvas.width || y >= canvas.height) return false;
-            const pixel = ctx.getImageData(x, y, 1, 1).data;
-            return pixel[0] > 200 && pixel[1] > 200 && pixel[2] > 200; // White
+            // Dotted effect kosam
+            ctx.setLineDash([dotSize, gapSize]); // 8px dot, 4px gap
+            ctx.lineWidth = dotSize;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.strokeText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.setLineDash([]); // Reset
+
+            document.getElementById('letterText').textContent = letters[letterIndex];
         }
 
         function setColor(color, el) {
@@ -106,32 +108,37 @@
         function startDraw(e) {
             e.preventDefault();
             const pos = getPos(e);
-            if (isOnWhite(pos.x, pos.y)) { // White meeda start cheste matrame
-                drawing = true;
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            }
+            drawing = true;
+
+            ctx.save();
+            // KEY: Solid A tho clip. Dots bayataki raavu.
+            ctx.beginPath();
+            ctx.font = `bold ${canvas.width * fontSizeRatio}px Nunito`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(letters[letterIndex], canvas.width/2, canvas.height/2);
+            ctx.clip(); // Idhi lopala matrame allow chestundi
+
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
         }
 
         function draw(e) {
             if (!drawing) return;
             e.preventDefault();
             const pos = getPos(e);
-            if (isOnWhite(pos.x, pos.y)) { // White lo unte matrame
-                ctx.lineTo(pos.x, pos.y);
-                ctx.strokeStyle = currentColor;
-                ctx.lineWidth = brushSize;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.stroke();
-            } else {
-                drawing = false; // Black touch cheste stop
-            }
+            ctx.lineTo(pos.x, pos.y);
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 20; // Easy fill
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
         }
 
         function stopDraw(e) {
             if (e) e.preventDefault();
             drawing = false;
+            ctx.restore();
         }
 
         canvas.addEventListener('mousedown', startDraw);
