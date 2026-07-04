@@ -22,7 +22,7 @@
         gap: 15px;
         margin-bottom: 20px;
     }
- .back-btn {
+ .back-btn 
         background: white;
         border: none;
         width: 45px;
@@ -32,25 +32,25 @@
         font-weight: 900;
         cursor: pointer;
     }
- .header-title {
+ .header-title 
         font-size: 28px;
         font-weight: 900;
         color: white;
     }
- .container {
+ .container 
         background: white;
         padding: 30px;
         border-radius: 30px;
         max-width: 400px;
         margin: 0 auto;
     }
- .avatar-wrapper {
+ .avatar-wrapper 
         position: relative;
         width: 120px;
         height: 120px;
         margin: 0 auto 30px;
     }
- .avatar {
+ .avatar 
         width: 120px;
         height: 120px;
         border-radius: 50%;
@@ -197,7 +197,7 @@
 
     <script>
         
-         if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=61'); }
+         if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=62'); }
         let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
        window.addEventListener('DOMContentLoaded', () => {
@@ -235,22 +235,23 @@ window.addEventListener('load', () => {
     alert('Please enter Full Name!');
     return;
   }
+  
   localStorage.setItem('jujuName', name);
-localStorage.setItem('jujuAvatar', currentAvatar);
-  // ... (nee rest of the code undi kanuka)
-}
-            localStorage.setItem('jujuAvatar', currentAvatar);
-            localStorage.setItem('jujuName', name);
-            localStorage.setItem('jujuNickname', document.getElementById('nickname').value.trim());
-            localStorage.setItem('jujuDob', document.getElementById('dob').value);
-            localStorage.setItem('jujuEmail', document.getElementById('email').value.trim());
-            localStorage.setItem('jujuPhone', document.getElementById('phone').value.trim());
-            localStorage.setItem('jujuBlood', document.getElementById('bloodGroup').value);
-            localStorage.setItem('jujuFather', document.getElementById('fatherName').value.trim());
-            localStorage.setItem('jujuMother', document.getElementById('motherName').value.trim());
-            alert('Profile saved! 🎉');
-            location.href = './dashboard.html';
-        }
+  localStorage.setItem('jujuAvatar', currentAvatar);
+  
+  // ✅ Nee migatha code motham ikkada pettu
+  localStorage.setItem('jujuNickname', document.getElementById('nickname').value.trim());
+  localStorage.setItem('jujuDob', document.getElementById('dob').value);
+  localStorage.setItem('jujuEmail', document.getElementById('email').value.trim());
+  localStorage.setItem('jujuPhone', document.getElementById('phone').value.trim());
+  localStorage.setItem('jujuBlood', document.getElementById('bloodGroup').value);
+  localStorage.setItem('jujuFather', document.getElementById('fatherName').value.trim());
+  localStorage.setItem('jujuMother', document.getElementById('motherName').value.trim());
+  
+  alert('Profile saved! 🎉');
+  location.href = './dashboard.html';
+
+} // ✅ Ippudu function ikkada close chey
     </script>
 </body>
 </html>
