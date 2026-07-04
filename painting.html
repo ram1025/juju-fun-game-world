@@ -61,9 +61,9 @@
             {n:'Pentagon', e:'⬟', path: (p,cx,cy,r) => { // NEW 8/10
                 for(let i=0;i<5;i++){let ang=(i*72-90)*Math.PI/180; p.lineTo(cx+r*Math.cos(ang), cy+r*Math.sin(ang));} p.closePath();
             }},
-            {n:'Cone', e:'🍦', path: (p,cx,cy,r) => { // NEW 9/10
-                p.moveTo(cx,cy-r); p.lineTo(cx-r*0.8,cy+r*0.8); p.lineTo(cx+r*0.8,cy+r*0.8); p.closePath();
-            }},
+         {n:'Cone', e:'🍦', path: (p,cx,cy,r) => { // NEW 10/10
+    p.moveTo(cx,cy+r); p.lineTo(cx-r*0.8,cy-r*0.8); p.lineTo(cx+r*0.8,cy-r*0.8); p.closePath();
+}},
         ];
         let idx = 0, drawing = false, curCol = '#EF4444';
         let cw, ch, cx, cy, r;
