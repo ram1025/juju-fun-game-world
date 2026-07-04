@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v59';
+const CACHE_NAME = 'juju-fun-world-v59'; // <-- Ikkada v number marchu
 const urlsToCache = [
     './',
     './index.html',
@@ -58,13 +58,15 @@ const urlsToCache = [
     './assets/audio/number-20.mp3'
 ];
 
+// 1. Install - Kottha files cache lo pettadam
 self.addEventListener('install', (event) => {
-    self.skipWaiting();
+    self.skipWaiting(); // Purana SW ni wait cheyinchakunda kotthadi activate chey
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
     );
 });
 
+// 2. Activate - Purana v58, v57... anni caches delete cheyadam 🔑
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -72,10 +74,11 @@ self.addEventListener('activate', (event) => {
                 cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
                     .map((cacheName) => caches.delete(cacheName))
             );
-        }).then(() => self.clients.claim())
+        }).then(() => self.clients.claim()) // Anni tabs lo kottha SW ni control lo ki teesuko
     );
 });
 
+// 3. Fetch - Cache first, lekapothe Network nunchi teesuko
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
