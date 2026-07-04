@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Paint & Learn - Juju Fun World</title>
+    <title>Paint 10 Shapes - Juju Fun World</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3B82F6">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
         body { font-family: 'Baloo 2', sans-serif; background: #3B82F6; min-height: 100vh; padding: 15px; }
-   .header { margin-bottom: 10px; }
-   .back-top-btn { background: white; border: none; padding: 10px 20px; border-radius: 15px; font-size: 16px; font-weight: 900; color: #F97316; cursor: pointer; }
-  .container { background: #FFF7ED; padding: 20px; border-radius: 30px; max-width: 400px; margin: 0 auto; text-align: center; }
-  .letter-head { font-size: 28px; font-weight: 900; color: #F97316; margin-bottom: 5px; }
-  .letter-word { font-size: 20px; font-weight: 700; color: #1F2937; margin-bottom: 10px; }
-  .letter-sub { font-size: 16px; font-weight: 700; color: #92400E; margin-bottom: 10px; }
-  .canvas-wrap { background: #FFFFFF; border: 4px solid #FDBA74; border-radius: 20px; }
+ .header { margin-bottom: 10px; }
+ .back-top-btn { background: white; border: none; padding: 10px 20px; border-radius: 15px; font-size: 16px; font-weight: 900; color: #F97316; cursor: pointer; }
+.container { background: #FFF7ED; padding: 20px; border-radius: 30px; max-width: 400px; margin: 0 auto; text-align: center; }
+.letter-head { font-size: 32px; font-weight: 900; color: #F97316; margin-bottom: 5px; }
+.letter-word { font-size: 20px; font-weight: 700; color: #1F2937; margin-bottom: 10px; }
+.letter-sub { font-size: 16px; font-weight: 700; color: #92400E; margin-bottom: 10px; }
+.canvas-wrap { background: #FFFFFF; border: 4px solid #FDBA74; border-radius: 20px; }
         #canvas { width: 100%; height: 300px; display: block; border-radius: 16px; background: #fff; }
-  .controls { display: flex; gap: 8px; margin: 12px 0; }
-  .btn { flex: 1; padding: 12px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; color: white; font-size: 15px; }
-  .colors { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-  .color { width: 42px; height: 42px; border-radius: 50%; border: 3px solid white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-  .color.active { transform: scale(1.2); border: 4px solid #1F2937; }
+.controls { display: flex; gap: 8px; margin: 12px 0; }
+.btn { flex: 1; padding: 12px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; color: white; font-size: 15px; }
+.colors { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.color { width: 42px; height: 42px; border-radius: 50%; border: 3px solid white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.color.active { transform: scale(1.2); border: 4px solid #1F2937; }
     </style>
 </head>
 <body>
     <div class="header"><button class="back-top-btn" onclick="location.href='./dashboard.html'">← Back</button></div>
     <div class="container">
-        <div class="letter-head"><span id="letterText">A</span> for <span id="wordText">Apple</span></div>
-        <div class="letter-word" id="letterWord">Color the Apple 🍎</div>
+        <div class="letter-head"><span id="count">1</span>/10: <span id="shapeText">Square</span></div>
+        <div class="letter-word" id="letterWord">Color the Square 🟥</div>
         <div class="letter-sub">Outline lopala matrame rayi 🖍️</div>
         <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
         <div class="controls">
@@ -41,46 +41,23 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=97');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=99');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
-        // KEY FIX 1: Correct Words. B = Ball, not Apple
+        // KEY: 10 Easy Shapes for Kids
         const data = [
-            {l:'A', w:'Apple', e:'🍎', path: (p,cx,cy,r) => { // KEY FIX 2: Real Apple Shape
-                p.moveTo(cx, cy-r*0.8); // Top stem point
-                p.bezierCurveTo(cx+r*0.8,cy-r*0.5, cx+r*0.8,cy+r*0.3, cx,cy+r*0.8); // Right curve
-                p.bezierCurveTo(cx-r*0.8,cy+r*0.3, cx-r*0.8,cy-r*0.5, cx,cy-r*0.8); // Left curve
-                p.closePath(); // KEY: Close it
-                p.moveTo(cx,cy-r*0.8); p.lineTo(cx,cy-r*1.1); // Stem
-                p.moveTo(cx-8,cy-r*0.95); p.lineTo(cx,cy-r*1.1); p.lineTo(cx+8,cy-r*0.95); // Leaf
-            }},
-            {l:'B', w:'Ball', e:'⚽', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); p.moveTo(cx-r,cy); p.lineTo(cx+r,cy); p.moveTo(cx,cy-r); p.lineTo(cx,cy+r);}},
-            {l:'C', w:'Cat', e:'🐱', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); p.moveTo(cx-r*0.6,cy-r*0.6); p.lineTo(cx-r*0.9,cy-r*1.1); p.lineTo(cx-r*0.3,cy-r*1.1); p.closePath(); p.moveTo(cx+r*0.6,cy-r*0.6); p.lineTo(cx+r*0.9,cy-r*1.1); p.lineTo(cx+r*0.3,cy-r*1.1); p.closePath();}},
-            {l:'D', w:'Dog', e:'🐶', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); p.moveTo(cx-r*0.5,cy-r*0.3); p.arc(cx-r*0.5,cy-r*0.3,r*0.3,0,Math.PI*2); p.moveTo(cx+r*0.5,cy-r*0.3); p.arc(cx+r*0.5,cy-r*0.3,r*0.3,0,Math.PI*2);}},
-            {l:'E', w:'Elephant', e:'🐘', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); p.moveTo(cx-r*0.8,cy); p.bezierCurveTo(cx-r*1.2,cy+r,cx-r*0.5,cy+r*1.2,cx-r*0.3,cy+r*0.5);}},
-            {l:'F', w:'Fish', e:'🐟', path: (p,cx,cy,r) => {p.arc(cx,cy,r*0.8,0,Math.PI*2); p.closePath(); p.moveTo(cx+r*0.8,cy); p.lineTo(cx+r*1.2,cy-r*0.5); p.lineTo(cx+r*1.2,cy+r*0.5); p.closePath();}},
-            {l:'G', w:'Goat', e:'🐐', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); p.moveTo(cx-r*0.3,cy-r); p.lineTo(cx-r*0.3,cy-r*1.3); p.moveTo(cx+r*0.3,cy-r); p.lineTo(cx+r*0.3,cy-r*1.3);}},
-            {l:'H', w:'Hat', e:'🎩', path: (p,cx,cy,r) => {p.rect(cx-r,cy,r*2,r*0.5); p.rect(cx-r*0.7,cy-r,r*1.4,r);}},
-            {l:'I', w:'Icecream', e:'🍦', path: (p,cx,cy,r) => {p.arc(cx,cy-r*0.5,r*0.7,Math.PI,0); p.lineTo(cx+r*0.7,cy+r*0.5); p.lineTo(cx-r*0.7,cy+r*0.5); p.closePath();}},
-            {l:'J', w:'Jug', e:'🏺', path: (p,cx,cy,r) => {p.arc(cx,cy,r*0.8,0,Math.PI*2); p.closePath(); p.moveTo(cx-r*0.5,cy-r*0.8); p.lineTo(cx-r*0.5,cy-r*1.1); p.moveTo(cx+r*0.5,cy-r*0.8); p.lineTo(cx+r*0.5,cy-r*1.1);}},
-            {l:'K', w:'Kite', e:'🪁', path: (p,cx,cy,r) => {p.moveTo(cx,cy-r); p.lineTo(cx-r,cy); p.lineTo(cx,cy+r); p.lineTo(cx+r,cy); p.closePath();}},
-            {l:'L', w:'Lion', e:'🦁', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); p.moveTo(cx,cy-r); p.arc(cx,cy-r,r*0.5,0,Math.PI*2);}},
-            {l:'M', w:'Moon', e:'🌙', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.moveTo(cx+r*0.4,cy-r*0.4); p.arc(cx+r*0.4,cy-r*0.4,r,Math.PI*0.5,Math.PI*1.5,true); p.closePath();}},
-            {l:'N', w:'Nest', e:'🪺', path: (p,cx,cy,r) => {p.arc(cx,cy,r*0.8,0,Math.PI); p.lineTo(cx+r*0.8,cy); p.lineTo(cx-r*0.8,cy); p.closePath();}},
-            {l:'O', w:'Orange', e:'🍊', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath();}},
-            {l:'P', w:'Pen', e:'✒️', path: (p,cx,cy,r) => {p.rect(cx-r*0.2,cy-r,r*0.4,r*2); p.moveTo(cx-r*0.2,cy-r); p.lineTo(cx,cy-r*1.2); p.lineTo(cx+r*0.2,cy-r); p.closePath();}},
-            {l:'Q', w:'Queen', e:'👑', path: (p,cx,cy,r) => {p.moveTo(cx-r,cy+r*0.5); p.lineTo(cx-r*0.5,cy-r); p.lineTo(cx,cy+r*0.2); p.lineTo(cx+r*0.5,cy-r); p.lineTo(cx+r,cy+r*0.5); p.closePath();}},
-            {l:'R', w:'Rat', e:'🐀', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); p.moveTo(cx+r,cy); p.bezierCurveTo(cx+r*1.5,cy,cx+r*1.5,cy+r*0.5,cx+r,cy+r);}},
-            {l:'S', w:'Sun', e:'☀️', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); for(let i=0;i<8;i++){p.moveTo(cx,cy); p.lineTo(cx+r*1.5*Math.cos(i*Math.PI/4),cy+r*1.5*Math.sin(i*Math.PI/4));}}},
-            {l:'T', w:'Tiger', e:'🐯', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); p.moveTo(cx-r*0.3,cy-r*0.3); p.lineTo(cx-r*0.5,cy-r*0.5); p.moveTo(cx+r*0.3,cy-r*0.3); p.lineTo(cx+r*0.5,cy-r*0.5);}},
-            {l:'U', w:'Umbrella', e:'☂️', path: (p,cx,cy,r) => {p.arc(cx,cy-r*0.5,r,Math.PI,0); p.lineTo(cx+r,cy-r*0.5); p.lineTo(cx,cy+r*0.5); p.lineTo(cx-r,cy-r*0.5); p.closePath();}},
-            {l:'V', w:'Van', e:'🚐', path: (p,cx,cy,r) => {p.rect(cx-r,cy-r*0.5,r*2,r); p.arc(cx-r*0.5,cy+r*0.5,r*0.3,0,Math.PI*2); p.arc(cx+r*0.5,cy+r*0.5,r*0.3,0,Math.PI*2);}},
-            {l:'W', w:'Whale', e:'🐳', path: (p,cx,cy,r) => {p.ellipse(cx,cy,r*1.2,r*0.6,0,0,Math.PI*2); p.moveTo(cx-r*1.2,cy); p.bezierCurveTo(cx-r*1.5,cy-r*0.5,cx-r*1.2,cy-r*0.5,cx-r,cy); p.closePath();}},
-            {l:'X', w:'Xmas Tree', e:'🎄', path: (p,cx,cy,r) => {p.moveTo(cx,cy-r); p.lineTo(cx-r,cy); p.lineTo(cx+r,cy); p.closePath(); p.moveTo(cx,cy-r*0.3); p.lineTo(cx-r*0.7,cy+r*0.3); p.lineTo(cx+r*0.7,cy+r*0.3); p.closePath();}},
-            {l:'Y', w:'Yo', e:'🪀', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.moveTo(cx,cy-r); p.lineTo(cx,cy-r*0.5);}},
-            {l:'Z', w:'Zebra', e:'🦓', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.closePath(); for(let i=-r;i<r;i+=r*0.3){p.moveTo(cx+i,cy-r); p.lineTo(cx+i,cy+r);}}}
+            {n:'Square', e:'🟥', path: (p,cx,cy,r) => {p.rect(cx-r,cy-r,r*2,r*2);}},
+            {n:'Circle', e:'🔵', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2);}},
+            {n:'Triangle', e:'🔺', path: (p,cx,cy,r) => {p.moveTo(cx,cy-r); p.lineTo(cx-r,cy+r); p.lineTo(cx+r,cy+r); p.closePath();}},
+            {n:'Star', e:'⭐', path: (p,cx,cy,r) => {for(let i=0;i<10;i++){let ang=(18+i*36)*Math.PI/180; let rad=i%2?r*0.5:r; p.lineTo(cx+rad*Math.cos(ang), cy+rad*Math.sin(ang));} p.closePath();}},
+            {n:'Heart', e:'❤️', path: (p,cx,cy,r) => {p.moveTo(cx,cy+r*0.3); p.bezierCurveTo(cx,cy-r*0.3, cx-r,cy-r*0.3, cx-r,cy+r*0.1); p.bezierCurveTo(cx-r,cy+r*0.5, cx,cy+r*0.8, cx,cy+r*0.8); p.bezierCurveTo(cx,cy+r*0.8, cx+r,cy+r*0.5, cx+r,cy+r*0.1); p.bezierCurveTo(cx+r,cy-r*0.3, cx,cy-r*0.3, cx,cy+r*0.3); p.closePath();}},
+            {n:'Sun', e:'☀️', path: (p,cx,cy,r) => {p.arc(cx,cy,r*0.6,0,Math.PI*2); for(let i=0;i<12;i++){p.moveTo(cx,cy); p.lineTo(cx+r*Math.cos(i*Math.PI/6),cy+r*Math.sin(i*Math.PI/6));}}},
+            {n:'Cloud', e:'☁️', path: (p,cx,cy,r) => {p.arc(cx-r*0.5,cy,r*0.5,0,Math.PI*2); p.arc(cx,cy-r*0.2,r*0.6,0,Math.PI*2); p.arc(cx+r*0.5,cy,r*0.5,0,Math.PI*2); p.rect(cx-r*0.5,cy,r*2,r*0.5);}},
+            {n:'Rectangle', e:'🟫', path: (p,cx,cy,r) => {p.rect(cx-r*1.2,cy-r,r*2.4,r*2);}},
+            {n:'Diamond', e:'💎', path: (p,cx,cy,r) => {p.moveTo(cx,cy-r); p.lineTo(cx+r,cy); p.lineTo(cx,cy+r); p.lineTo(cx-r,cy); p.closePath();}},
+            {n:'Moon', e:'🌙', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.moveTo(cx+r*0.4,cy-r*0.4); p.arc(cx+r*0.4,cy-r*0.4,r,Math.PI*0.5,Math.PI*1.5,true); p.closePath();}},
         ];
         let idx = 0, drawing = false, curCol = '#EF4444';
         let cw, ch, cx, cy, r;
@@ -93,12 +70,12 @@
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, cw, ch);
 
-            document.getElementById('letterText').textContent = data[idx].l;
-            document.getElementById('wordText').textContent = data[idx].w; // KEY FIX: Separate span
-            document.getElementById('letterWord').textContent = `Color the ${data[idx].w} ${data[idx].e}`;
+            document.getElementById('count').textContent = idx+1;
+            document.getElementById('shapeText').textContent = data[idx].n;
+            document.getElementById('letterWord').textContent = `Color the ${data[idx].n} ${data[idx].e}`;
 
             drawOutline();
-            speak(data[idx].w);
+            speak(data[idx].n);
         }
 
         function getItemPath() {
@@ -162,6 +139,7 @@
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('mouseleave', stopDraw);
         canvas.addEventListener('touchstart', startDraw, {passive: false});
         canvas.addEventListener('touchmove', draw, {passive: false});
         canvas.addEventListener('touchend', stopDraw, {passive: false});
