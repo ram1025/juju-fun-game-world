@@ -7,27 +7,25 @@
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3B82F6">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
-        body { font-family: 'Nunito', sans-serif; background: #3B82F6; min-height: 100vh; padding: 20px; }
-       .header { margin-bottom: 15px; }
-       .back-top-btn { background: white; border: none; padding: 12px 24px; border-radius: 15px; font-size: 18px; font-weight: 900; color: #F97316; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-      .container { background: #FEF3C7; padding: 25px; border-radius: 30px; max-width: 400px; margin: 0 auto; }
-      .letter-title { font-size: 28px; font-weight: 900; color: #F97316; text-align: center; margin-bottom: 5px; }
-      .letter-sub { font-size: 16px; font-weight: 700; color: #92400E; text-align: center; margin-bottom: 15px; }
-      .canvas-wrap { background: #FFFFFF; border: 4px solid #FDBA74; border-radius: 20px; }
+        body { font-family: 'Baloo 2', sans-serif; background: #3B82F6; min-height: 100vh; padding: 20px; }
+      .header { margin-bottom: 15px; }
+      .back-top-btn { background: white; border: none; padding: 12px 24px; border-radius: 15px; font-size: 18px; font-weight: 900; color: #F97316; cursor: pointer; }
+     .container { background: #FFF7ED; padding: 25px; border-radius: 30px; max-width: 400px; margin: 0 auto; }
+     .letter-title { font-size: 32px; font-weight: 900; color: #F97316; text-align: center; margin-bottom: 5px; }
+     .letter-sub { font-size: 18px; font-weight: 700; color: #92400E; text-align: center; margin-bottom: 15px; }
+     .canvas-wrap { background: #FFFFFF; border: 4px solid #FDBA74; border-radius: 20px; }
         #canvas { width: 100%; height: 320px; display: block; border-radius: 16px; background: #fff; }
-      .controls { display: flex; gap: 10px; margin: 15px 0; }
-      .btn { flex: 1; padding: 14px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; color: white; font-size: 16px; }
-      .colors { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-      .color { width: 45px; height: 45px; border-radius: 50%; border: 3px solid white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-      .color.active { transform: scale(1.2); border: 4px solid #1F2937; }
+     .controls { display: flex; gap: 10px; margin: 15px 0; }
+     .btn { flex: 1; padding: 14px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; color: white; font-size: 16px; }
+     .colors { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+     .color { width: 45px; height: 45px; border-radius: 50%; border: 3px solid white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+     .color.active { transform: scale(1.2); border: 4px solid #1F2937; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <button class="back-top-btn" onclick="location.href='./dashboard.html'">← Back</button>
-    </div>
+    <div class="header"><button class="back-top-btn" onclick="location.href='./dashboard.html'">← Back</button></div>
     <div class="container">
         <div class="letter-title">Paint Letter: <span id="letterText">A</span></div>
         <div class="letter-sub">A lopala matrame rayi 🖍️</div>
@@ -41,65 +39,89 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=91');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=94');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
         let idx = 0, drawing = false, curCol = '#EF4444';
-        let cw, ch;
+        let cw, ch, cx, cy, w, h;
 
         function initCanvas() {
             cw = canvas.offsetWidth;
             ch = 320;
             canvas.width = cw;
             canvas.height = ch;
+            cx = cw/2; cy = ch/2 + 10; w = cw * 0.8; h = cw * 0.5;
+            
             ctx.fillStyle = '#FFFFFF';
             ctx.fillRect(0, 0, cw, ch);
             drawOutline();
         }
 
-        // KEY: A-Z anni letters kosam Path function
+        // KEY: A to Z All Proper Paths. No Box.
         function getLetterPath(letter) {
-            const path = new Path2D();
-            const size = cw * 0.5;
-            const x = cw/2;
-            const y = ch/2;
-            const h = size;
-            const w = size * 0.8;
+            const p = new Path2D();
+            const r = h/4;
 
             if(letter === 'A') {
-                path.moveTo(x - w/2, y + h/2);
-                path.lineTo(x, y - h/2);
-                path.lineTo(x + w/2, y + h/2);
-                path.moveTo(x - w/3, y + h/6);
-                path.lineTo(x + w/3, y + h/6);
-            } else if(letter === 'B') {
-                path.rect(x - w/2, y - h/2, w/2, h);
-                path.arc(x, y - h/2, w/2, Math.PI*1.5, Math.PI*0.5);
-                path.arc(x, y + h/2, w/2, Math.PI*1.5, Math.PI*0.5, true);
-            } else {
-                // Simple block letter for others. Nuvvu B,C,D ki custom path ivvochu
-                ctx.font = `bold ${h}px Nunito`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                // FillText ni Path ga marchadam kastam, so block use chesam
-                path.rect(x - w/2, y - h/2, w, h);
+                p.moveTo(cx - w/2, cy + h/2); p.lineTo(cx, cy - h/2); p.lineTo(cx + w/2, cy + h/2); p.closePath();
+                p.moveTo(cx - w/3, cy + h/6); p.lineTo(cx + w/3, cy + h/6); p.lineTo(cx + w/3, cy + h/6 + 14); p.lineTo(cx - w/3, cy + h/6 + 14); p.closePath();
             }
-            return path;
+            else if(letter === 'B') {
+                p.rect(cx - w/2, cy - h/2, w/3, h); // Stem
+                p.moveTo(cx - w/2 + w/3, cy - h/2); p.arc(cx - w/2 + w/3, cy - h/4, h/4, -Math.PI/2, Math.PI/2); p.lineTo(cx - w/2 + w/3, cy); // Top bowl
+                p.moveTo(cx - w/2 + w/3, cy); p.arc(cx - w/2 + w/3, cy + h/4, h/4, -Math.PI/2, Math.PI/2, true); p.lineTo(cx - w/2 + w/3, cy); // Bottom bowl
+                p.moveTo(cx - w/2 + w/3 + 5, cy - h/4); p.arc(cx - w/2 + w/3 - 10, cy - h/4, h/6, 0, Math.PI*2); // Hole 1
+                p.moveTo(cx - w/2 + w/3 + 5, cy + h/4); p.arc(cx - w/2 + w/3 - 10, cy + h/4, h/6, 0, Math.PI*2); // Hole 2
+            }
+            else if(letter === 'C') {
+                p.arc(cx, cy, h/2, Math.PI*0.2, Math.PI*1.8); p.lineWidth = 20;
+            }
+            else if(letter === 'D') {
+                p.rect(cx - w/2, cy - h/2, w/3, h); p.arc(cx - w/2 + w/3, cy, h/2, -Math.PI/2, Math.PI/2); p.closePath();
+                p.moveTo(cx - w/2 + w/3 + 5, cy); p.arc(cx - w/2 + w/3 - 15, cy, h/2 - 20, 0, Math.PI*2); // Hole
+            }
+            else { // E to Z ki simple but correct shapes
+                const map = {
+                    E: () => {p.rect(cx-w/2,cy-h/2,w/3,h); p.rect(cx-w/2,cy-h/2,w,h/4); p.rect(cx-w/2,cy-h/8,w*0.7,h/4); p.rect(cx-w/2,cy+h/2-h/4,w,h/4);},
+                    F: () => {p.rect(cx-w/2,cy-h/2,w/3,h); p.rect(cx-w/2,cy-h/2,w,h/4); p.rect(cx-w/2,cy-h/8,w*0.7,h/4);},
+                    G: () => {p.arc(cx, cy, h/2, Math.PI*0.2, Math.PI*1.8); p.rect(cx, cy-h/6, w/2, h/3);},
+                    H: () => {p.rect(cx-w/2,cy-h/2,w/4,h); p.rect(cx+w/2-w/4,cy-h/2,w/4,h); p.rect(cx-w/2,cy-h/8,w,h/4);},
+                    I: () => {p.rect(cx-w/6,cy-h/2,w/3,h); p.rect(cx-w/2,cy-h/2,w,h/4); p.rect(cx-w/2,cy+h/2-h/4,w,h/4);},
+                    J: () => {p.arc(cx, cy+h/2, h/2, 0, Math.PI); p.rect(cx-w/4,cy-h/2,w/4,h*0.8);},
+                    K: () => {p.rect(cx-w/2,cy-h/2,w/4,h); p.moveTo(cx-w/2+w/4,cy); p.lineTo(cx+w/2,cy-h/2); p.moveTo(cx-w/2+w/4,cy); p.lineTo(cx+w/2,cy+h/2);},
+                    L: () => {p.rect(cx-w/2,cy-h/2,w/4,h); p.rect(cx-w/2,cy+h/2-h/4,w,h/4);},
+                    M: () => {p.moveTo(cx-w/2,cy+h/2); p.lineTo(cx-w/2,cy-h/2); p.lineTo(cx,cy); p.lineTo(cx+w/2,cy-h/2); p.lineTo(cx+w/2,cy+h/2);},
+                    N: () => {p.rect(cx-w/2,cy-h/2,w/4,h); p.rect(cx+w/2-w/4,cy-h/2,w/4,h); p.moveTo(cx-w/2+w/4,cy-h/2); p.lineTo(cx+w/2-w/4,cy+h/2);},
+                    O: () => {p.arc(cx,cy,h/2,0,Math.PI*2); p.moveTo(cx,cy); p.arc(cx,cy,h/2-20,0,Math.PI*2);},
+                    P: () => {p.rect(cx-w/2,cy-h/2,w/3,h); p.arc(cx-w/2+w/3,cy-h/4,h/4, -Math.PI/2, Math.PI/2); p.moveTo(cx-w/2+w/3+5,cy-h/4); p.arc(cx-w/2+w/3-10,cy-h/4,h/6,0,Math.PI*2);},
+                    Q: () => {p.arc(cx,cy,h/2,0,Math.PI*2); p.moveTo(cx,cy); p.arc(cx,cy,h/2-20,0,Math.PI*2); p.moveTo(cx+w/4,cy+w/4); p.lineTo(cx+w/2,cy+h/2);},
+                    R: () => {p.rect(cx-w/2,cy-h/2,w/3,h); p.arc(cx-w/2+w/3,cy-h/4,h/4, -Math.PI/2, Math.PI/2); p.moveTo(cx-w/2+w/3+5,cy-h/4); p.arc(cx-w/2+w/3-10,cy-h/4,h/6,0,Math.PI*2); p.moveTo(cx-w/2+w/4,cy); p.lineTo(cx+w/2,cy+h/2);},
+                    S: () => {p.arc(cx,cy-h/4,h/4,0,Math.PI); p.arc(cx,cy+h/4,h/4,Math.PI,Math.PI*2);},
+                    T: () => {p.rect(cx-w/2,cy-h/2,w,h/4); p.rect(cx-w/6,cy-h/2,w/3,h);},
+                    U: () => {p.rect(cx-w/2,cy-h/2,w/4,h*0.8); p.rect(cx+w/2-w/4,cy-h/2,w/4,h*0.8); p.arc(cx,cy+h/2,h/2,0,Math.PI);},
+                    V: () => {p.moveTo(cx-w/2,cy-h/2); p.lineTo(cx,cy+h/2); p.lineTo(cx+w/2,cy-h/2);},
+                    W: () => {p.moveTo(cx-w/2,cy-h/2); p.lineTo(cx-w/4,cy+h/2); p.lineTo(cx,cy); p.lineTo(cx+w/4,cy+h/2); p.lineTo(cx+w/2,cy-h/2);},
+                    X: () => {p.moveTo(cx-w/2,cy-h/2); p.lineTo(cx+w/2,cy+h/2); p.moveTo(cx+w/2,cy-h/2); p.lineTo(cx-w/2,cy+h/2);},
+                    Y: () => {p.moveTo(cx-w/2,cy-h/2); p.lineTo(cx,cy); p.lineTo(cx+w/2,cy-h/2); p.rect(cx-w/6,cy,w/3,h/2);},
+                    Z: () => {p.rect(cx-w/2,cy-h/2,w,h/4); p.moveTo(cx+w/2,cy-h/2); p.lineTo(cx-w/2,cy+h/2); p.rect(cx-w/2,cy+h/2-h/4,w,h/4);}
+                };
+                if(map[letter]) map[letter]();
+            }
+            return p;
         }
 
         function drawOutline() {
-            const letter = letters[idx];
-            const path = getLetterPath(letter);
-            ctx.strokeStyle = '#9CA3AF';
-            ctx.lineWidth = 12;
+            const path = getLetterPath(letters[idx]);
+            ctx.strokeStyle = '#6B7280';
+            ctx.lineWidth = 14;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.setLineDash([8, 4]); // Dotted
+            ctx.setLineDash([10, 5]);
             ctx.stroke(path);
             ctx.setLineDash([]);
-            document.getElementById('letterText').textContent = letter;
+            document.getElementById('letterText').textContent = letters[idx];
         }
 
         function startDraw(e) {
@@ -107,7 +129,7 @@
             const pos = getPos(e);
             drawing = true;
             ctx.save();
-            ctx.clip(getLetterPath(letters[idx])); // KEY: Lopala matrame
+            ctx.clip(getLetterPath(letters[idx]), 'evenodd'); // KEY: Holes will not fill
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
         }
@@ -118,7 +140,7 @@
             const pos = getPos(e);
             ctx.lineTo(pos.x, pos.y);
             ctx.strokeStyle = curCol;
-            ctx.lineWidth = 26;
+            ctx.lineWidth = 30;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();
@@ -132,9 +154,10 @@
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
-            let x = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
-            let y = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
-            return { x, y };
+            return { 
+                x: (e.touches? e.touches[0].clientX : e.clientX) - rect.left,
+                y: (e.touches? e.touches[0].clientY : e.clientY) - rect.top
+            };
         }
 
         canvas.addEventListener('mousedown', startDraw);
@@ -150,7 +173,6 @@
             initCanvas();
         }
 
-        // KEY: 10 Colors add chesam
         const colors = ['#EF4444', '#F97316', '#F59E0B', '#EAB308', '#10B981', '#14B8A6', '#3B82F6', '#8B5CF6', '#A855F7', '#EC4899'];
         const palette = document.getElementById('colorPalette');
         colors.forEach(c => {
