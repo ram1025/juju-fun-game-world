@@ -71,7 +71,7 @@ setTimeout(() => {
 document.getElementById('welcomeInstallBtn').addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } else { alert('Browser Menu ⋮ → Install app'); } });
 document.getElementById('installBtn').addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } else { alert('Browser Menu ⋮ → Install app'); } });
 function saveLogin() { const name = document.getElementById('nameInput').value.trim(); if (!name) { alert('Please enter your name!'); return; } localStorage.setItem('jujuName', name); location.href = './dashboard.html'; }
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=61'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=62'); }
 </script>
 </body>
 </html>
