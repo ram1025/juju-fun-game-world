@@ -1,268 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juju Fun World</title>
-    <link rel="icon" type="image/png" href="./icon-512.png">
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#3B82F6">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    
-    <!-- Link Preview Tags -->
-    <meta property="og:title" content="JU Fun World 🐒">
-    <meta property="og:description" content="Fun learning games for toddlers! Paint letters, draw, play & learn 🎨">
-    <meta property="og:image" content="https://ram1025.github.io/juju-fun-game-world/icon-512.png">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
-    <meta property="og:url" content="https://ram1025.github.io/juju-fun-game-world/">
-    <meta property="og:type" content="website">
-    
-    <style>
-        @import url('https://fonts.googleapis.com...
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: #3B82F6;
-            min-height: 100vh; display: flex; align-items: center;
-            justify-content: center; padding: 20px;
-        }
-        .splash {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #3B82F6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    animation: fadeOut 0.5s ease 2s forwards; /* <-- `forwards` important */
-    pointer-events: none;
-}
-.splash img {
-    width: 120px;
-    height: 120px;
-    border-radius: 30px;
-    animation: zoomIn 1s ease;
-}
-@keyframes zoomIn {
-    from { transform: scale(0.5); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-@keyframes fadeOut {
-    100% { /* 0% nunchi 100% ki */
-        opacity: 0; 
-        visibility: hidden; 
-    }
-}
-        
-        .container {
-            background: #fff; padding: 40px 30px; border-radius: 30px;
-            max-width: 400px; width: 100%; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .welcome-view { display: none; }
-        .login-view { display: none; }
-        
-        .avatar-bounce {
-            width: 140px; height: 140px; border-radius: 50%;
-            border: 6px solid #EC4899; margin: 0 auto 20px;
-            object-fit: cover; background: #E5E7EB;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            animation: bounce 2s infinite;
-        }
-        .avatar-bounce img {
-            width: 100%; 
-            height: 100%; 
-            border-radius: 50%; 
-            object-fit: cover;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .welcome-name {
-            font-size: 36px; font-weight: 900; color: #EC4899;
-            margin-bottom: 10px;
-        }
-        .welcome-text {
-            font-size: 20px; font-weight: 700; color: #6B7280;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            color: #EC4899; font-weight: 900; font-size: 36px;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            color: #6B7280; font-size: 18px; font-weight: 700;
-            margin-bottom: 30px;
-        }
-        
-        .avatar-wrapper {
-            position: relative; width: 120px; height: 120px;
-            margin: 0 auto 25px;
-        }
-        .avatar {
-            width: 120px; height: 120px; border-radius: 50%;
-            border: 4px solid #EC4899; object-fit: cover;
-            background: #E5E7EB; display: flex; align-items: center;
-            justify-content: center; font-size: 50px;
-        }
-        .avatar img {
-            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
-        }
-        
-        input {
-            width: 100%; padding: 15px; border: 3px solid #E5E7EB;
-            border-radius: 15px; font-size: 18px; font-weight: 700;
-            font-family: 'Nunito', sans-serif; margin-bottom: 20px;
-            text-align: center;
-        }
-        input:focus {
-            outline: none; border-color: #3B82F6;
-        }
-        
-        .btn {
-            width: 100%; color: white; border: none; padding: 18px;
-            border-radius: 20px; font-size: 20px; font-weight: 900;
-            cursor: pointer; margin-bottom: 12px; box-shadow: 0 6px 0 #EA580C;
-        }
-        .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #EA580C; }
-        .install-btn { 
-    background: #10B981; /* Green chesa */
-    box-shadow: 0 6px 0 #059669; 
-    display: none; 
-}
-        .install-btn:active { box-shadow: 0 3px 0 #059669; }
-        .play-btn { 
-    background: #F97316; /* Orange chesa */
-    box-shadow: 0 6px 0 #EA580C; 
-}
-        .hidden { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juju Fun World</title>
+<link rel="icon" type="image/png" href="./icon-512.png">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#3B82F6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Nunito', sans-serif; background: #3B82F6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #3B82F6; display: flex; align-items: center; justify-content: center; z-index: 9999; animation: fadeOut 0.5s ease 2s forwards; }
+.splash img { width: 140px; height: 140px; border-radius: 30px; animation: zoomIn 1s ease; }
+@keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+.container { background: #fff; padding: 40px 30px; border-radius: 30px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.welcome-view { display: none; }
+.login-view { display: none; }
+.avatar-bounce { width: 140px; height: 140px; border-radius: 50%; border: 6px solid #EC4899; margin: 0 auto 20px; background: #E5E7EB; box-shadow: 0 8px 20px rgba(0,0,0,0.3); animation: bounce 2s infinite; overflow:hidden; }
+.avatar-bounce img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+.welcome-name { font-size: 32px; font-weight: 900; color: #EC4899; margin-bottom: 5px; }
+.welcome-text { font-size: 16px; font-weight: 700; color: #6B7280; margin-bottom: 25px; }
+h1 { color: #EC4899; font-weight: 900; font-size: 36px; margin-bottom: 10px; }
+.subtitle { color: #6B7280; font-size: 18px; font-weight: 700; margin-bottom: 30px; }
+input { width: 100%; padding: 15px; border: 3px solid #E5E7EB; border-radius: 15px; font-size: 18px; font-weight: 700; font-family: 'Nunito', sans-serif; margin-bottom: 20px; text-align: center; }
+input:focus { outline: none; border-color: #3B82F6; }
+.btn { width: 100%; color: white; border: none; padding: 18px; border-radius: 20px; font-size: 20px; font-weight: 900; cursor: pointer; margin-bottom: 12px; }
+.play-btn { background: #F97316; box-shadow: 0 6px 0 #EA580C; }
+.play-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #EA580C; }
+.install-btn { background: #10B981; box-shadow: 0 6px 0 #059669; display: none; margin-top:12px; }
+</style>
 </head>
 <body>
-    <div class="splash" id="splash">
-    <img src="./icon-192.png" alt="Juju">
-</div>
-
-    <div class="container">
-        
-<div class="welcome-view" id="welcomeView">
-  <div class="avatar-bounce">
-    <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar">
+<div class="splash" id="splash"> <img src="./icon-192.png" alt="Juju"> </div>
+<div class="container">
+  <div class="welcome-view" id="welcomeView">
+    <div class="avatar-bounce"> <img src="./icon-192.png" id="welcomeAvatar" alt="Avatar"> </div>
+    <div class="welcome-name">Juju</div>
+    <div class="welcome-text">Welcome back! 🎉</div>
+    <button class="btn play-btn" onclick="location.href='./dashboard.html'">Let's Play! 🚀</button>
+    <button class="btn install-btn" id="welcomeInstallBtn">📱 Install Juju App</button>
   </div>
-  <div class="welcome-name" id="welcomeName">Juju</div> <!-- Heyansh -> Juju -->
-  <div class="welcome-text">Welcome back! 🎉</div> <!-- Tap to touch -> Welcome back -->
-  <button class="btn play-btn" onclick="location.href='./dashboard.html'">Let's Play! 🚀</button> <!-- Touch to Play -> Let's Play -->
-  <button class="btn install-btn" id="welcomeInstallBtn" style="margin-top:12px;">📱 Install Juju App</button> <!-- Kindha green button -->
+  <div class="login-view" id="loginView">
+    <h1>🦁 Juju Fun World</h1>
+    <p class="subtitle">Let's get started!</p>
+    <input type="text" id="nameInput" placeholder="Enter your name" maxlength="20">
+    <button class="btn install-btn" id="installBtn">📱 Install Juju App</button>
+    <button class="btn play-btn" onclick="saveLogin()">Start Adventure! 🎮</button>
+  </div>
 </div>
-
-        <div class="login-view" id="loginView">
-            <h1>🦁 Juju Fun World</h1>
-            <p class="subtitle">Let's get started!</p>
-            
-            <div class="avatar-wrapper">
-                <div class="avatar" id="avatarPreview">
-                    <img src="./icon-192.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
-                </div>
-            </div>
-
-            <input type="text" id="nameInput" placeholder="Enter your name" maxlength="20">
-            <button class="btn install-btn" id="installBtn">📱 Install Juju App</button>
-            <button class="btn play-btn" onclick="saveLogin()">Start Adventure! 🎮</button>
-        </div>
-    </div>
-
-    <script>
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-
-    function isInstalled() {
-        return window.matchMedia('(display-mode: standalone)').matches || 
-               window.navigator.standalone === true;
-    }
-
-    setTimeout(() => {
+<script>
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBtn').style.display='block'; document.getElementById('welcomeInstallBtn').style.display='block'; });
+function isInstalled() { return window.matchMedia('(display-mode: standalone)').matches; }
+setTimeout(() => {
     const savedName = localStorage.getItem('jujuName');
     const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
     if (savedName) {
         document.getElementById('welcomeView').style.display = 'block';
         document.getElementById('loginView').style.display = 'none';
-        document.getElementById('welcomeName').textContent = 'Juju'; // Name Juju fix chesa
         document.getElementById('welcomeAvatar').src = savedPic;
-        if (!isInstalled()) {
-            document.getElementById('welcomeInstallBtn').style.display = 'block'; // Install button show
-        }
+        if (!isInstalled()) document.getElementById('welcomeInstallBtn').style.display = 'block';
     } else {
-        // ... login view same
+        document.getElementById('loginView').style.display = 'block';
     }
 }, 2000);
-
-// Welcome install button click
-document.getElementById('welcomeInstallBtn').addEventListener('click', async () => {
-    if(deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        if(outcome === 'accepted') {
-            document.getElementById('welcomeInstallBtn').style.display = 'none';
-        }
-    } else {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        if(isIOS) {
-            alert('iPhone: Share button 📤 → Add to Home Screen');
-        } else {
-            alert('Browser Menu ⋮ → Install app');
-        }
-    }
-});
-
-        document.getElementById('installBtn').addEventListener('click', async () => {
-            if(deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                if(outcome === 'accepted') {
-                    document.getElementById('installBtn').style.display = 'none';
-                }
-            } else {
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                if(isIOS) {
-                    alert('iPhone: Share button 📤 → Add to Home Screen');
-                } else {
-                    alert('Browser Menu ⋮ → Install app');
-                }
-            }
-        });
-
-        window.addEventListener('appinstalled', () => {
-            document.getElementById('installBtn').style.display = 'none';
-        });
-
-        function saveLogin() {
-            const name = document.getElementById('nameInput').value.trim();
-            if (!name) {
-                alert('Please enter your name!');
-                return;
-            }
-            localStorage.setItem('jujuName', name);
-            localStorage.setItem('jujuLoggedIn', 'true');
-            location.href = './dashboard.html';
-        }
-
-        if('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js');
-        }
-    </script>
+document.getElementById('welcomeInstallBtn').addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } else { alert('Browser Menu ⋮ → Install app'); } });
+document.getElementById('installBtn').addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } else { alert('Browser Menu ⋮ → Install app'); } });
+function saveLogin() { const name = document.getElementById('nameInput').value.trim(); if (!name) { alert('Please enter your name!'); return; } localStorage.setItem('jujuName', name); location.href = './dashboard.html'; }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=57'); }
+</script>
 </body>
 </html>
