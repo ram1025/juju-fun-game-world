@@ -10,8 +10,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
         body { font-family: 'Baloo 2', sans-serif; background: #3B82F6; min-height: 100vh; padding: 15px; }
- .header { margin-bottom: 10px; }
- .back-top-btn { background: white; border: none; padding: 10px 20px; border-radius: 15px; font-size: 16px; font-weight: 900; color: #F97316; cursor: pointer; }
+.header { margin-bottom: 10px; }
+.back-top-btn { background: white; border: none; padding: 10px 20px; border-radius: 15px; font-size: 16px; font-weight: 900; color: #F97316; cursor: pointer; }
 .container { background: #FFF7ED; padding: 20px; border-radius: 30px; max-width: 400px; margin: 0 auto; text-align: center; }
 .letter-head { font-size: 32px; font-weight: 900; color: #F97316; margin-bottom: 5px; }
 .letter-word { font-size: 20px; font-weight: 700; color: #1F2937; margin-bottom: 10px; }
@@ -41,23 +41,39 @@
     </div>
 
     <script>
-        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=99');}
+        if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=100');}
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
-        // KEY: 10 Easy Shapes for Kids
+        // KEY FIX: Sun, Cloud, Moon Redrawn
         const data = [
             {n:'Square', e:'🟥', path: (p,cx,cy,r) => {p.rect(cx-r,cy-r,r*2,r*2);}},
             {n:'Circle', e:'🔵', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2);}},
             {n:'Triangle', e:'🔺', path: (p,cx,cy,r) => {p.moveTo(cx,cy-r); p.lineTo(cx-r,cy+r); p.lineTo(cx+r,cy+r); p.closePath();}},
             {n:'Star', e:'⭐', path: (p,cx,cy,r) => {for(let i=0;i<10;i++){let ang=(18+i*36)*Math.PI/180; let rad=i%2?r*0.5:r; p.lineTo(cx+rad*Math.cos(ang), cy+rad*Math.sin(ang));} p.closePath();}},
             {n:'Heart', e:'❤️', path: (p,cx,cy,r) => {p.moveTo(cx,cy+r*0.3); p.bezierCurveTo(cx,cy-r*0.3, cx-r,cy-r*0.3, cx-r,cy+r*0.1); p.bezierCurveTo(cx-r,cy+r*0.5, cx,cy+r*0.8, cx,cy+r*0.8); p.bezierCurveTo(cx,cy+r*0.8, cx+r,cy+r*0.5, cx+r,cy+r*0.1); p.bezierCurveTo(cx+r,cy-r*0.3, cx,cy-r*0.3, cx,cy+r*0.3); p.closePath();}},
-            {n:'Sun', e:'☀️', path: (p,cx,cy,r) => {p.arc(cx,cy,r*0.6,0,Math.PI*2); for(let i=0;i<12;i++){p.moveTo(cx,cy); p.lineTo(cx+r*Math.cos(i*Math.PI/6),cy+r*Math.sin(i*Math.PI/6));}}},
-            {n:'Cloud', e:'☁️', path: (p,cx,cy,r) => {p.arc(cx-r*0.5,cy,r*0.5,0,Math.PI*2); p.arc(cx,cy-r*0.2,r*0.6,0,Math.PI*2); p.arc(cx+r*0.5,cy,r*0.5,0,Math.PI*2); p.rect(cx-r*0.5,cy,r*2,r*0.5);}},
+            {n:'Sun', e:'☀️', path: (p,cx,cy,r) => { // FIX 1: Big Circle + 8 Thick Rays
+                p.arc(cx,cy,r*0.6,0,Math.PI*2); // Center Circle
+                for(let i=0;i<8;i++){ // 8 Rays only
+                    let ang=i*Math.PI/4;
+                    p.moveTo(cx+r*0.6*Math.cos(ang),cy+r*0.6*Math.sin(ang));
+                    p.lineTo(cx+r*1.1*Math.cos(ang),cy+r*1.1*Math.sin(ang));
+                }
+            }},
+            {n:'Cloud', e:'☁️', path: (p,cx,cy,r) => { // FIX 2: 3 Overlapping Circles = Real Cloud
+                p.arc(cx-r*0.4,cy,r*0.4,0,Math.PI*2);
+                p.arc(cx,cy-r*0.2,r*0.5,0,Math.PI*2);
+                p.arc(cx+r*0.4,cy,r*0.4,0,Math.PI*2);
+            }},
             {n:'Rectangle', e:'🟫', path: (p,cx,cy,r) => {p.rect(cx-r*1.2,cy-r,r*2.4,r*2);}},
             {n:'Diamond', e:'💎', path: (p,cx,cy,r) => {p.moveTo(cx,cy-r); p.lineTo(cx+r,cy); p.lineTo(cx,cy+r); p.lineTo(cx-r,cy); p.closePath();}},
-            {n:'Moon', e:'🌙', path: (p,cx,cy,r) => {p.arc(cx,cy,r,0,Math.PI*2); p.moveTo(cx+r*0.4,cy-r*0.4); p.arc(cx+r*0.4,cy-r*0.4,r,Math.PI*0.5,Math.PI*1.5,true); p.closePath();}},
+            {n:'Moon', e:'🌙', path: (p,cx,cy,r) => { // FIX 3: Clear Crescent
+                p.arc(cx,cy,r,0,Math.PI*2);
+                p.moveTo(cx+r*0.5,cy-r);
+                p.arc(cx+r*0.5,cy,r,Math.PI*1.5,Math.PI*0.5,true); // Inner cut
+                p.closePath();
+            }},
         ];
         let idx = 0, drawing = false, curCol = '#EF4444';
         let cw, ch, cx, cy, r;
