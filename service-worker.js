@@ -1,15 +1,15 @@
-const CACHE_NAME = 'juju-fun-world-v139'; // v138 -> v139 chey
+const CACHE_NAME = 'juju-fun-world-v140'; // v139 -> v140 chey
 
 const urlsToCache = [
     './',
     './index.html',
-    './dashboard.html', // <-- ?v=108 teesesanu. Cache name eh version
+    './dashboard.html',
     './profile.html',
     './fruits.html',
     './pet-animals.html',
     './wild-animals.html',
     './vegetables.html',
-    './vehicles.html', // <-- Missing undi, add chesanu
+    './vehicles.html',
     './matching.html',
     './drag-drop.html', 
     './addition.html',
@@ -17,10 +17,11 @@ const urlsToCache = [
     './numbers.html',
     './painting.html',
     './free-draw.html',
-    './rhymes.html', // <-- Missing, add chesanu
-    './body-parts.html', // <-- Missing, add chesanu
-    './colors.html', // <-- Missing, add chesanu
-    './color-mixing.html', // <-- MOST IMPORTANT: Add chesanu
+    './rhymes.html',
+    './body-parts.html', 
+    './colors.html',
+    './color-mixing.html',
+    './shapes.html', // <-- NEW FILE ADDED v140
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
