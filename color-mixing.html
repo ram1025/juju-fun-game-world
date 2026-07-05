@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Color Mixing - Juju</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> <!-- NEW LINE -->
+<meta http-equiv="Pragma" content="no-cache"> <!-- NEW LINE -->
+<meta http-equiv="Expires" content="0"> <!-- NEW LINE -->
+<link rel="manifest" href="./manifest.json?v=138">
+<meta name="theme-color" content="#8B5CF6">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
+  body{font-family:'Nunito',sans-serif;background:#8B5CF6;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.page-heading{font-size:22px;font-weight:900;color:#7C3AED;margin-bottom:10px;}
+.instruction{font-size:16px;font-weight:700;color:#6B7280;margin-bottom:15px;min-height:40px;}
+.result-box{width:100%;height:100px;background:#F3F4F6;border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:15px;border:3px dashed #D1D5DB}
+.result-emoji{font-size:60px;transition:all.3s}
+.result-name{font-size:22px;font-weight:900;color:#7C3AED;margin-left:10px}
+.colors-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:15px}
+.color-btn{width:100%;aspect-ratio:1/1;border-radius:15px;cursor:pointer;border:4px solid transparent;transition:all.2s;font-size:30px;display:flex;align-items:center;justify-content:center}
+.color-btn:active{transform:scale(.9)}
+.color-btn.selected{border-color:#F97316;box-shadow:0 0 0 4px #FED7AA}
+.controls{display:flex;gap:12px;justify-content:center}
+.btn{background:#8B5CF6;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED;flex:1}
+.btn.back{background:#6B7280;box-shadow:0 4px 0 #4B5563}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="page-heading">🎨 Color Mixing v138</div> <!-- v138 chudu, new file load ayindo telusukodaniki -->
+    <div class="instruction" id="instruction">Touch 2 colors to mix!</div>
+    <div class="result-box" id="resultBox"><div class="result-emoji">❓</div><div class="result-name" id="resultName">?</div></div>
+    <div class="colors-grid" id="colorsGrid"></div>
+    <div class="controls">
+      <button class="btn back" onclick="location.href='./dashboard.html'">← Back</button>
+      <button class="btn" onclick="resetGame()">Reset</button>
+    </div>
+  </div>
+<script>
+  const colors = [
+    {name:'Red', emoji:'🔴', bg:'#EF4444'},{name:'Blue', emoji:'🔵', bg:'#3B82F6'},{name:'Yellow', emoji:'🟡', bg:'#FACC15'},
+    {name:'Purple', emoji:'🟣', bg:'#A855F7'},{name:'Orange', emoji:'🟠', bg:'#F97316'},{name:'Green', emoji:'🟢', bg:'#22C55E'},
+    {name:'Pink', emoji:'🩷', bg:'#EC4899'},{name:'Brown', emoji:'🟤', bg:'#A16207'},{name:'Black', emoji:'⚫', bg:'#1F2937'},{name:'White', emoji:'⚪', bg:'#FFFFFF'}
+  ];
+  // ===== 15 MIX RULES - BLUE+PINK UNDI =====
+  const mixRules = {
+    'Blue+Red': {name:'Purple', emoji:'🟣', bg:'#A855F7'},'Blue+Yellow': {name:'Green', emoji:'🟢', bg:'#22C55E'},
+    'Red+Yellow': {name:'Orange', emoji:'🟠', bg:'#F97316'},'Black+White': {name:'Grey', emoji:'⚪', bg:'#9CA3AF'},
+    'Red+White': {name:'Pink', emoji:'🩷', bg:'#EC4899'},'Blue+White': {name:'Light Blue', emoji:'🔵', bg:'#93C5FD'},
+    'Yellow+Purple': {name:'Brown', emoji:'🟤', bg:'#A16207'},'Blue+Pink': {name:'Light Purple', emoji:'🟣', bg:'#C4B5FD'},
+    'Red+Pink': {name:'Light Pink', emoji:'🩷', bg:'#FBCFE8'},'Yellow+Pink': {name:'Light Orange', emoji:'🟠', bg:'#FDBA74'},
+    'Green+Blue': {name:'Teal', emoji:'🟢', bg:'#2DD4BF'},'Red+Green': {name:'Brown', emoji:'🟤', bg:'#A16207'},
+    'Yellow+Black': {name:'Dark Green', emoji:'🟢', bg:'#15803D'},'White+Purple': {name:'Lavender', emoji:'🟣', bg:'#DDD6FE'},
+    'Orange+White': {name:'Peach', emoji:'🟠', bg:'#FED7AA'}
+  };
+  let selected = []; const synth = window.speechSynthesis;
+  const instruction = document.getElementById('instruction'); const resultBox = document.getElementById('resultBox');
+  const resultEmoji = resultBox.querySelector('.result-emoji'); const resultName = document.getElementById('resultName');
+  const colorsGrid = document.getElementById('colorsGrid');
+  function speak(text){ if(synth.speaking){ synth.cancel(); } const utter = new SpeechSynthesisUtterance(text); utter.lang = 'en-US'; utter.rate = 0.85; synth.speak(utter); }
+  function askToMix(){
+    const c1 = colors[Math.floor(Math.random()*colors.length)];
+    let c2 = colors[Math.floor(Math.random()*colors.length)];
+    while(c2.name === c1.name){ c2 = colors[Math.floor(Math.random()*colors.length)]; }
+    instruction.textContent = `Select ${c1.name} and ${c2.name}`;
+    speak(`Select ${c1.name} and ${c2.name}`);
+  }
+  colors.forEach((c, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'color-btn'; btn.style.background = c.bg; btn.textContent = c.emoji;
+    btn.onclick = ()=>selectColor(i, btn); colorsGrid.appendChild(btn);
+  });
+  function selectColor(index, btn){
+    if(selected.length >= 2 || btn.classList.contains('selected')) return;
+    selected.push(colors[index]); btn.classList.add('selected'); speak(colors[index].name);
+    if(selected.length === 2){ mixColors(); }
+  }
+  function mixColors(){
+    const [c1, c2] = selected; const key = [c1.name, c2.name].sort().join('+'); const result = mixRules[key];
+    if(result){
+      resultBox.style.background = result.bg; resultEmoji.textContent = result.emoji; resultName.textContent = result.name;
+      instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`; speak(`${c1.name} plus ${c2.name} makes ${result.name}`);
+    } else {
+      resultBox.style.background = '#FEE2E2'; resultEmoji.textContent = '😕'; resultName.textContent = 'Try Again';
+      instruction.textContent = `${c1.name} + ${c2.name} = No Mix`; speak(`Oops, try different colors`);
+    }
+    setTimeout(()=>resetGame(), 2500);
+  }
+  function resetGame(){
+    selected = []; document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('selected'));
+    resultBox.style.background = '#F3F4F6'; resultEmoji.textContent = '❓'; resultName.textContent = '?';
+    askToMix();
+  }
+  askToMix();
+</script>
+</body>
+</html>
