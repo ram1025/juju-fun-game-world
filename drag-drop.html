@@ -4,195 +4,198 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Drag & Drop - Juju</title>
+<link rel="manifest" href="./manifest.json?v=112">
+<meta name="theme-color" content="#F97316">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box;touch-action:none} /* Scroll off for drag */
-  body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#F59E0B,#FBBF24);min-height:100vh;padding:20px;text-align:center}
- .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
- .back-btn{background:#fff;border:0;border-radius:15px;padding:10px 15px;font-size:16px;font-weight:900;font-family:Nunito;box-shadow:0 4px 0 rgba(0,0,0,.2);cursor:pointer}
- .title{font-size:24px;font-weight:900;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.2)}
- .score{font-size:20px;font-weight:900;color:#fff;background:rgba(0,0,0,.2);padding:8px 15px;border-radius:15px}
- .game-box{background:#fff;border-radius:30px;padding:20px;box-shadow:0 10px 0 rgba(0,0,0,.2);max-width:450px;margin:0 auto}
- .drop-zone{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:25px}
- .target{aspect-ratio:1/1;border:4px dashed #D1D5DB;border-radius:25px;background:#F3F4F6;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#6B7280;transition:all.2s}
- .target.hover{border-color:#10B981;background:#D1FAE5;transform:scale(1.05)}
- .target.correct{border:4px solid #10B981;background:#A7F3D0;animation:pop.3s}
-  @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
- .target img{width:60px;height:60px;object-fit:contain;margin-bottom:5px}
- .drag-items{display:flex;flex-wrap:wrap;gap:15px;justify-content:center;min-height:100px}
- .draggable{width:80px;height:80px;background:#fff;border-radius:20px;box-shadow:0 6px 0 rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;cursor:grab;transition:transform.1s}
- .draggable:active{transform:scale(.9);cursor:grabbing}
- .draggable.dragging{opacity:.5}
- .draggable img{width:60px;height:60px;object-fit:contain;pointer-events:none} /* Image drag avvakunda */
- .reset-btn{margin-top:20px;background:#EF4444;color:#fff;border:0;border-radius:15px;padding:12px 25px;font-size:18px;font-weight:900;font-family:Nunito;box-shadow:0 6px 0 #B91C1C;cursor:pointer}
- .win-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:99}
- .win-box{background:#fff;border-radius:30px;padding:30px;text-align:center;animation:pop.3s}
- .win-box h2{font-size:32px;color:#10B981;margin-bottom:10px}
- .win-box p{font-size:18px;margin-bottom:20px}
+  *{margin:0;padding:0;box-sizing:border-box;touch-action:none}
+  body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;padding:15px;color:#fff}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.back-btn{background:#fff;color:#F97316;border:0;border-radius:12px;padding:10px 15px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer}
+.title{font-size:22px;font-weight:900;text-shadow:2px 2px 0 rgba(0,0,0,.2)}
+.score-box{background:rgba(0,0,0,.2);padding:8px 15px;border-radius:12px;font-size:18px;font-weight:900}
+.container{background:#fff;padding:20px;border-radius:25px;max-width:500px;margin:0 auto;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:20px}
+.dropzone{background:#F3F4F6;border:3px dashed #D1D5DB;border-radius:20px;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;transition:all.2s}
+.dropzone.hover{border-color:#10B981;background:#D1FAE5;transform:scale(1.05)}
+.dropzone img{width:60px;height:60px;object-fit:contain;margin-bottom:5px;pointer-events:none}
+.dropzone span{font-size:14px;font-weight:800;color:#4B5563;pointer-events:none}
+.dropzone.matched{border-style:solid;border-color:#10B981;background:#ECFDF5;opacity:0.7}
+.draggables{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;min-height:120px}
+.draggable{width:90px;height:90px;background:#fff;border:3px solid #F97316;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:grab;box-shadow:0 4px 0 rgba(0,0,0,.1);user-select:none}
+.draggable:active{cursor:grabbing;transform:scale(.9)}
+.draggable img{width:50px;height:50px;object-fit:contain;pointer-events:none}
+.draggable span{font-size:12px;font-weight:800;color:#F97316;pointer-events:none}
+.draggable.dragging{opacity:0.4}
+.draggable.hidden{display:none}
+.controls{display:flex;gap:10px;justify-content:center;margin-top:15px}
+.btn{background:#F97316;color:#fff;border:0;border-radius:12px;padding:12px 20px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #EA580C}
+.btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
+.win-text{text-align:center;font-size:24px;font-weight:900;color:#10B981;margin-top:10px;display:none}
 </style>
 </head>
 <body>
   <div class="header">
-    <button class="back-btn" onclick="location.href='./dashboard.html?v=109'">← Back</button>
-    <div class="title">Match Shapes!</div>
-    <div class="score">Score: <span id="score">0</span>/4</div>
+    <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
+    <div class="title">Match Objects!</div>
+    <div class="score-box">Score: <span id="score">0/10</span></div>
   </div>
 
-  <div class="game-box">
-    <!-- DROP TARGETS - Objects -->
-    <div class="drop-zone">
-      <div class="target" data-shape="circle">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Ball">
-        <span>Ball</span>
-      </div>
-      <div class="target" data-shape="square">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616433.png" alt="Box">
-        <span>Box</span>
-      </div>
-      <div class="target" data-shape="triangle">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" alt="Cone">
-        <span>Cone</span>
-      </div>
-      <div class="target" data-shape="star">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616489.png" alt="Star">
-        <span>Star</span>
-      </div>
-    </div>
-
-    <!-- DRAGGABLE SHAPES -->
-    <div class="drag-items" id="dragItems">
-      <div class="draggable" draggable="true" data-shape="triangle">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" alt="Triangle">
-      </div>
-      <div class="draggable" draggable="true" data-shape="circle">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="Circle">
-      </div>
-      <div class="draggable" draggable="true" data-shape="star">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25431.png" alt="Star">
-      </div>
-      <div class="draggable" draggable="true" data-shape="square">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25318.png" alt="Square">
-      </div>
-    </div>
-
-    <button class="reset-btn" onclick="resetGame()">🔄 Reset</button>
-  </div>
-
-  <div class="win-popup" id="winPopup">
-    <div class="win-box">
-      <h2>🎉 Super!</h2>
-      <p>All Shapes Matched!</p>
-      <button class="reset-btn" onclick="location.href='./dashboard.html?v=109'">Back to Home</button>
+  <div class="container">
+    <div class="grid" id="dropGrid"></div>
+    <div class="draggables" id="dragGrid"></div>
+    <div class="win-text" id="winText">🎉 Super! Next Round 👉</div>
+    <div class="controls">
+      <button class="btn" id="resetBtn" onclick="resetGame()">🔄 Reset</button>
+      <button class="btn" id="nextBtn" onclick="nextRound()" disabled>Next ></button>
     </div>
   </div>
 
 <script>
-let score=0;
-let draggedItem=null;
+  // ===== 2 ROUNDS DATA - TOTAL 10 ITEMS =====
+  const gameData = [
+    [{id:'dog', name:'Dog', img:'./assets/img/dog.png'},
+     {id:'cat', name:'Cat', img:'./assets/img/cat.png'},
+     {id:'ball', name:'Ball', img:'./assets/img/ball.png'},
+     {id:'apple', name:'Apple', img:'./assets/img/apple.png'},
+     {id:'car', name:'Car', img:'./assets/img/car.png'}],
+    [{id:'lion', name:'Lion', img:'./assets/img/lion.png'},
+     {id:'monkey', name:'Monkey', img:'./assets/img/monkey.png'},
+     {id:'star', name:'Star', img:'./assets/img/star.png'},
+     {id:'fish', name:'Fish', img:'./assets/img/fish.png'},
+     {id:'house', name:'House', img:'./assets/img/house.png'}]
+  ];
 
-const draggables=document.querySelectorAll('.draggable');
-const targets=document.querySelectorAll('.target');
-const scoreEl=document.getElementById('score');
-const winPopup=document.getElementById('winPopup');
+  let currentRound = 0;
+  let score = 0;
+  let matchedCount = 0;
+  let draggedItem = null;
+  const synth = window.speechSynthesis; // Voice API
 
-// 1. DRAG START
-draggables.forEach(item=>{
-  item.addEventListener('dragstart',e=>{
-    draggedItem=item;
-    item.classList.add('dragging');
-    setTimeout(()=>item.style.display='none',0); // Hide while dragging
-  });
-  item.addEventListener('dragend',e=>{
-    item.classList.remove('dragging');
-    item.style.display='flex';
-  });
+  const dropGrid = document.getElementById('dropGrid');
+  const dragGrid = document.getElementById('dragGrid');
+  const scoreEl = document.getElementById('score');
+  const nextBtn = document.getElementById('nextBtn');
+  const winText = document.getElementById('winText');
 
-  // Mobile Touch Support
-  item.addEventListener('touchstart',e=>{draggedItem=item;item.classList.add('dragging');});
-});
+  function speak(text){
+    if(synth.speaking){ synth.cancel(); } // Purana voice cut
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = 0.9;
+    synth.speak(utter);
+  }
 
-// 2. DROP TARGET EVENTS
-targets.forEach(target=>{
-  target.addEventListener('dragover',e=>{e.preventDefault();target.classList.add('hover');});
-  target.addEventListener('dragleave',()=>target.classList.remove('hover'));
+  function startRound(roundIndex){
+    const items = [...gameData[roundIndex]].sort(()=>0.5-Math.random());
+    dropGrid.innerHTML = '';
+    dragGrid.innerHTML = '';
+    matchedCount = 0;
+    nextBtn.disabled = true;
+    winText.style.display = 'none';
 
-  target.addEventListener('drop',e=>{
+    items.forEach(item=>{
+      const dz = document.createElement('div');
+      dz.className = 'dropzone';
+      dz.dataset.match = item.id;
+      dz.innerHTML = `<img src="${item.img}"><span>${item.name}</span>`;
+      dz.addEventListener('dragover', e=>{e.preventDefault(); dz.classList.add('hover')});
+      dz.addEventListener('dragleave', ()=>dz.classList.remove('hover'));
+      dz.addEventListener('drop', handleDrop);
+      dropGrid.appendChild(dz);
+    });
+
+    items.sort(()=>0.5-Math.random()).forEach(item=>{
+      const dg = document.createElement('div');
+      dg.className = 'draggable';
+      dg.dataset.id = item.id;
+      dg.draggable = true;
+      dg.innerHTML = `<img src="${item.img}"><span>${item.name}</span>`;
+      dg.addEventListener('dragstart', (e)=>{ // VOICE ADDED HERE
+        handleDragStart(e);
+        speak(item.name); // Drag chesthe name chepthundi
+      });
+      dg.addEventListener('dragend', ()=>dg.classList.remove('dragging'));
+      dragGrid.appendChild(dg);
+    });
+  }
+
+  function handleDragStart(e){
+    draggedItem = e.target;
+    e.target.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', e.target.dataset.id);
+  }
+
+  function handleDrop(e){
     e.preventDefault();
-    target.classList.remove('hover');
-    checkMatch(target);
-  });
+    e.target.classList.remove('hover');
+    const id = e.dataTransfer.getData('text/plain');
+    const matchId = e.target.dataset.match;
+    const name = gameData[currentRound].find(x=>x.id===id).name;
+
+    if(id === matchId &&!e.target.classList.contains('matched')){
+      e.target.classList.add('matched');
+      document.querySelector(`.draggable[data-id="${id}"]`).classList.add('hidden');
+      matchedCount++;
+      score++;
+      scoreEl.textContent = `${score}/10`;
+      speak('Correct! ' + name); // CORRECT VOICE
+
+      if(matchedCount === 5){
+        winText.style.display = 'block';
+        speak('Round Complete!');
+        if(currentRound < gameData.length-1){
+          nextBtn.disabled = false;
+        }
+      }
+    } else {
+      speak('Try Again'); // WRONG VOICE
+    }
+  }
+
+  function nextRound(){
+    currentRound++;
+    if(currentRound < gameData.length){
+      speak('Next Round');
+      startRound(currentRound);
+    } else {
+      winText.textContent = '🎉 10/10 Completed! Well Done!';
+      speak('Game Complete. Well Done!');
+      nextBtn.style.display = 'none';
+    }
+  }
+
+  function resetGame(){
+    currentRound = 0;
+    score = 0;
+    scoreEl.textContent = `0/10`;
+    nextBtn.style.display = 'inline-block';
+    speak('Game Reset');
+    startRound(0);
+  }
 
   // Mobile Touch Support
-  target.addEventListener('touchend',e=>{
-    if(draggedItem){checkMatch(target);draggedItem=null;}
-  });
-});
-
-function checkMatch(target){
-  if(!draggedItem)return;
-  const shape=draggedItem.dataset.shape;
-  const targetShape=target.dataset.shape;
-
-  if(shape===targetShape &&!target.classList.contains('correct')){
-    // Correct Match
-    target.classList.add('correct');
-    target.innerHTML=''; // Clear old image
-    target.appendChild(draggedItem); // Move shape into target
-    draggedItem.style.cursor='default';
-    draggedItem.draggable=false; // Lock it
-    score++;
-    scoreEl.textContent=score;
-    playSound(true);
-
-    if(score===4){
-      setTimeout(()=>winPopup.style.display='flex',500);
+  let touchItem = null;
+  document.addEventListener('touchstart', e=>{
+    if(e.target.closest('.draggable')){
+      touchItem = e.target.closest('.draggable');
+      touchItem.classList.add('dragging');
+      speak(gameData[currentRound].find(x=>x.id===touchItem.dataset.id).name); // Touch Voice
     }
-  }else{
-    // Wrong Match
-    playSound(false);
-    draggedItem.style.transform='translate(0,0)'; // Snap back effect
-  }
-}
-
-function resetGame(){
-  score=0;
-  scoreEl.textContent=0;
-  winPopup.style.display='none';
-  const dragItems=document.getElementById('dragItems');
-  targets.forEach(t=>{
-    t.classList.remove('correct');
-    const img=t.querySelector('img');
-    const span=t.querySelector('span');
-    t.innerHTML='';
-    if(img)t.appendChild(img);
-    if(span)t.appendChild(span);
+  },{passive:true});
+  document.addEventListener('touchend', e=>{
+    if(touchItem){
+      const dz = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+      if(dz && dz.closest('.dropzone')){
+        const fakeEvent = {preventDefault:()=>{}, target:dz.closest('.dropzone'), dataTransfer:{getData:()=>touchItem.dataset.id}};
+        handleDrop(fakeEvent);
+      }
+      touchItem.classList.remove('dragging');
+      touchItem = null;
+    }
   });
-  draggables.forEach(d=>{
-    d.draggable=true;
-    d.style.cursor='grab';
-    dragItems.appendChild(d); // Back to start
-  });
-  shuffle(draggables); // Randomize order
-}
 
-function shuffle(nodeList){
-  const arr=[...nodeList];
-  for(let i=arr.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    arr[i].parentNode.appendChild(arr[j]);
-  }
-}
-
-function playSound(correct){
-  // Simple beep sound using Web Audio API
-  const ctx=new(window.AudioContext||window.webkitAudioContext)();
-  const o=ctx.createOscillator();
-  o.frequency.value=correct?800:300;
-  o.connect(ctx.destination);
-  o.start();o.stop(ctx.currentTime+.1);
-}
-
-resetGame(); // Start shuffled
+  startRound(0);
 </script>
 </body>
 </html>
