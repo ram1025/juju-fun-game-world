@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Addition - Juju</title>
+<style>
+  body { margin:0; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#FEF3C7; font-family:'Nunito',sans-serif; text-align:center; }
+ .sum { font-size:120px; font-weight:800; color:#DC2626; line-height:1; }
+ .sum span { font-size:100px; }
+ .objects { font-size:80px; margin:20px 0; }
+  h1 { font-size:40px; color:#EA580C; margin-top:10px; }
+ .tap { font-size:20px; color:#92400E; }
+</style>
+</head>
+<body onclick="nextSum()">
+
+<div class="objects" id="obj1"></div>
+<div class="sum" id="sumBox"></div>
+<div class="objects" id="obj2"></div>
+<h1 id="answerText">Tap to start</h1>
+<p class="tap">Tap anywhere for Next 👆</p>
+
+<script>
+const data = [
+  {a:1, b:1, emoji:"🍎"}, // 1+1=2
+  {a:2, b:1, emoji:"🍌"}, // 2+1=3
+  {a:1, b:2, emoji:"🍊"}, // 1+2=3
+  {a:2, b:2, emoji:"🍇"}, // 2+2=4
+  {a:3, b:1, emoji:"⭐"}, // 3+1=4
+  {a:1, b:3, emoji:"⚽"}, // 1+3=4
+  {a:3, b:2, emoji:"🐶"}, // 3+2=5
+  {a:2, b:3, emoji:"🐱"}, // 2+3=5
+  {a:3, b:3, emoji:"🚗"}, // 3+3=6
+  {a:4, b:1, emoji:"🌳"} // 4+1=5
+];
+let i = 0;
+
+function speak(text){
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.7; speechSpeech.speak(u); // typo fix chesa: speechSynthesis
+}
+
+function loadSum(){
+  const {a,b,emoji} = data[i];
+  const total = a+b;
+
+  document.getElementById('obj1').textContent = emoji.repeat(a);
+  document.getElementById('obj2').textContent = emoji.repeat(b);
+  document.getElementById('sumBox').innerHTML = `${a} <span>+</span> ${b} <span>=</span>?`;
+  document.getElementById('answerText').textContent = `Answer: ${total}`;
+
+  speak(`${a} plus ${b} equals ${total}`);
+}
+
+function nextSum(){
+  i = (i + 1) % data.length; // 10 ayyaka 0 ki vastundi
+  loadSum();
+}
+loadSum();
+</script>
+</body>
+</html>
