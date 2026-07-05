@@ -1,226 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Juju Fun World</title>
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#3B82F6">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: #3B82F6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .hamburger {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: white;
-            border: none;
-            border-radius: 12px;
-            padding: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            cursor: pointer;
-            z-index: 100;
-        }
-        .hamburger span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background: #1F2937;
-            margin: 5px 0;
-            border-radius: 2px;
-        }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100%;
-            background: white;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
-            transform: translateX(-100%);
-            transition: transform 0.3s;
-            z-index: 99;
-            padding: 80px 20px 20px;
-        }
-        .sidebar.active {
-            transform: translateX(0);
-        }
-        .sidebar-btn {
-            width: 100%;
-            text-align: left;
-            padding: 15px;
-            border: none;
-            background: #F3F4F6;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        .profile-section {
-            text-align: center;
-            padding: 40px 20px 20px;
-        }
-        .dashboard-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid white;
-            margin: 0 auto 15px;
-            object-fit: cover;
-        }
-        .dashboard-name {
-            font-size: 24px;
-            font-weight: 900;
-            color: white;
-            margin-bottom: 5px;
-        }
-        .nick-text {
-            font-size: 18px;
-            font-weight: 700;
-            color: #FEF3C7;
-            margin-bottom: 25px;
-        }
-        .title-text {
-            font-size: 28px;
-            font-weight: 900;
-            color: white;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 450px;
-            margin: 0 auto;
-            padding-bottom: 40px;
-        }
-        .card {
-            border-radius: 25px;
-            padding: 25px 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-        }
-        .card:active {
-            transform: scale(0.95);
-        }
-        .card-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 15px;
-            margin: 0 auto 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-        }
-        .card-title {
-            font-size: 18px;
-            font-weight: 900;
-            color: white;
-        }
-        .card-pink { background: linear-gradient(135deg, #EC4899, #F472B6); }
-        .card-blue { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
-        .card-orange { background: linear-gradient(135deg, #F97316, #FB923C); }
-        .card-purple { background: linear-gradient(135deg, #A855F7, #C084FC); }
-        .card-green { background: linear-gradient(135deg, #10B981, #34D399); }
-        .card-yellow { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Dashboard - Juju Fun World</title>
+<link rel="manifest" href="./manifest.json?v=109">
+<meta name="theme-color" content="#3B82F6">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px;overflow-x:hidden}
+.hamburger{position:fixed;top:20px;left:20px;background:#fff;border:0;border-radius:12px;padding:12px;box-shadow:0 4px 10px rgba(0,0,0,.2);cursor:pointer;z-index:100}
+.hamburger span{display:block;width:25px;height:3px;background:#1F2937;margin:5px 0;border-radius:2px}
+.sidebar{position:fixed;top:0;left:0;width:280px;height:100%;background:#fff;box-shadow:4px 0 20px rgba(0,0,0,.3);transform:translateX(-100%);transition:transform.3s;z-index:99;padding:80px 20px 20px}
+.sidebar.active{transform:translateX(0)}
+.sidebar-btn{width:100%;text-align:left;padding:15px;border:0;background:#F3F4F6;border-radius:12px;font-size:18px;font-weight:800;margin-bottom:10px;cursor:pointer;font-family:Nunito}
+.profile-section{text-align:center;padding:40px 20px 20px}
+.avatar{width:80px;height:80px;border-radius:50%;border:3px solid #fff;margin:0 auto 15px;object-fit:cover}
+.name{font-size:24px;font-weight:900;color:#fff;margin-bottom:5px}
+.sub{font-size:18px;font-weight:700;color:#FEF3C7;margin-bottom:15px}
+
+.carousel-wrapper{max-width:450px;margin:0 auto;overflow:hidden} /* touch-action teesesanu */
+.carousel-track{display:flex;transition:transform.3s ease-out}
+.carousel-page{width:100%;flex-shrink:0;padding:0 5px; touch-action:pan-y} /* Ikkada pettanu */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+
+.card{border-radius:25px;padding:25px 15px;text-align:center;cursor:pointer;transition:all.2s;box-shadow:0 6px 15px rgba(0,0,0,.2);min-height:140px;display:flex;flex-direction:column;justify-content:center;user-select:none} /* user-select:none add */
+.card:active{transform:scale(.95)}
+.card-icon{width:60px;height:60px;background:rgba(255,255,255,.3);border-radius:15px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:32px;pointer-events:none} /* icon drag avvakunda */
+.card-title{font-size:18px;font-weight:900;color:#fff;pointer-events:none}
+.pink{background:linear-gradient(135deg,#EC4899,#F472B6)}
+.blue{background:linear-gradient(135deg,#3B82F6,#60A5FA)}
+.orange{background:linear-gradient(135deg,#F97316,#FB923C)}
+.purple{background:linear-gradient(135deg,#A855F7,#C084FC)}
+.green{background:linear-gradient(135deg,#10B981,#34D399)}
+.yellow{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
+
+.dots{display:flex;gap:8px;justify-content:center;margin-top:20px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);transition:all.3s}
+.dot.active{background:#fff;transform:scale(1.2)}
+</style>
 </head>
 <body>
-    <button class="hamburger" onclick="toggleSidebar()">
-        <span></span><span></span>
-    </button>
-    <div class="sidebar" id="sidebar">
-        <button class="sidebar-btn" onclick="location.href='./profile.html'">👤 Profile</button>
-        <button class="sidebar-btn" onclick="logoutUser()" style="color:#EF4444;">🚪 Logout</button>
-    </div>
-    <div class="profile-section">
-        <img src="./icon-192.png" class="dashboard-avatar" id="dashboardAvatar">
-        <div class="dashboard-name" id="dashboardName">JUJU</div>
-        <div class="nick-text">Choose Your Adventure! 🎮</div>
-        
-        <div class="grid">
-            <div class="card card-pink" onclick="location.href='./fruits.html'">
-                <div class="card-icon">🍎</div>
-                <div class="card-title">Fruits</div>
-            </div>
-            <div class="card card-blue" onclick="location.href='./pet-animals.html'">
-                <div class="card-icon">🐶</div>
-                <div class="card-title">Pet Animals</div>
-            </div>
-            <div class="card card-orange" onclick="location.href='./wild-animals.html'">
-                <div class="card-icon">🦁</div>
-                <div class="card-title">Wild Animals</div>
-            </div>
-            <div class="card card-purple" onclick="location.href='./vegetables.html'">
-                <div class="card-icon">🥕</div>
-                <div class="card-title">Vegetables</div>
-            </div>
-            <div class="card card-green" onclick="location.href='./matching.html'">
-                <div class="card-icon">🧩</div>
-                <div class="card-title">Matching</div>
-            </div>
-            <div class="card card-yellow" onclick="location.href='./drag&drop-popups.html'">
-                <div class="card-icon">🖐️</div>
-                <div class="card-title">Drag & Drop</div>
-            </div>
-            <div class="card card-pink" onclick="location.href='./addition.html'">
-                <div class="card-icon">➕</div>
-                <div class="card-title">Addition</div>
-            </div>
-            <div class="card card-blue" onclick="location.href='./alphabets.html'">
-                <div class="card-icon">abc</div>
-                <div class="card-title">Alphabets</div>
-            </div>
-            <div class="card card-orange" onclick="location.href='./painting.html'">
-                <div class="card-icon">🎨</div>
-                <div class="card-title">Paint Letter</div>
-            </div>
-            <div class="card card-purple" onclick="location.href='./free-draw.html'">
-                <div class="card-icon">🐒</div>
-                <div class="card-title">Free Draw</div>
-            </div>
+  <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span></button>
+  <div class="sidebar" id="sidebar">
+    <button class="sidebar-btn" onclick="location.href='./profile.html'">👤 Profile</button>
+    <button class="sidebar-btn" onclick="location.href='./index.html'" style="color:#EF4444;">🚪 Logout</button>
+  </div>
+  <div class="profile-section">
+    <img src="./icon-192.png?v=109" class="avatar" id="avatar">
+    <div class="name" id="name">JU</div>
+    <div class="sub">Swipe Left/Right 👉</div>
+
+    <div class="carousel-wrapper" id="carousel">
+      <div class="carousel-track" id="track">
+
+        <div class="carousel-page">
+          <div class="grid">
+            <div class="card pink" onclick="location.href='./fruits.html'"><div class="card-icon">🍎</div><div class="card-title">Fruits</div></div>
+            <div class="card blue" onclick="location.href='./pet-animals.html'"><div class="card-icon">🐶</div><div class="card-title">Pet Animals</div></div>
+            <div class="card orange" onclick="location.href='./wild-animals.html'"><div class="card-icon">🦁</div><div class="card-title">Wild Animals</div></div>
+            <div class="card purple" onclick="location.href='./vegetables.html'"><div class="card-icon">🥕</div><div class="card-title">Vegetables</div></div>
+          </div>
         </div>
+
+        <div class="carousel-page">
+          <div class="grid">
+            <div class="card green" onclick="location.href='./matching.html'"><div class="card-icon">🧩</div><div class="card-title">Matching</div></div>
+            <div class="card green" onclick="location.href='./numbers.html'"><div class="card-icon">🔢</div><div class="card-title">Numbers</div></div>
+            <div class="card yellow" onclick="location.href='./drag-drop.html'"><div class="card-icon">🖐️</div><div class="card-title">Drag & Drop</div></div>
+            <div class="card pink" onclick="location.href='./addition.html'"><div class="card-icon">➕</div><div class="card-title">Addition</div></div>
+          </div>
+        </div>
+
+        <div class="carousel-page">
+          <div class="grid">
+            <div class="card blue" onclick="location.href='./alphabets.html'"><div class="card-icon">abc</div><div class="card-title">Alphabets</div></div>
+            <div class="card orange" onclick="location.href='./painting.html'"><div class="card-icon">🎨</div><div class="card-title">Paint Letter</div></div>
+            <div class="card purple" onclick="location.href='./free-draw.html'"><div class="card-icon">🐒</div><div class="card-title">Free Draw</div></div>
+          </div>
+        </div>
+
+      </div>
     </div>
-        
-   <script>
-  if('serviceWorker' in navigator) { 
-    navigator.serviceWorker.register('./sw.js?v=107'); // v=107
-  }
-  let username = localStorage.getItem('jujuName') || 'JU';
-  let userImage = localStorage.getItem('jujuAvatar') || './icon-192.png';
+    <div class="dots" id="dots"></div>
+  </div>
+<script>
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=109');}
+  document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JU';
+  document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png?v=109';
+  function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
+  document.addEventListener('click',(e)=>{const s=document.getElementById('sidebar');const h=document.querySelector('.hamburger');if(!s.contains(e.target)&&!h.contains(e.target)){s.classList.remove('active')}})
 
-  if(document.getElementById('dashboardName')) {
-    document.getElementById('dashboardName').textContent = username;
-  }
-  if(document.getElementById('dashboardAvatar')) {
-    document.getElementById('dashboardAvatar').src = userImage;
-  }
+  // ===== SWIPE CODE v109 - TOUCH AREA FIX =====
+  const track=document.getElementById('track');
+  const pages=document.querySelectorAll('.carousel-page');
+  const dotsWrap=document.getElementById('dots');
+  let currentPage=0,startX=0,isDragging=false,threshold=50;
 
-  function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('active');
-  }
-  document.addEventListener('click', (e) => {
-    const sidebar = document.getElementById('sidebar');
-    const hamburger = document.querySelector('.hamburger');
-    if(!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
-      sidebar.classList.remove('active');
-    }
+  pages.forEach((_,i)=>{
+    const dot=document.createElement('div');
+    dot.className='dot';
+    if(i===0)dot.classList.add('active');
+    dot.onclick=()=>goToPage(i);
+    dotsWrap.appendChild(dot);
   });
-  function logoutUser(){
-    window.location.href = './index.html';
+  const dots=document.querySelectorAll('.dot');
+
+  function goToPage(i){
+    currentPage=Math.max(0,Math.min(i,pages.length-1));
+    track.style.transform=`translateX(-${currentPage*100}%)`;
+    dots.forEach((d,j)=>d.classList.toggle('active',currentPage===j));
   }
+
+  track.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;isDragging=true;track.style.transition='none';},{passive:true});
+  track.addEventListener('touchmove',e=>{
+    if(!isDragging)return;
+    const x=e.touches[0].clientX-startX;
+    track.style.transform=`translateX(calc(-${currentPage*100}% + ${x}px))`;
+  },{passive:true});
+  track.addEventListener('touchend',e=>{
+    if(!isDragging)return;
+    isDragging=false;
+    const x=e.changedTouches[0].clientX-startX;
+    track.style.transition='transform.3s ease-out';
+    if(x<-threshold && currentPage<pages.length-1)goToPage(currentPage+1);
+    else if(x>threshold && currentPage>0)goToPage(currentPage-1);
+    else goToPage(currentPage);
+  });
 </script>
 </body>
 </html>
