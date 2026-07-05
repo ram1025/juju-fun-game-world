@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="./manifest.json?v=132">
+<link rel="manifest" href="./manifest.json?v=133">
 <meta name="theme-color" content="#A855F7">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -12,13 +12,13 @@
   body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
 
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
-.page-heading{font-size:22px;font-weight:900;color:#7C3AED;margin-bottom:15px;} /* NEW HEADING STYLE */
+.page-heading{font-size:22px;font-weight:900;color:#7C3AED;margin-bottom:15px;}
 
-.rhyme-box{width:100%;min-height:200px;background:#F3E8FF;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s}
+.rhyme-box{width:100%;min-height:220px;max-height:300px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s}
 .rhyme-box:active{transform:scale(.98)}
 .rhyme-icon{font-size:60px;margin-bottom:10px}
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
-.rhyme-text{font-size:18px;font-weight:700;color:#4B5563;line-height:1.6;white-space:pre-line}
+.rhyme-text{font-size:17px;font-weight:700;color:#4B5563;line-height:1.6;white-space:pre-line}
 
 .controls{display:flex;gap:12px;justify-content:center}
 .btn{background:#A855F7;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED;flex:1}
@@ -31,15 +31,13 @@
 <body>
 
   <div class="card">
-    <!-- 1. PAINA HEADING - IKKADA VOICE LEDU -->
     <div class="page-heading">🎵 Kids Rhymes</div>
 
     <div class="rhyme-box" id="rhymeBox">
       <div>
         <div class="rhyme-icon" id="rhymeIcon">🎵</div>
         <div class="rhyme-title" id="rhymeTitle">Twinkle Twinkle</div>
-        <div class="rhyme-text" id="rhymeText">Twinkle, twinkle, little star,
-How I wonder what you are!</div>
+        <div class="rhyme-text" id="rhymeText"></div>
       </div>
     </div>
 
@@ -47,16 +45,20 @@ How I wonder what you are!</div>
       <button class="btn back" onclick="location.href='./dashboard.html'">← Back</button>
       <button class="btn" id="nextBtn" onclick="nextRhyme()">Next ></button>
     </div>
-    <div class="counter" id="counter">1 / 5</div>
+    <div class="counter" id="counter">1 / 8</div>
   </div>
 
 <script>
-  // ===== 5 POPULAR RHYMES - SINGING STYLE TEXT =====
+  // ===== 8 FULL RHYMES =====
   const rhymes = [
     {
       icon:'⭐',
       title:'Twinkle Twinkle',
       text:`Twinkle, twinkle, little star,
+How I wonder what you are!
+Up above the world so high,
+Like a diamond in the sky.
+Twinkle, twinkle, little star,
 How I wonder what you are!`
     },
     {
@@ -70,8 +72,60 @@ Three bags full.`
     {
       icon:'🚌',
       title:'Wheels on the Bus',
-      text:`The wheels on the bus go round and round,
-Round and round, round and round.`
+      text:`The wheels on the bus go 'round and 'round
+'Round and 'round, 'round and 'round
+The wheels on the bus go 'round and 'round
+All through the town
+
+The doors on the bus go open and shut
+Open and shut, open and shut
+The doors on the bus go open and shut
+All through the town
+
+The wipers on the bus go swish, swish, swish
+Swish, swish, swish, swish, swish, swish
+The wipers on the bus go swish, swish, swish
+All through the town
+
+The signals on the bus go blink, blink, blink
+Blink, blink, blink, blink, blink, blink
+The signals on the bus go blink, blink, blink
+All through the town
+
+The horn on the bus goes beep, beep, beep
+Beep, beep, beep, beep, beep, beep
+The horn on the bus goes beep, beep, beep
+All through the town
+
+The motor on the bus goes vroom, vroom, vroom
+Vroom, vroom, vroom, vroom, vroom, vroom
+The motor on the bus goes vroom, vroom, vroom
+All through the town
+
+The people on the bus go up and down
+Up and down, up and down
+The people on the bus go up and down
+All through the town
+
+The babies on the bus go, "Wah, wah, wah"
+"Wah, wah, wah, wah, wah, wah"
+The babies on the bus go, "Wah, wah, wah"
+All through the town
+
+The mommies on the bus go, "Shh, shh, shh"
+"Shh, shh, shh, shh, shh, shh"
+The mommies on the bus go, "Shh, shh, shh"
+All through the town
+
+The daddies on the bus go, "I love you"
+"I love you, I love you"
+The daddies on the bus go, "I love you"
+All through the town
+
+The wheels on the bus go 'round and 'round
+'Round and 'round, 'round and 'round
+The wheels on the bus go 'round and 'round
+All through the town`
     },
     {
       icon:'☀️',
@@ -90,6 +144,22 @@ Telling lies?
 No, Papa.
 Open your mouth.
 Ha ha.`
+    },
+    {
+      icon:'🥚',
+      title:'Humpty Dumpty',
+      text:`Humpty Dumpty sat on a wall,
+Humpty Dumpty had a great fall,
+All the king's horses and all the king's men,
+Couldn't put Humpty together again.`
+    },
+    {
+      icon:'🌹',
+      title:'Ring-a-Ring O Roses',
+      text:`Ring-a-ring o'roses
+A pocketful of posies
+Atishoo, atishoo
+We all fall down.`
     }
   ];
 
@@ -103,13 +173,12 @@ Ha ha.`
   const counter = document.getElementById('counter');
   const nextBtn = document.getElementById('nextBtn');
 
-  // 2. SINGING LAGA CHADAVADANIKI FIX
   function speak(text){
     if(synth.speaking){ synth.cancel(); }
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'en-US';
-    utter.rate = 0.75; // Slow chesam -> Singing laga
-    utter.pitch = 1.1; // Konchem high pitch -> Kid song laga
+    utter.rate = 0.75; // Singing speed
+    utter.pitch = 1.1;
     synth.speak(utter);
   }
 
@@ -119,6 +188,7 @@ Ha ha.`
     rhymeTitle.textContent = rhyme.title;
     rhymeText.textContent = rhyme.text;
     counter.textContent = `${index + 1} / ${rhymes.length}`;
+    rhymeBox.scrollTop = 0; // Top ki vellipothundi
 
     if(index === rhymes.length - 1){
       nextBtn.disabled = true;
@@ -128,7 +198,7 @@ Ha ha.`
       nextBtn.textContent = 'Next >';
     }
 
-    speak(rhyme.text); // <-- HEADING TITLE TESESANU. Rhyme Text matrame chaduvthundi
+    speak(rhyme.text);
   }
 
   function nextRhyme(){
@@ -138,14 +208,12 @@ Ha ha.`
     }
   }
 
-  // Rhyme Box Touch -> Voice Repeat
   rhymeBox.addEventListener('click', ()=>{
-    speak(rhymes[currentIndex].text); // <-- Ikkada kuda Title ledu
+    speak(rhymes[currentIndex].text);
     rhymeBox.style.transform = 'scale(0.98)';
     setTimeout(()=>rhymeBox.style.transform = 'scale(1)', 100);
   });
 
-  // First Load
   loadRhyme(0);
 </script>
 </body>
