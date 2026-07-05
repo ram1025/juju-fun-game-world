@@ -3,133 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Dashboard - Juju Fun World</title>
-<link rel="manifest" href="./manifest.json?v=108">
-<meta name="theme-color" content="#3B82F6">
+<title>Drag & Drop - Juju</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box;touch-action:pan-y}
-  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px;overflow-x:hidden}
- .hamburger{position:fixed;top:20px;left:20px;background:#fff;border:0;border-radius:12px;padding:12px;box-shadow:0 4px 10px rgba(0,0,0,.2);cursor:pointer;z-index:100}
- .hamburger span{display:block;width:25px;height:3px;background:#1F2937;margin:5px 0;border-radius:2px}
- .sidebar{position:fixed;top:0;left:0;width:280px;height:100%;background:#fff;box-shadow:4px 0 20px rgba(0,0,0,.3);transform:translateX(-100%);transition:transform.3s;z-index:99;padding:80px 20px 20px}
- .sidebar.active{transform:translateX(0)}
- .sidebar-btn{width:100%;text-align:left;padding:15px;border:0;background:#F3F4F6;border-radius:12px;font-size:18px;font-weight:800;margin-bottom:10px;cursor:pointer;font-family:Nunito}
- .profile-section{text-align:center;padding:40px 20px 20px}
- .avatar{width:80px;height:80px;border-radius:50%;border:3px solid #fff;margin:0 auto 15px;object-fit:cover}
- .name{font-size:24px;font-weight:900;color:#fff;margin-bottom:5px}
- .sub{font-size:18px;font-weight:700;color:#FEF3C7;margin-bottom:15px}
-
- .carousel-wrapper{max-width:450px;margin:0 auto;overflow:hidden;touch-action:pan-y}
- .carousel-track{display:flex;transition:transform.3s ease-out}
- .carousel-page{width:100%;flex-shrink:0;padding:0 5px}
- .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
-
- .card{border-radius:25px;padding:25px 15px;text-align:center;cursor:pointer;transition:all.2s;box-shadow:0 6px 15px rgba(0,0,0,.2);min-height:140px;display:flex;flex-direction:column;justify-content:center}
- .card:active{transform:scale(.95)}
- .card-icon{width:60px;height:60px;background:rgba(255,255,255,.3);border-radius:15px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:32px}
- .card-title{font-size:18px;font-weight:900;color:#fff}
- .pink{background:linear-gradient(135deg,#EC4899,#F472B6)}
- .blue{background:linear-gradient(135deg,#3B82F6,#60A5FA)}
- .orange{background:linear-gradient(135deg,#F97316,#FB923C)}
- .purple{background:linear-gradient(135deg,#A855F7,#C084FC)}
- .green{background:linear-gradient(135deg,#10B981,#34D399)}
- .yellow{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
-
- .dots{display:flex;gap:8px;justify-content:center;margin-top:20px}
- .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);transition:all.3s}
- .dot.active{background:#fff;transform:scale(1.2)}
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;touch-action:none} /* Scroll off for drag */
+  body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#F59E0B,#FBBF24);min-height:100vh;padding:20px;text-align:center}
+ .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+ .back-btn{background:#fff;border:0;border-radius:15px;padding:10px 15px;font-size:16px;font-weight:900;font-family:Nunito;box-shadow:0 4px 0 rgba(0,0,0,.2);cursor:pointer}
+ .title{font-size:24px;font-weight:900;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.2)}
+ .score{font-size:20px;font-weight:900;color:#fff;background:rgba(0,0,0,.2);padding:8px 15px;border-radius:15px}
+ .game-box{background:#fff;border-radius:30px;padding:20px;box-shadow:0 10px 0 rgba(0,0,0,.2);max-width:450px;margin:0 auto}
+ .drop-zone{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:25px}
+ .target{aspect-ratio:1/1;border:4px dashed #D1D5DB;border-radius:25px;background:#F3F4F6;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#6B7280;transition:all.2s}
+ .target.hover{border-color:#10B981;background:#D1FAE5;transform:scale(1.05)}
+ .target.correct{border:4px solid #10B981;background:#A7F3D0;animation:pop.3s}
+  @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+ .target img{width:60px;height:60px;object-fit:contain;margin-bottom:5px}
+ .drag-items{display:flex;flex-wrap:wrap;gap:15px;justify-content:center;min-height:100px}
+ .draggable{width:80px;height:80px;background:#fff;border-radius:20px;box-shadow:0 6px 0 rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;cursor:grab;transition:transform.1s}
+ .draggable:active{transform:scale(.9);cursor:grabbing}
+ .draggable.dragging{opacity:.5}
+ .draggable img{width:60px;height:60px;object-fit:contain;pointer-events:none} /* Image drag avvakunda */
+ .reset-btn{margin-top:20px;background:#EF4444;color:#fff;border:0;border-radius:15px;padding:12px 25px;font-size:18px;font-weight:900;font-family:Nunito;box-shadow:0 6px 0 #B91C1C;cursor:pointer}
+ .win-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:99}
+ .win-box{background:#fff;border-radius:30px;padding:30px;text-align:center;animation:pop.3s}
+ .win-box h2{font-size:32px;color:#10B981;margin-bottom:10px}
+ .win-box p{font-size:18px;margin-bottom:20px}
 </style>
 </head>
 <body>
-  <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span></button>
-  <div class="sidebar" id="sidebar">
-    <button class="sidebar-btn" onclick="location.href='./profile.html'">👤 Profile</button>
-    <button class="sidebar-btn" onclick="location.href='./index.html'" style="color:#EF4444;">🚪 Logout</button>
+  <div class="header">
+    <button class="back-btn" onclick="location.href='./dashboard.html?v=109'">← Back</button>
+    <div class="title">Match Shapes!</div>
+    <div class="score">Score: <span id="score">0</span>/4</div>
   </div>
-  <div class="profile-section">
-    <img src="./icon-192.png?v=108" class="avatar" id="avatar">
-    <div class="name" id="name">JUJU</div>
-    <div class="sub">Swipe to Explore! 👉</div>
 
-    <div class="carousel-wrapper" id="carousel">
-      <div class="carousel-track" id="track">
-
-        <!-- PAGE 1: 4 Cards -->
-        <div class="carousel-page">
-          <div class="grid">
-            <div class="card pink" onclick="location.href='./fruits.html'"><div class="card-icon">🍎</div><div class="card-title">Fruits</div></div>
-            <div class="card blue" onclick="location.href='./pet-animals.html'"><div class="card-icon">🐶</div><div class="card-title">Pet Animals</div></div>
-            <div class="card orange" onclick="location.href='./wild-animals.html'"><div class="card-icon">🦁</div><div class="card-title">Wild Animals</div></div>
-            <div class="card purple" onclick="location.href='./vegetables.html'"><div class="card-icon">🥕</div><div class="card-title">Vegetables</div></div>
-          </div>
-        </div>
-
-        <!-- PAGE 2: 4 Cards -->
-        <div class="carousel-page">
-          <div class="grid">
-            <div class="card green" onclick="location.href='./matching.html'"><div class="card-icon">🧩</div><div class="card-title">Matching</div></div>
-            <div class="card green" onclick="location.href='./numbers.html'"><div class="card-icon">🔢</div><div class="card-title">Numbers</div></div>
-            <div class="card yellow" onclick="location.href='./drag-drop.html'"><div class="card-icon">🖐️</div><div class="card-title">Drag & Drop</div></div> <!-- FIX: & teesesanu -->
-            <div class="card pink" onclick="location.href='./addition.html'"><div class="card-icon">➕</div><div class="card-title">Addition</div></div>
-          </div>
-        </div>
-
-        <!-- PAGE 3: 3 Cards -->
-        <div class="carousel-page">
-          <div class="grid">
-            <div class="card blue" onclick="location.href='./alphabets.html'"><div class="card-icon">abc</div><div class="card-title">Alphabets</div></div>
-            <div class="card orange" onclick="location.href='./painting.html'"><div class="card-icon">🎨</div><div class="card-title">Paint Letter</div></div>
-            <div class="card purple" onclick="location.href='./free-draw.html'"><div class="card-icon">🐒</div><div class="card-title">Free Draw</div></div>
-          </div>
-        </div>
-
+  <div class="game-box">
+    <!-- DROP TARGETS - Objects -->
+    <div class="drop-zone">
+      <div class="target" data-shape="circle">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Ball">
+        <span>Ball</span>
+      </div>
+      <div class="target" data-shape="square">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616433.png" alt="Box">
+        <span>Box</span>
+      </div>
+      <div class="target" data-shape="triangle">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" alt="Cone">
+        <span>Cone</span>
+      </div>
+      <div class="target" data-shape="star">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616489.png" alt="Star">
+        <span>Star</span>
       </div>
     </div>
-    <div class="dots" id="dots"></div>
+
+    <!-- DRAGGABLE SHAPES -->
+    <div class="drag-items" id="dragItems">
+      <div class="draggable" draggable="true" data-shape="triangle">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" alt="Triangle">
+      </div>
+      <div class="draggable" draggable="true" data-shape="circle">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="Circle">
+      </div>
+      <div class="draggable" draggable="true" data-shape="star">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25431.png" alt="Star">
+      </div>
+      <div class="draggable" draggable="true" data-shape="square">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25318.png" alt="Square">
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetGame()">🔄 Reset</button>
   </div>
+
+  <div class="win-popup" id="winPopup">
+    <div class="win-box">
+      <h2>🎉 Super!</h2>
+      <p>All Shapes Matched!</p>
+      <button class="reset-btn" onclick="location.href='./dashboard.html?v=109'">Back to Home</button>
+    </div>
+  </div>
+
 <script>
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=108');} // v108
-  document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JU';
-  document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png?v=108';
-  function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
-  document.addEventListener('click',(e)=>{const s=document.getElementById('sidebar');const h=document.querySelector('.hamburger');if(!s.contains(e.target)&&!h.contains(e.target)){s.classList.remove('active')}})
+let score=0;
+let draggedItem=null;
 
-  const track=document.getElementById('track');
-  const pages=document.querySelectorAll('.carousel-page');
-  const dotsWrap=document.getElementById('dots');
-  let currentPage=0,startX=0,isDragging=false;
+const draggables=document.querySelectorAll('.draggable');
+const targets=document.querySelectorAll('.target');
+const scoreEl=document.getElementById('score');
+const winPopup=document.getElementById('winPopup');
 
-  pages.forEach((_,i)=>{
-    const dot=document.createElement('div');
-    dot.className='dot';
-    if(i===0)dot.classList.add('active');
-    dot.onclick=()=>goToPage(i);
-    dotsWrap.appendChild(dot);
+// 1. DRAG START
+draggables.forEach(item=>{
+  item.addEventListener('dragstart',e=>{
+    draggedItem=item;
+    item.classList.add('dragging');
+    setTimeout(()=>item.style.display='none',0); // Hide while dragging
   });
-  const dots=document.querySelectorAll('.dot');
+  item.addEventListener('dragend',e=>{
+    item.classList.remove('dragging');
+    item.style.display='flex';
+  });
 
-  function goToPage(i){
-    currentPage=i;
-    track.style.transform=`translateX(-${i*100}%)`;
-    dots.forEach((d,j)=>d.classList.toggle('active',i===j));
+  // Mobile Touch Support
+  item.addEventListener('touchstart',e=>{draggedItem=item;item.classList.add('dragging');});
+});
+
+// 2. DROP TARGET EVENTS
+targets.forEach(target=>{
+  target.addEventListener('dragover',e=>{e.preventDefault();target.classList.add('hover');});
+  target.addEventListener('dragleave',()=>target.classList.remove('hover'));
+
+  target.addEventListener('drop',e=>{
+    e.preventDefault();
+    target.classList.remove('hover');
+    checkMatch(target);
+  });
+
+  // Mobile Touch Support
+  target.addEventListener('touchend',e=>{
+    if(draggedItem){checkMatch(target);draggedItem=null;}
+  });
+});
+
+function checkMatch(target){
+  if(!draggedItem)return;
+  const shape=draggedItem.dataset.shape;
+  const targetShape=target.dataset.shape;
+
+  if(shape===targetShape &&!target.classList.contains('correct')){
+    // Correct Match
+    target.classList.add('correct');
+    target.innerHTML=''; // Clear old image
+    target.appendChild(draggedItem); // Move shape into target
+    draggedItem.style.cursor='default';
+    draggedItem.draggable=false; // Lock it
+    score++;
+    scoreEl.textContent=score;
+    playSound(true);
+
+    if(score===4){
+      setTimeout(()=>winPopup.style.display='flex',500);
+    }
+  }else{
+    // Wrong Match
+    playSound(false);
+    draggedItem.style.transform='translate(0,0)'; // Snap back effect
   }
+}
 
-  track.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;isDragging=true;track.style.transition='none';});
-  track.addEventListener('touchmove',e=>{
-    if(!isDragging)return;
-    const x=e.touches[0].clientX-startX;
-    track.style.transform=`translateX(calc(-${currentPage*100}% + ${x}px))`;
+function resetGame(){
+  score=0;
+  scoreEl.textContent=0;
+  winPopup.style.display='none';
+  const dragItems=document.getElementById('dragItems');
+  targets.forEach(t=>{
+    t.classList.remove('correct');
+    const img=t.querySelector('img');
+    const span=t.querySelector('span');
+    t.innerHTML='';
+    if(img)t.appendChild(img);
+    if(span)t.appendChild(span);
   });
-  track.addEventListener('touchend',e=>{
-    if(!isDragging)return;
-    isDragging=false;
-    const x=e.changedTouches[0].clientX-startX;
-    track.style.transition='transform.3s ease-out';
-    if(x<-50 && currentPage<pages.length-1)goToPage(currentPage+1);
-    else if(x>50 && currentPage>0)goToPage(currentPage-1);
-    else goToPage(currentPage);
+  draggables.forEach(d=>{
+    d.draggable=true;
+    d.style.cursor='grab';
+    dragItems.appendChild(d); // Back to start
   });
+  shuffle(draggables); // Randomize order
+}
+
+function shuffle(nodeList){
+  const arr=[...nodeList];
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    arr[i].parentNode.appendChild(arr[j]);
+  }
+}
+
+function playSound(correct){
+  // Simple beep sound using Web Audio API
+  const ctx=new(window.AudioContext||window.webkitAudioContext)();
+  const o=ctx.createOscillator();
+  o.frequency.value=correct?800:300;
+  o.connect(ctx.destination);
+  o.start();o.stop(ctx.currentTime+.1);
+}
+
+resetGame(); // Start shuffled
 </script>
 </body>
 </html>
