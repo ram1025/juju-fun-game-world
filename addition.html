@@ -2,60 +2,94 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Addition - Juju</title>
+<title>Addition MCQ - Juju</title>
 <style>
-  body { margin:0; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#FEF3C7; font-family:'Nunito',sans-serif; text-align:center; }
- .sum { font-size:120px; font-weight:800; color:#DC2626; line-height:1; }
- .sum span { font-size:100px; }
- .objects { font-size:80px; margin:20px 0; }
-  h1 { font-size:40px; color:#EA580C; margin-top:10px; }
- .tap { font-size:20px; color:#92400E; }
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#FEF3C7; font-family:'Nunito',sans-serif; text-align:center; padding:20px; }
+ .sum { font-size:100px; font-weight:800; color:#DC2626; line-height:1; }
+ .objects { font-size:60px; margin:15px 0; }
+ .options { display:flex; gap:20px; margin-top:20px; }
+ .btn {
+    font-size:50px; font-weight:900;
+    background:white; border:4px solid #F97316;
+    border-radius:20px; padding:20px 40px;
+    cursor:pointer; box-shadow:0 6px 0 #F97316;
+    transition:all 0.1s;
+  }
+ .btn:active { transform:translateY(4px); box-shadow:0 2px 0 #F97316; }
+  h1 { font-size:32px; color:#EA580C; margin-top:15px; min-height:40px; }
 </style>
 </head>
-<body onclick="nextSum()">
+<body>
 
 <div class="objects" id="obj1"></div>
 <div class="sum" id="sumBox"></div>
 <div class="objects" id="obj2"></div>
-<h1 id="answerText">Tap to start</h1>
-<p class="tap">Tap anywhere for Next 👆</p>
+
+<div class="options" id="optionsBox"></div>
+<h1 id="msg"></h1>
 
 <script>
 const data = [
-  {a:1, b:1, emoji:"🍎"}, // 1+1=2
-  {a:2, b:1, emoji:"🍌"}, // 2+1=3
-  {a:1, b:2, emoji:"🍊"}, // 1+2=3
-  {a:2, b:2, emoji:"🍇"}, // 2+2=4
-  {a:3, b:1, emoji:"⭐"}, // 3+1=4
-  {a:1, b:3, emoji:"⚽"}, // 1+3=4
-  {a:3, b:2, emoji:"🐶"}, // 3+2=5
-  {a:2, b:3, emoji:"🐱"}, // 2+3=5
-  {a:3, b:3, emoji:"🚗"}, // 3+3=6
-  {a:4, b:1, emoji:"🌳"} // 4+1=5
+  {a:1, b:1, emoji:"🍎"}, // 2
+  {a:2, b:1, emoji:"🍌"}, // 3
+  {a:1, b:2, emoji:"🍊"}, // 3
+  {a:2, b:2, emoji:"🍇"}, // 4
+  {a:3, b:1, emoji:"⭐"}, // 4
+  {a:1, b:3, emoji:"⚽"}, // 4
+  {a:3, b:2, emoji:"🐶"}, // 5
+  {a:2, b:3, emoji:"🐱"}, // 5
+  {a:3, b:3, emoji:"🚗"}, // 6
+  {a:4, b:1, emoji:"🌳"} // 5
 ];
 let i = 0;
+let locked = false;
 
 function speak(text){
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = 0.7; speechSpeech.speak(u); // typo fix chesa: speechSynthesis
+  u.lang = 'en-US'; u.rate = 0.7; speechSynthesis.speak(u);
 }
 
 function loadSum(){
+  locked = false;
   const {a,b,emoji} = data[i];
   const total = a+b;
+  let wrong = total + (Math.random() > 0.5? 1 : -1); // +1 or -1
+  if(wrong < 1) wrong = total + 1; // 0 raakunda
+
+  const opts = [total, wrong].sort(()=>0.5-Math.random()); // Shuffle
 
   document.getElementById('obj1').textContent = emoji.repeat(a);
   document.getElementById('obj2').textContent = emoji.repeat(b);
   document.getElementById('sumBox').innerHTML = `${a} <span>+</span> ${b} <span>=</span>?`;
-  document.getElementById('answerText').textContent = `Answer: ${total}`;
+  document.getElementById('msg').textContent = '';
 
-  speak(`${a} plus ${b} equals ${total}`);
+  const box = document.getElementById('optionsBox');
+  box.innerHTML = '';
+  opts.forEach(num=>{
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.textContent = num;
+    btn.onclick = () => checkAnswer(num, total);
+    box.appendChild(btn);
+  });
+
+  speak(`${a} plus ${b} equals?`); // Question matrame
 }
 
-function nextSum(){
-  i = (i + 1) % data.length; // 10 ayyaka 0 ki vastundi
-  loadSum();
+function checkAnswer(picked, correct){
+  if(locked) return;
+  locked = true;
+
+  if(picked === correct){
+    document.getElementById('msg').textContent = 'Correct! ✅';
+    speak('Correct!');
+    setTimeout(()=>{ i = (i + 1) % data.length; loadSum(); }, 1200); // 1.2s tarvatha next
+  } else {
+    document.getElementById('msg').textContent = 'Try Again ❌';
+    speak('Try Again');
+    locked = false; // Malli try cheyochu
+  }
 }
 loadSum();
 </script>
