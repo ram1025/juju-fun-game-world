@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="./manifest.json?v=128">
+<link rel="manifest" href="./manifest.json?v=132">
 <meta name="theme-color" content="#A855F7">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -12,6 +12,7 @@
   body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
 
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.page-heading{font-size:22px;font-weight:900;color:#7C3AED;margin-bottom:15px;} /* NEW HEADING STYLE */
 
 .rhyme-box{width:100%;min-height:200px;background:#F3E8FF;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s}
 .rhyme-box:active{transform:scale(.98)}
@@ -30,6 +31,9 @@
 <body>
 
   <div class="card">
+    <!-- 1. PAINA HEADING - IKKADA VOICE LEDU -->
+    <div class="page-heading">🎵 Kids Rhymes</div>
+
     <div class="rhyme-box" id="rhymeBox">
       <div>
         <div class="rhyme-icon" id="rhymeIcon">🎵</div>
@@ -47,7 +51,7 @@ How I wonder what you are!</div>
   </div>
 
 <script>
-  // ===== 5 POPULAR RHYMES =====
+  // ===== 5 POPULAR RHYMES - SINGING STYLE TEXT =====
   const rhymes = [
     {
       icon:'⭐',
@@ -85,7 +89,7 @@ No, Papa.
 Telling lies?
 No, Papa.
 Open your mouth.
-Ha ha ha.`
+Ha ha.`
     }
   ];
 
@@ -99,11 +103,13 @@ Ha ha ha.`
   const counter = document.getElementById('counter');
   const nextBtn = document.getElementById('nextBtn');
 
+  // 2. SINGING LAGA CHADAVADANIKI FIX
   function speak(text){
     if(synth.speaking){ synth.cancel(); }
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'en-US';
-    utter.rate = 0.85;
+    utter.rate = 0.75; // Slow chesam -> Singing laga
+    utter.pitch = 1.1; // Konchem high pitch -> Kid song laga
     synth.speak(utter);
   }
 
@@ -122,7 +128,7 @@ Ha ha ha.`
       nextBtn.textContent = 'Next >';
     }
 
-    speak(rhyme.title + '. ' + rhyme.text); // Page open ayinappudu auto
+    speak(rhyme.text); // <-- HEADING TITLE TESESANU. Rhyme Text matrame chaduvthundi
   }
 
   function nextRhyme(){
@@ -134,7 +140,7 @@ Ha ha ha.`
 
   // Rhyme Box Touch -> Voice Repeat
   rhymeBox.addEventListener('click', ()=>{
-    speak(rhymes[currentIndex].title + '. ' + rhymes[currentIndex].text);
+    speak(rhymes[currentIndex].text); // <-- Ikkada kuda Title ledu
     rhymeBox.style.transform = 'scale(0.98)';
     setTimeout(()=>rhymeBox.style.transform = 'scale(1)', 100);
   });
