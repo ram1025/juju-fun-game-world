@@ -1,9 +1,18 @@
-const CACHE_NAME = 'juju-fun-world-v106'; // <-- Ikkada v number marchu
+const CACHE_NAME = 'juju-fun-world-v107'; // <-- v107 ki marcham
 const urlsToCache = [
     './',
     './index.html',
     './dashboard.html',
     './profile.html',
+    // Kotta Nursery Files Add chesam 👇
+    './fruits.html',
+    './pet-animals.html',
+    './wild-animals.html',
+    './vegetables.html',
+    './matching.html',
+    './drag&drop-popups.html',
+    './addition.html',
+    // Purana Files
     './alphabets.html',
     './numbers.html',
     './painting.html',
@@ -11,6 +20,7 @@ const urlsToCache = [
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
+    // Assets - Purana Alphabets/Numbers
     './assets/img/a.png',
     './assets/img/b.png',
     './assets/img/1.png',
@@ -55,18 +65,22 @@ const urlsToCache = [
     './assets/audio/number-17.mp3',
     './assets/audio/number-18.mp3',
     './assets/audio/number-19.mp3',
-    './assets/audio/number-20.mp3'
+    './assets/audio/number-20.mp3',
+    // Kotta Nursery Assets Folder - Ikkada ne images/audio pettu 👇
+    './assets/fruits/',
+    './assets/animals/',
+    './assets/vegetables/'
 ];
 
 // 1. Install - Kottha files cache lo pettadam
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); // Purana SW ni wait cheyinchakunda kotthadi activate chey
+    self.skipWaiting(); 
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
     );
 });
 
-// 2. Activate - Purana v58, v57... anni caches delete cheyadam 🔑
+// 2. Activate - Purana v106, v105... anni caches delete cheyadam 🔑
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -74,7 +88,7 @@ self.addEventListener('activate', (event) => {
                 cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
                     .map((cacheName) => caches.delete(cacheName))
             );
-        }).then(() => self.clients.claim()) // Anni tabs lo kottha SW ni control lo ki teesuko
+        }).then(() => self.clients.claim())
     );
 });
 
