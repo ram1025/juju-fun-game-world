@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Drag Drop - Juju</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
@@ -9,24 +9,28 @@
     margin:0; min-height:100vh; background:#8B5CF6; font-family:'Nunito',sans-serif;
     padding:15px; padding-top:80px; box-sizing:border-box;
     display:flex; flex-direction:column; align-items:center;
+    overscroll-behavior:none; /* Page scroll aapakosam */
   }
 .top-back { position:absolute; top:15px; left:15px; background:white; border:none; border-radius:12px; padding:12px 18px; font-size:17px; font-weight:900; color:#8B5CF6; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.25); z-index:10; }
 .card { background:#FDE68A; border-radius:25px; padding:25px; text-align:center; box-shadow:0 8px 0 #F59E0B; overflow:hidden; width:100%; max-width:420px; }
 .counter { font-size:26px; font-weight:900; color:#D97706; margin-bottom:20px; }
-.drag-area,.drop-area { display:flex; justify-content:center; gap:12px; margin:20px 0; min-height:110px; flex-wrap:wrap; } /* center chesa */
+.drag-area,.drop-area { display:flex; justify-content:center; gap:12px; margin:20px 0; min-height:110px; flex-wrap:wrap; }
 .item {
   background:white; border:4px solid #D97706; border-radius:20px;
   padding:10px 6px; font-size:40px; cursor:grab; box-shadow:0 5px 0 #D97706;
   width:calc(33.33% - 8px); min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
   touch-action:none; user-select:none; box-sizing:border-box;
+  transition:transform 0.1s; /* Drag feel kosam */
 }
-.item-name { font-size:13px; font-weight:800; color:#DC2626; margin-top:3px; line-height:1.1; word-break:break-word; text-align:center; } /* Text wrap fix */
+.item.dragging { transform:scale(1.1); opacity:0.8; z-index:99; position:relative; }
+.item-name { font-size:13px; font-weight:800; color:#DC2626; margin-top:3px; line-height:1.1; word-break:break-word; text-align:center; }
 .drop-box {
   background:white; border:4px dashed #D97706; border-radius:20px;
   padding:10px 6px; font-size:40px; width:calc(33.33% - 8px); min-height:100px;
   display:flex; flex-direction:column; align-items:center; justify-content:center; box-sizing:border-box;
+  pointer-events:auto; /* Touch detect kosam */
 }
-.drop-box.hover { border-color:#3B82F6; background:#DBEAFE; border-style:solid; }
+.drop-box.hover { border-color:#3B82F6; background:#DBEAFE; border-style:solid; transform:scale(1.05); }
 .drop-box.filled { background:#BBF7D0; border-style:solid; border-color:#10B981; }
 h1 { font-size:22px; color:#B45309; margin-top:10px; min-height:28px; }
 .bottom-btns { display:flex; gap:12px; justify-content:center; margin-top:20px; }
@@ -61,17 +65,18 @@ const pages = [
   [['🐶','Dog'], ['🐱','Cat'], ['🐰','Rabbit']],
   [['1','One'], ['2','Two'], ['3','Three']]
 ];
-let page = 0; let matchedCount = 0; let draggedItem = null;
+let page = 0; let matchedCount = 0; let draggedItem = null; let currentDropTarget = null; // NEW: Target track cheyadaniki
 
 function speak(text){ if('speechSynthesis' in window){ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.8; speechSynthesis.speak(u); } }
 
 function loadPage(){
-  matchedCount = 0; document.getElementById('counter').textContent = `Page ${page+1}/${pages.length}`;
+  matchedCount = 0; currentDropTarget = null;
+  document.getElementById('counter').textContent = `Page ${page+1}/${pages.length}`;
   document.getElementById('msg').textContent = '';
   const dragArea = document.getElementById('dragArea'); const dropArea = document.getElementById('dropArea');
   dragArea.innerHTML = ''; dropArea.innerHTML = '';
 
-  const data = pages[page]; // <-- MAIN FIX: [page] add chesa. Only 3 items
+  const data = pages;
   const dropShuffled = [...data].sort(()=>0.5-Math.random());
   const dragShuffled = [...data].sort(()=>0.5-Math.random());
 
@@ -81,25 +86,40 @@ function loadPage(){
     div.innerHTML = `${pair[0]}<div class="item-name">${pair[1]}</div>`;
     div.dataset.match = pair[0]; div.dataset.name = pair[1];
 
+    // Desktop
     div.draggable = true;
     div.ondragstart = (e)=>{ draggedItem = div; speak(pair[1]); };
+    div.ondragend = ()=>{ draggedItem = null; clearHover(); };
 
+    // Mobile Touch - COMPLETE REWRITE
     div.ontouchstart = (e)=>{
       e.preventDefault();
       draggedItem = div;
-      div.style.opacity = '0.7';
+      div.classList.add('dragging');
       speak(pair[1]);
     };
-    div.ontouchmove = (e)=>{ e.preventDefault(); };
-    div.ontouchend = (e)=>{
-      div.style.opacity = '1';
-      const touch = e.changedTouches[0];
-      const dropBox = document.elementFromPoint(touch.clientX, touch.clientY);
-      if(dropBox && dropBox.classList.contains('drop-box')){
-        handleDrop(dropBox);
+    div.ontouchmove = (e)=>{
+      e.preventDefault();
+      const touch = e.touches[0];
+      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+
+      clearHover(); // Mundhu anni hover tey
+      if(elem && elem.classList.contains('drop-box') &&!elem.classList.contains('filled')){
+        elem.classList.add('hover');
+        currentDropTarget = elem; // Iddi meeda vadileyali ani gurthupettukunam
       } else {
-        draggedItem = null;
+        currentDropTarget = null;
       }
+    };
+    div.ontouchend = (e)=>{
+      e.preventDefault();
+      div.classList.remove('dragging');
+      clearHover();
+      if(currentDropTarget){ // Gurthupettukunna box unte
+        handleDrop(currentDropTarget);
+      }
+      draggedItem = null;
+      currentDropTarget = null;
     };
     dragArea.appendChild(div);
   });
@@ -116,8 +136,11 @@ function loadPage(){
   });
 }
 
+function clearHover(){
+  document.querySelectorAll('.drop-box.hover').forEach(b=>b.classList.remove('hover'));
+}
+
 function handleDrop(box){
-  box.classList.remove('hover');
   if(!draggedItem || box.classList.contains('filled')) return;
 
   if(draggedItem.dataset.match === box.dataset.match){
@@ -133,8 +156,8 @@ function handleDrop(box){
   } else {
     draggedItem.style.animation = 'shake 0.3s';
     setTimeout(()=>{ draggedItem.style.animation = ''; }, 400);
+    speak('Try Again');
   }
-  draggedItem = null;
 }
 
 function prevPage(){ page = (page - 1 + pages.length) % pages.length; loadPage(); }
