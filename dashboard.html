@@ -100,6 +100,7 @@
             gap: 15px;
             max-width: 450px;
             margin: 0 auto;
+            padding-bottom: 40px;
         }
         .card {
             border-radius: 25px;
@@ -124,22 +125,16 @@
             font-size: 32px;
         }
         .card-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 900;
             color: white;
         }
-        .card-pink {
-            background: linear-gradient(135deg, #EC4899, #F472B6);
-        }
-        .card-blue {
-            background: linear-gradient(135deg, #3B82F6, #60A5FA);
-        }
-        .card-orange {
-            background: linear-gradient(135deg, #F97316, #FB923C);
-        }
-        .card-purple {
-            background: linear-gradient(135deg, #A855F7, #C084FC);
-        }
+        .card-pink { background: linear-gradient(135deg, #EC4899, #F472B6); }
+        .card-blue { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
+        .card-orange { background: linear-gradient(135deg, #F97316, #FB923C); }
+        .card-purple { background: linear-gradient(135deg, #A855F7, #C084FC); }
+        .card-green { background: linear-gradient(135deg, #10B981, #34D399); }
+        .card-yellow { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
     </style>
 </head>
 <body>
@@ -154,32 +149,56 @@
         <img src="./icon-192.png" class="dashboard-avatar" id="dashboardAvatar">
         <div class="dashboard-name" id="dashboardName">JUJU</div>
         <div class="nick-text">Choose Your Adventure! 🎮</div>
+        
         <div class="grid">
-    <div class="card card-pink" onclick="location.href='./alphabets.html'">
-        <div class="card-icon">abc</div>
-        <div class="card-title">Alphabets</div>
-    </div>
-
-    <div class="card card-blue" onclick="location.href='./numbers.html'">
-        <div class="card-icon">123</div>
-        <div class="card-title">Numbers</div>
-    </div>
-            
-<div class="card card-orange" onclick="location.href='./painting.html'">
-    <div class="card-icon">🎨</div>
-    <div class="card-title">Paint Letter</div>
-</div>
-            
-    <div class="card card-purple" onclick="location.href='./free-draw.html'">
-        <div class="card-icon">🐒</div>
-        <div class="card-title">Free Draw</div>
+            <div class="card card-pink" onclick="location.href='./fruits.html'">
+                <div class="card-icon">🍎</div>
+                <div class="card-title">Fruits</div>
+            </div>
+            <div class="card card-blue" onclick="location.href='./pet-animals.html'">
+                <div class="card-icon">🐶</div>
+                <div class="card-title">Pet Animals</div>
+            </div>
+            <div class="card card-orange" onclick="location.href='./wild-animals.html'">
+                <div class="card-icon">🦁</div>
+                <div class="card-title">Wild Animals</div>
+            </div>
+            <div class="card card-purple" onclick="location.href='./vegetables.html'">
+                <div class="card-icon">🥕</div>
+                <div class="card-title">Vegetables</div>
+            </div>
+            <div class="card card-green" onclick="location.href='./matching.html'">
+                <div class="card-icon">🧩</div>
+                <div class="card-title">Matching</div>
+            </div>
+            <div class="card card-yellow" onclick="location.href='./drag&drop-popups.html'">
+                <div class="card-icon">🖐️</div>
+                <div class="card-title">Drag & Drop</div>
+            </div>
+            <div class="card card-pink" onclick="location.href='./addition.html'">
+                <div class="card-icon">➕</div>
+                <div class="card-title">Addition</div>
+            </div>
+            <div class="card card-blue" onclick="location.href='./alphabets.html'">
+                <div class="card-icon">abc</div>
+                <div class="card-title">Alphabets</div>
+            </div>
+            <div class="card card-orange" onclick="location.href='./painting.html'">
+                <div class="card-icon">🎨</div>
+                <div class="card-title">Paint Letter</div>
+            </div>
+            <div class="card card-purple" onclick="location.href='./free-draw.html'">
+                <div class="card-icon">🐒</div>
+                <div class="card-title">Free Draw</div>
+            </div>
+        </div>
     </div>
         
    <script>
   if('serviceWorker' in navigator) { 
-    navigator.serviceWorker.register('./sw.js?v=63'); 
+    navigator.serviceWorker.register('./sw.js?v=107'); // v=107
   }
-  let username = localStorage.getItem('jujuName') || 'JUJU';
+  let username = localStorage.getItem('jujuName') || 'JU';
   let userImage = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
   if(document.getElementById('dashboardName')) {
@@ -200,7 +219,7 @@
     }
   });
   function logoutUser(){
-    window.location.href = './index.html'; // Idhi matrame pettu
+    window.location.href = './index.html';
   }
 </script>
 </body>
