@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Dashboard - Juju Fun World</title>
-<link rel="manifest" href="./manifest.json?v=111">
+<link rel="manifest" href="./manifest.json?v=126">
 <meta name="theme-color" content="#3B82F6">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
@@ -48,7 +48,7 @@
     <button class="sidebar-btn" onclick="location.href='./index.html'" style="color:#EF4444;">🚪 Logout</button>
   </div>
   <div class="profile-section">
-    <img src="./icon-192.png?v=111" class="avatar" id="avatar">
+    <img src="./icon-192.png?v=126" class="avatar" id="avatar">
     <div class="name" id="name">JU</div>
     <div class="sub">Swipe Left/Right 👉</div>
 
@@ -63,16 +63,19 @@
         </div></div>
 
         <div class="carousel-page"><div class="grid">
+          <!-- NEW VEHICLES CARD ADDED HERE -->
+          <div class="card blue" onclick="location.href='./vehicles.html'"><div class="card-icon">🚗</div><div class="card-title">Vehicles</div></div>
+          
           <div class="card green" onclick="location.href='./matching.html'"><div class="card-icon">🧩</div><div class="card-title">Matching</div></div>
           <div class="card green" onclick="location.href='./numbers.html'"><div class="card-icon">🔢</div><div class="card-title">Numbers</div></div>
           <div class="card yellow" onclick="location.href='./drag-drop.html'"><div class="card-icon">🖐️</div><div class="card-title">Drag & Drop</div></div>
-          <div class="card pink" onclick="location.href='./addition.html'"><div class="card-icon">➕</div><div class="card-title">Addition</div></div>
         </div></div>
 
         <div class="carousel-page"><div class="grid">
           <div class="card blue" onclick="location.href='./alphabets.html'"><div class="card-icon">abc</div><div class="card-title">Alphabets</div></div>
           <div class="card orange" onclick="location.href='./painting.html'"><div class="card-icon">🎨</div><div class="card-title">Paint Letter</div></div>
           <div class="card purple" onclick="location.href='./free-draw.html'"><div class="card-icon">🐒</div><div class="card-title">Free Draw</div></div>
+          <div class="card pink" onclick="location.href='./addition.html'"><div class="card-icon">➕</div><div class="card-title">Addition</div></div>
         </div></div>
 
       </div>
@@ -80,13 +83,13 @@
     <div class="dots" id="dots"></div>
   </div>
 <script>
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=111');}
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=126');}
   document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JU';
-  document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png?v=111';
+  document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png?v=126';
   function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
   document.addEventListener('click',(e)=>{const s=document.getElementById('sidebar');const h=document.querySelector('.hamburger');if(!s.contains(e.target)&&!h.contains(e.target)){s.classList.remove('active')}})
 
-  // ===== SWIPE + LAST PAGE SAVE CODE v111 =====
+  // ===== SWIPE + LAST PAGE SAVE CODE v126 =====
   const track=document.getElementById('track');
   const pages=document.querySelectorAll('.carousel-page');
   const wrapper=document.getElementById('carousel');
