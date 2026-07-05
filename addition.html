@@ -2,44 +2,68 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Addition MCQ - Juju</title>
+<title>Addition - Juju</title>
 <style>
-  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#FEF3C7; font-family:'Nunito',sans-serif; text-align:center; padding:20px; }
- .sum { font-size:100px; font-weight:800; color:#DC2626; line-height:1; }
- .objects { font-size:60px; margin:15px 0; }
- .options { display:flex; gap:20px; margin-top:20px; }
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+  body { margin:0; min-height:100vh; background:#3B82F6; font-family:'Nunito',sans-serif; padding:15px; }
+ .top-back {
+    background:white; border:none; border-radius:12px;
+    padding:10px 15px; font-size:16px; font-weight:800;
+    cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    margin-bottom:15px;
+  }
+ .card {
+    background:#FEF3C7; border-radius:25px; padding:20px;
+    text-align:center; box-shadow:0 8px 0 #FDBA74;
+  }
+ .counter { font-size:24px; font-weight:900; color:#F97316; }
+ .sum { font-size:80px; font-weight:800; color:#DC2626; margin:10px 0; }
+ .objects { font-size:50px; margin:10px 0; }
+ .options { display:flex; gap:15px; justify-content:center; margin-top:15px; }
  .btn {
-    font-size:50px; font-weight:900;
-    background:white; border:4px solid #F97316;
-    border-radius:20px; padding:20px 40px;
+    font-size:40px; font-weight:900; background:white;
+    border:4px solid #F97316; border-radius:20px; padding:15px 30px;
     cursor:pointer; box-shadow:0 6px 0 #F97316;
-    transition:all 0.1s;
   }
  .btn:active { transform:translateY(4px); box-shadow:0 2px 0 #F97316; }
-  h1 { font-size:32px; color:#EA580C; margin-top:15px; min-height:40px; }
+ .bottom-btns { display:flex; gap:10px; justify-content:center; margin-top:20px; }
+ .bottom-btn {
+    border:none; border-radius:12px; padding:12px 25px;
+    font-size:18px; font-weight:800; color:white; cursor:pointer;
+  }
+ .btn-clear { background:#EF4444; }
+ .btn-back { background:#3B82F6; }
+ .btn-next { background:#10B981; }
+  h1 { font-size:24px; color:#EA580C; margin-top:10px; min-height:30px; }
 </style>
 </head>
 <body>
 
-<div class="objects" id="obj1"></div>
-<div class="sum" id="sumBox"></div>
-<div class="objects" id="obj2"></div>
+<button class="top-back" onclick="location.href='./index.html'">← Back</button>
 
-<div class="options" id="optionsBox"></div>
-<h1 id="msg"></h1>
+<div class="card">
+  <div class="counter" id="counter">1/10: Addition</div>
+
+  <div class="objects" id="obj1"></div>
+  <div class="sum" id="sumBox"></div>
+  <div class="objects" id="obj2"></div>
+
+  <div class="options" id="optionsBox"></div>
+  <h1 id="msg"></h1>
+
+  <div class="bottom-btns">
+    <button class="bottom-btn btn-clear" onclick="loadSum()">Clear</button>
+    <button class="bottom-btn btn-back" onclick="prevSum()">← Back</button>
+    <button class="bottom-btn btn-next" onclick="skipNext()">Next →</button>
+  </div>
+</div>
 
 <script>
 const data = [
-  {a:1, b:1, emoji:"🍎"}, // 2
-  {a:2, b:1, emoji:"🍌"}, // 3
-  {a:1, b:2, emoji:"🍊"}, // 3
-  {a:2, b:2, emoji:"🍇"}, // 4
-  {a:3, b:1, emoji:"⭐"}, // 4
-  {a:1, b:3, emoji:"⚽"}, // 4
-  {a:3, b:2, emoji:"🐶"}, // 5
-  {a:2, b:3, emoji:"🐱"}, // 5
-  {a:3, b:3, emoji:"🚗"}, // 6
-  {a:4, b:1, emoji:"🌳"} // 5
+  {a:1, b:1, emoji:"🍎"}, {a:2, b:1, emoji:"🍌"}, {a:1, b:2, emoji:"🍊"},
+  {a:2, b:2, emoji:"🍇"}, {a:3, b:1, emoji:"⭐"}, {a:1, b:3, emoji:"⚽"},
+  {a:3, b:2, emoji:"🐶"}, {a:2, b:3, emoji:"🐱"}, {a:3, b:3, emoji:"🚗"},
+  {a:4, b:1, emoji:"🌳"}
 ];
 let i = 0;
 let locked = false;
@@ -54,14 +78,15 @@ function loadSum(){
   locked = false;
   const {a,b,emoji} = data[i];
   const total = a+b;
-  let wrong = total + (Math.random() > 0.5? 1 : -1); // +1 or -1
-  if(wrong < 1) wrong = total + 1; // 0 raakunda
+  let wrong = total + (Math.random() > 0.5? 1 : -1);
+  if(wrong < 1 || wrong > 10) wrong = total + 1;
 
-  const opts = [total, wrong].sort(()=>0.5-Math.random()); // Shuffle
+  const opts = [total, wrong].sort(()=>0.5-Math.random());
 
+  document.getElementById('counter').textContent = `${i+1}/10: Addition`;
   document.getElementById('obj1').textContent = emoji.repeat(a);
   document.getElementById('obj2').textContent = emoji.repeat(b);
-  document.getElementById('sumBox').innerHTML = `${a} <span>+</span> ${b} <span>=</span>?`;
+  document.getElementById('sumBox').innerHTML = `${a} + ${b} =?`;
   document.getElementById('msg').textContent = '';
 
   const box = document.getElementById('optionsBox');
@@ -73,23 +98,30 @@ function loadSum(){
     btn.onclick = () => checkAnswer(num, total);
     box.appendChild(btn);
   });
-
-  speak(`${a} plus ${b} equals?`); // Question matrame
+  speak(`${a} plus ${b} equals?`);
 }
 
 function checkAnswer(picked, correct){
   if(locked) return;
   locked = true;
-
   if(picked === correct){
     document.getElementById('msg').textContent = 'Correct! ✅';
     speak('Correct!');
-    setTimeout(()=>{ i = (i + 1) % data.length; loadSum(); }, 1200); // 1.2s tarvatha next
+    setTimeout(()=>{ i = (i + 1) % data.length; loadSum(); }, 1200);
   } else {
     document.getElementById('msg').textContent = 'Try Again ❌';
     speak('Try Again');
-    locked = false; // Malli try cheyochu
+    locked = false;
   }
+}
+
+function prevSum(){
+  i = (i - 1 + data.length) % data.length; // Loop back
+  loadSum();
+}
+function skipNext(){
+  i = (i + 1) % data.length; // Skip
+  loadSum();
 }
 loadSum();
 </script>
