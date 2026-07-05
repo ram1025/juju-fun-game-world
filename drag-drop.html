@@ -58,11 +58,11 @@ h1 { font-size:22px; color:#B45309; margin-top:10px; min-height:28px; }
 
 <script>
 const pages = [
-  [['A','A'], ['B','B'], ['C','C']],
-  [['⬛','Square'], ['⭕','Circle'], ['⭐','Star']],
-  [['🍎','Apple'], ['🍌','Banana'], ['🍊','Orange']],
-  [['🐶','Dog'], ['🐱','Cat'], ['🐰','Rabbit']],
-  [['1','One'], ['2','Two'], ['3','Three']]
+  [['A','A'], ['B','B'], ['C','C']], // Page 1: Letters
+  [['⬛','Square'], ['⭕','Circle'], ['⭐','Star']], // Page 2: Shapes
+  [['🍎','Apple'], ['🍌','Banana'], ['🍊','Orange']], // Page 3: Fruits
+  [['🐶','Dog'], ['🐱','Cat'], ['🐰','Rabbit']], // Page 4: Animals
+  [['1','One'], ['2','Two'], ['3','Three']] // Page 5: Numbers
 ];
 let page = 0; let matchedCount = 0; let draggedItem = null; let currentDropTarget = null;
 
@@ -75,7 +75,7 @@ function loadPage(){
   const dragArea = document.getElementById('dragArea'); const dropArea = document.getElementById('dropArea');
   dragArea.innerHTML = ''; dropArea.innerHTML = '';
 
-  const data = pages; // <-- IDHE FINAL FIX BRO. ONLY 3 ITEMS
+  const data = pages; // <-- IDHE MAIN FIX: Okka page = 3 objects matrame
 
   const dropShuffled = [...data].sort(()=>0.5-Math.random());
   const dragShuffled = [...data].sort(()=>0.5-Math.random());
