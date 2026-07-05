@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matching - Juju</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght=700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
   body { margin:0; min-height:100vh; background:#3B82F6; font-family:'Nunito',sans-serif; padding:15px; }
 .top-back {
     background:white; border:none; border-radius:12px;
@@ -22,9 +22,10 @@
 .item {
     background:white; border:4px solid #F97316; border-radius:20px;
     padding:15px; font-size:50px; cursor:pointer; box-shadow:0 5px 0 #F97316;
-    min-height:80px; display:flex; align-items:center; justify-content:center;
+    min-height:80px; display:flex; flex-direction:column; align-items:center; justify-content:center;
     transition:0.2s;
   }
+.item-name { font-size:16px; font-weight:800; color:#DC2626; margin-top:5px; }
 .item.selected { border-color:#3B82F6; box-shadow:0 5px 0 #3B82F6; }
 .item.matched { background:#BBF7D0; border-color:#10B981; cursor:default; }
 .item.wrong { background:#FECACA; border-color:#EF4444; animation:shake 0.3s; }
@@ -63,16 +64,11 @@
 
 <script>
 const pages = [
-  // Page 1: Letters A,B,C
-  [{l:'A', r:'A'}, {l:'B', r:'B'}, {l:'C', r:'C'}],
-  // Page 2: Shapes
-  [{l:'⬛', r:'⬛'}, {l:'⭕', r:'⭕'}, {l:'⭐', r:'⭐'}],
-  // Page 3: Fruits
-  [{l:'🍎', r:'🍎'}, {l:'🍌', r:'🍌'}, {l:'🍊', r:'🍊'}],
-  // Page 4: Animals
-  [{l:'🐶', r:'🐶'}, {l:'🐱', r:'🐱'}, {l:'🐰', r:'🐰'}],
-  // Page 5: Numbers
-  [{l:'1', r:'1'}, {l:'2', r:'2'}, {l:'3', r:'3'}]
+  [{l:'A', r:'A', name:'Apple'}, {l:'B', r:'B', name:'Ball'}, {l:'C', r:'C', name:'Cat'}],
+  [{l:'⬛', r:'⬛', name:'Square'}, {l:'⭕', r:'⭕', name:'Circle'}, {l:'⭐', r:'⭐', name:'Star'}],
+  [{l:'🍎', r:'🍎', name:'Apple'}, {l:'🍌', r:'🍌', name:'Banana'}, {l:'🍊', r:'🍊', name:'Orange'}],
+  [{l:'🐶', r:'🐶', name:'Dog'}, {l:'🐱', r:'🐱', name:'Cat'}, {l:'🐰', r:'🐰', name:'Rabbit'}],
+  [{l:'1', r:'1', name:'One'}, {l:'2', r:'2', name:'Two'}, {l:'3', r:'3', name:'Three'}]
 ];
 let page = 0;
 let selectedLeft = null;
@@ -94,32 +90,33 @@ function loadPage(){
   const rightCol = document.getElementById('rightCol');
   leftCol.innerHTML = ''; rightCol.innerHTML = '';
 
-  const data = pages[page];
-  const rightShuffled = [...data].sort(()=>0.5-Math.random()); // Right side shuffle
+  const data = pages;
+  const rightShuffled = [...data].sort(()=>0.5-Math.random());
 
-  data.forEach((pair, idx)=>{
+  data.forEach((pair)=>{
     const div = document.createElement('div');
     div.className = 'item';
-    div.textContent = pair.l;
+    div.innerHTML = `${pair.l}<div class="item-name">${pair.name}</div>`;
     div.dataset.match = pair.r;
-    div.onclick = () => selectLeft(div);
+    div.dataset.name = pair.name;
+    div.onclick = () => { speak(pair.name); selectLeft(div); }; // Left tap = Name voice
     leftCol.appendChild(div);
   });
 
-  rightShuffled.forEach((pair, idx)=>{
+  rightShuffled.forEach((pair)=>{
     const div = document.createElement('div');
     div.className = 'item';
-    div.textContent = pair.r;
+    div.innerHTML = `${pair.r}<div class="item-name">${pair.name}</div>`;
     div.dataset.match = pair.r;
-    div.onclick = () => selectRight(div);
+    div.dataset.name = pair.name;
+    div.onclick = () => { speak(pair.name); selectRight(div); }; // Right tap = Name voice
     rightCol.appendChild(div);
   });
-  speak('Match the pairs');
 }
 
 function selectLeft(el){
   if(el.classList.contains('matched')) return;
-  document.querySelectorAll('#leftCol.item').forEach(i=>i.classList.remove('selected'));
+  document.querySelectorAll('#leftCol .item').forEach(i=>i.classList.remove('selected'));
   el.classList.add('selected');
   selectedLeft = el;
 }
@@ -132,11 +129,10 @@ function selectRight(el){
     el.classList.add('matched');
     selectedLeft.classList.remove('selected');
     matchedCount++;
-    speak('Correct');
+    speak('Correct'); // Only Correct
     if(matchedCount === 3){
-      document.getElementById('msg').textContent = 'All Matched! ✅ Page Complete';
-      speak('Page Complete');
-      setTimeout(()=>nextPage(), 1500);
+      document.getElementById('msg').textContent = 'All Matched! ✅';
+      setTimeout(()=>nextPage(), 1200); // Silent ga next page
     }
   } else {
     selectedLeft.classList.add('wrong');
