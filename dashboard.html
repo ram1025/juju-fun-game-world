@@ -104,7 +104,7 @@
 <script>
   if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=145');}
   document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JU';
-  document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png?v=145';
+  document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png';
   function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
   document.addEventListener('click',(e)=>{const s=document.getElementById('sidebar');const h=document.querySelector('.hamburger');if(!s.contains(e.target)&&!h.contains(e.target)){s.classList.remove('active')}})
 
