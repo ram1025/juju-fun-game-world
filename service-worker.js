@@ -1,9 +1,9 @@
-const CACHE_NAME = 'juju-fun-world-v142'; // v141 -> v142 chey
+const CACHE_NAME = 'juju-fun-world-v144'; // VERSIO IKKADA MATRAM
 
 const urlsToCache = [
     './',
-    './index.html',
-    './dashboard.html',
+    './index.html',         // ?v=144 teesesanu
+    './dashboard.html', 
     './profile.html',
     './fruits.html',
     './pet-animals.html',
@@ -21,11 +21,11 @@ const urlsToCache = [
     './body-parts.html', 
     './colors.html',
     './color-mixing.html',
-    './shapes.html', // <-- NEW FILE ADDED v140
+    './shapes.html',
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
-    // Assets - Files matrame pettu, Folders vaddu
+    // Assets
     './assets/img/a.png',
     './assets/img/b.png',
     './assets/img/1.png','./assets/img/2.png','./assets/img/3.png','./assets/img/4.png','./assets/img/5.png',
@@ -36,12 +36,12 @@ const urlsToCache = [
     './assets/audio/a.mp3','./assets/audio/b.mp3',
     './assets/audio/number-1.mp3','./assets/audio/number-2.mp3','./assets/audio/number-3.mp3','./assets/audio/number-4.mp3','./assets/audio/number-5.mp3',
     './assets/audio/number-6.mp3','./assets/audio/number-7.mp3','./assets/audio/number-8.mp3','./assets/audio/number-9.mp3','./assets/audio/number-10.mp3',
-    './assets/audio/number-11.mp3','./assets/audio/number-12.mp3','./assets/audio/number-13.mp3','./assets/audio/number-14.mp3','./assets/audio/number-15.mp3',
+    './assets/audio/number-11.mp3','./assets/audio/number-12.mp3','./assets.audio/number-13.mp3','./assets/audio/number-14.mp3','./assets/audio/number-15.mp3',
     './assets/audio/number-16.mp3','./assets/audio/number-17.mp3','./assets/audio/number-18.mp3','./assets/audio/number-19.mp3','./assets/audio/number-20.mp3'
 ];
 
 self.addEventListener('install', (event) => {
-    self.skipWaiting();
+    self.skipWaiting(); // New SW ni ventane activate chey
     event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
 });
 
@@ -50,7 +50,7 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.filter((cacheName) => cacheName!== CACHE_NAME)
-                   .map((cacheName) => caches.delete(cacheName))
+                   .map((cacheName) => caches.delete(cacheName)) // Old Cache motham delete
             );
         }).then(() => self.clients.claim())
     );
