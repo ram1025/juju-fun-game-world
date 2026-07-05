@@ -1,25 +1,30 @@
-const CACHE_NAME = 'juju-fun-world-v135'; // v134 -> v135 chey
+const CACHE_NAME = 'juju-fun-world-v139'; // v138 -> v139 chey
 
 const urlsToCache = [
     './',
     './index.html',
-    './dashboard.html?v=108', // <-- v108 add chesa
+    './dashboard.html', // <-- ?v=108 teesesanu. Cache name eh version
     './profile.html',
     './fruits.html',
     './pet-animals.html',
     './wild-animals.html',
     './vegetables.html',
+    './vehicles.html', // <-- Missing undi, add chesanu
     './matching.html',
-    './drag-drop.html', // <-- FIX: & teesesanu
+    './drag-drop.html', 
     './addition.html',
     './alphabets.html',
     './numbers.html',
     './painting.html',
     './free-draw.html',
-    './manifest.json?v=108',
-    './icon-192.png?v=108',
-    './icon-512.png?v=108',
-    // Assets
+    './rhymes.html', // <-- Missing, add chesanu
+    './body-parts.html', // <-- Missing, add chesanu
+    './colors.html', // <-- Missing, add chesanu
+    './color-mixing.html', // <-- MOST IMPORTANT: Add chesanu
+    './manifest.json',
+    './icon-192.png',
+    './icon-512.png',
+    // Assets - Files matrame pettu, Folders vaddu
     './assets/img/a.png',
     './assets/img/b.png',
     './assets/img/1.png','./assets/img/2.png','./assets/img/3.png','./assets/img/4.png','./assets/img/5.png',
@@ -31,10 +36,7 @@ const urlsToCache = [
     './assets/audio/number-1.mp3','./assets/audio/number-2.mp3','./assets/audio/number-3.mp3','./assets/audio/number-4.mp3','./assets/audio/number-5.mp3',
     './assets/audio/number-6.mp3','./assets/audio/number-7.mp3','./assets/audio/number-8.mp3','./assets/audio/number-9.mp3','./assets/audio/number-10.mp3',
     './assets/audio/number-11.mp3','./assets/audio/number-12.mp3','./assets/audio/number-13.mp3','./assets/audio/number-14.mp3','./assets/audio/number-15.mp3',
-    './assets/audio/number-16.mp3','./assets/audio/number-17.mp3','./assets/audio/number-18.mp3','./assets/audio/number-19.mp3','./assets/audio/number-20.mp3',
-    './assets/fruits/',
-    './assets/animals/',
-    './assets/vegetables/'
+    './assets/audio/number-16.mp3','./assets/audio/number-17.mp3','./assets/audio/number-18.mp3','./assets/audio/number-19.mp3','./assets/audio/number-20.mp3'
 ];
 
 self.addEventListener('install', (event) => {
