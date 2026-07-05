@@ -2,137 +2,118 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>Drag Drop - Juju</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Drag Drop</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
-  :root { 
-    --bg:#3B82F6; /* Blue bg from screenshot */
-    --card:#FFF7ED; /* Beige card */
-    --title:#F97316; /* Orange */
-    --border:#FDBA74; /* Orange border */
-    --text:#1F2937; 
-    --correct:#10B981; 
-  }
-    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body {
-    margin:0; min-height:100vh; background:var(--bg); font-family:'Nunito',sans-serif;
-    padding:20px; padding-top:80px; display:flex; justify-content:center; align-items:flex-start;
-    overscroll-behavior:none; touch-action:none; 
-  }
-.top-back { 
-  position:absolute; top:15px; left:15px; background:white; border:none; border-radius:12px; 
-  padding:12px 18px; font-size:17px; font-weight:900; color:var(--title); cursor:pointer; 
-  box-shadow:0 4px 10px rgba(0,0,0,0.15); z-index:10; 
-}
-.card { 
-  background:var(--card); border-radius:24px; padding:24px; text-align:center; 
-  box-shadow:0 8px 0 var(--border); width:100%; max-width:420px; 
-}
-.title { font-size:28px; font-weight:900; color:var(--title); margin:0 0 8px 0; }
-.sub { font-size:18px; font-weight:800; color:var(--text); margin:0 0 16px 0; }
-.board { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0; }
-.slot {
-    background:white; border:4px solid var(--border); border-radius:18px; min-height:100px;
-    display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:40px;
-    padding:8px; user-select:none; touch-action:none; box-shadow:0 4px 0 var(--border);
- }
-.slot.label { font-size:14px; font-weight:800; color:var(--text); margin-top:4px; text-align:center; }
-.slot.drag-item { cursor:grab; }
-.slot.drag-item:active { transform:scale(0.95); }
-.slot.drop-zone { border-style:dashed; background:#FFFBEB; }
-.slot.drop-zone.over { border-color:var(--bg); background:#DBEAFE; border-style:solid; transform:scale(1.05); }
-.slot.filled { background:#D1FAE5; border-color:var(--correct); border-style:solid; }
-.msg { font-size:20px; color:var(--title); font-weight:900; min-height:26px; margin-top:8px; }
-.btns { display:flex; gap:12px; justify-content:center; margin-top:16px; }
-.btn { border:none; border-radius:12px; padding:14px 20px; font-size:16px; font-weight:800; color:white; cursor:pointer; font-family:'Nunito'; box-shadow:0 4px 0 rgba(0,0,0,0.1); }
-.btn.red{background:#EF4444;}.btn.blue{background:#3B82F6;}.btn.green{background:#10B981;}
-.dragging { opacity:0.8; transform:scale(1.1); z-index:999; position:fixed; pointer-events:none; box-shadow:0 10px 20px rgba(0,0,0,0.2); }
+  body{margin:0;min-height:100vh;background:#3B82F6;font-family:Nunito,sans-serif;padding:20px;padding-top:80px;display:flex;justify-content:center;align-items:flex-start;overscroll-behavior:none}
+.card{background:#FFF7ED;border-radius:24px;padding:24px;text-align:center;box-shadow:0 8px 0 #FDBA74;width:100%;max-width:420px;touch-action:none}
+.title{font-size:28px;font-weight:900;color:#F97316;margin:0 0 8px}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.slot{background:#fff;border:4px solid #FDBA74;border-radius:18px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:40px;padding:8px;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;touch-action:none}
+.slot.label{font-size:14px;font-weight:800;color:#1F2937;margin-top:4px}
+.slot.drag-item{cursor:grab}
+.slot.drop-zone{border-style:dashed;background:#FFFBEB}
+.slot.drop-zone.over{border-color:#3B82F6;background:#DBEAFE;border-style:solid;transform:scale(1.05)}
+.slot.filled{background:#D1FAE5;border-color:#10B981;border-style:solid}
+.btns{display:flex;gap:12px;justify-content:center;margin-top:16px}
+.btn{border:0;border-radius:12px;padding:14px 20px;font-size:16px;font-weight:800;color:#fff;cursor:pointer;font-family:Nunito}
+.btn.green{background:#10B981}.btn.blue{background:#3B82F6}.btn.red{background:#EF4444}
+.dragging{opacity:.7;transform:scale(1.1);z-index:999;position:fixed;pointer-events:none}
 </style>
 </head>
 <body>
-
-<button class="top-back" onclick="location.href='dashboard.html'">← Back</button>
-
 <div class="card">
-  <h1 class="title" id="title">1/10: Letters</h1>
-  <p class="sub">Match the same letters 📦</p>
-  
+  <h1 class="title" id="title">1/5: Letters</h1>
   <div class="board" id="dragBoard"></div>
   <div class="board" id="dropBoard"></div>
-
-  <div class="msg" id="msg"></div>
   <div class="btns">
     <button class="btn red" onclick="loadPage()">Clear</button>
     <button class="btn blue" onclick="prevPage()">← Back</button>
     <button class="btn green" onclick="nextPage()">Next →</button>
   </div>
 </div>
-
 <script>
-const PAGES = [
-  [['A','A'], ['B','B'], ['C','C']], // 1/10
-  [['⬛','Square'], ['⭕','Circle'], ['⭐','Star']], // 2/10
-  [['🍎','Apple'], ['🍌','Banana'], ['🍊','Orange']], // 3/10
-  [['🐶','Dog'], ['🐱','Cat'], ['🐰','Rabbit']], // 4/10
-  [['1','One'], ['2','Two'], ['3','Three']], // 5/10
-  [['🔴','Red'], ['🟢','Green'], ['🔵','Blue']], // 6/10
-  [['☀️','Sun'], ['🌙','Moon'], ['☁️','Cloud']], // 7/10
-  [['🚗','Car'], ['✈️','Plane'], ['🚢','Ship']], // 8/10
-  [['❤️','Heart'], ['😊','Smile'], ['🎵','Music']], // 9/10
-  [['🏠','Home'], ['🌳','Tree'], ['🌸','Flower']], // 10/10
-];
-const PAGE_TITLES = ['Letters','Shapes','Fruits','Animals','Numbers','Colors','Sky','Vehicles','Emojis','Nature'];
-
-let currentPage=0, matched=0, dragEl=null, ghost=null, longPressTimer=null;
-
-const speak=t=>{if('speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=0.85;speechSynthesis.speak(u);}};
-const shuffle=a=>[...a].sort(()=>Math.random()-0.5);
+const PAGES=[[["A","A"],["B","B"],["C","C"]],[["⬛","Square"],["⭕","Circle"],["⭐","Star"]],[["🍎","Apple"],["🍌","Banana"],["🍊","Orange"]],[["🐶","Dog"],["🐱","Cat"],["🐰","Rabbit"]],[["1","One"],["2","Two"],["3","Three"]]];
+const TITLES=['Letters','Shapes','Fruits','Animals','Numbers'];
+let page=0,matched=0,dragItem=null,touchItem=null;
 
 function loadPage(){
-  matched=0; const data=PAGES[currentPage];
-  document.getElementById('title').textContent=`${currentPage+1}/10: ${PAGE_TITLES[currentPage]}`;
-  document.getElementById('msg').textContent='';
-  const dragBoard=document.getElementById('dragBoard'); const dropBoard=document.getElementById('dropBoard');
-  dragBoard.innerHTML=''; dropBoard.innerHTML='';
-  const dragData=shuffle(data); const dropData=shuffle(data);
-  dragData.forEach(([e,n])=>{const el=document.createElement('div');el.className='slot drag-item';el.innerHTML=`${e}<div class="label">${n}</div>`;el.dataset.id=e;dragBoard.appendChild(el);});
-  dropData.forEach(([e,n])=>{const el=document.createElement('div');el.className='slot drop-zone';el.innerHTML=`<div class="label">${n}</div>`;el.dataset.id=e;dropBoard.appendChild(el);});
-  initDrag();
-}
+  matched=0; const data=PAGES[page];
+  document.getElementById('title').textContent=`${page+1}/5: ${TITLES[page]}`;
+  const dB=document.getElementById('dragBoard'); const pB=document.getElementById('dropBoard');
+  dB.innerHTML=''; pB.innerHTML='';
+  const dragData=[...data].sort(()=>Math.random()-0.5);
+  const dropData=[...data].sort(()=>Math.random()-0.5);
 
-function initDrag(){
-  document.querySelectorAll('.drag-item').forEach(item=>{
-    item.addEventListener('pointerdown',e=>{
-      e.preventDefault();
-      dragEl=item;
-      longPressTimer=setTimeout(()=>{
-        item.style.visibility='hidden';
-        ghost=item.cloneNode(true);
-        ghost.classList.add('dragging');
-        document.body.appendChild(ghost);
-        moveGhost(e.clientX, e.clientY);
-        speak(item.querySelector('.label').textContent);
-      },300);
-    });
-    item.addEventListener('pointermove',e=>{
-      if(ghost){e.preventDefault(); moveGhost(e.clientX, e.clientY); checkHover(e.clientX, e.clientY);}
-      else{clearTimeout(longPressTimer);}
-    });
-    item.addEventListener('pointerup',e=>{
-      clearTimeout(longPressTimer);
-      if(ghost){
-        const dropTarget=document.elementFromPoint(e.clientX, e.clientY);
-        if(dropTarget && dropTarget.closest('.drop-zone')){handleDrop(dropTarget.closest('.drop-zone'));}
-        ghost.remove(); ghost=null;
+  dragData.forEach(([e,n])=>{
+    const el=document.createElement('div');
+    el.className='slot drag-item';
+    el.innerHTML=`${e}<div class="label">${n}</div>`;
+    el.dataset.id=e;
+    el.draggable=true; // Desktop
+
+    // DESKTOP DRAG
+    el.ondragstart=(ev)=>{dragItem=el; ev.dataTransfer.effectAllowed='move';};
+
+    // MOBILE TOUCH DRAG - IDHE MAIN FIX
+    el.ontouchstart=(ev)=>{
+      ev.preventDefault();
+      touchItem=el;
+      setTimeout(()=>{ // 100ms delay tarvate drag start
+        if(touchItem){
+          touchItem.classList.add('dragging');
+          const t=ev.touches[0];
+          moveGhost(t.clientX, t.clientY);
+        }
+      },100);
+    };
+    el.ontouchmove=(ev)=>{
+      ev.preventDefault();
+      if(touchItem && touchItem.classList.contains('dragging')){
+        const t=ev.touches[0];
+        moveGhost(t.clientX, t.clientY);
+        checkHover(t.clientX, t.clientY);
       }
-      if(dragEl){dragEl.style.visibility='visible'; dragEl=null;}
+    };
+    el.ontouchend=(ev)=>{
+      ev.preventDefault();
+      if(touchItem && touchItem.classList.contains('dragging')){
+        const t=ev.changedTouches[0];
+        const dropTarget=document.elementFromPoint(t.clientX, t.clientY);
+        if(dropTarget && dropTarget.closest('.drop-zone')){
+          handleDrop(dropTarget.closest('.drop-zone'));
+        }
+        touchItem.classList.remove('dragging');
+        const g=document.getElementById('ghost'); if(g) g.remove();
+      }
+      touchItem=null;
       document.querySelectorAll('.over').forEach(z=>z.classList.remove('over'));
-    });
+    };
+    dB.appendChild(el);
+  });
+
+  dropData.forEach(([e,n])=>{
+    const el=document.createElement('div');
+    el.className='slot drop-zone';
+    el.innerHTML=`<div class="label">${n}</div>`;
+    el.dataset.id=e;
+    el.ondragover=(ev)=>{ev.preventDefault(); el.classList.add('over');};
+    el.ondragleave=()=>el.classList.remove('over');
+    el.ondrop=(ev)=>{ev.preventDefault(); handleDrop(el);};
+    pB.appendChild(el);
   });
 }
-function moveGhost(x,y){ghost.style.left=`${x-50}px`; ghost.style.top=`${y-50}px`;}
+
+function moveGhost(x,y){
+  let g=document.getElementById('ghost');
+  if(!g){
+    g=touchItem.cloneNode(true);
+    g.id='ghost'; g.classList.add('dragging');
+    document.body.appendChild(g);
+  }
+  g.style.left=`${x-50}px`; g.style.top=`${y-50}px`;
+}
 function checkHover(x,y){
   document.querySelectorAll('.drop-zone').forEach(z=>{
     const r=z.getBoundingClientRect();
@@ -141,14 +122,15 @@ function checkHover(x,y){
   });
 }
 function handleDrop(zone){
-  if(!dragEl||zone.classList.contains('filled'))return;
-  if(dragEl.dataset.id===zone.dataset.id){
-    zone.classList.add('filled'); zone.innerHTML=dragEl.innerHTML; dragEl.remove();
-    matched++; speak('Correct');
-    if(matched===3){document.getElementById('msg').textContent='All Matched! ✅'; setTimeout(nextPage,1200);}
-  }else{dragEl.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:250}); speak('Try Again');}
-const prevPage=()=>{currentPage=(currentPage-1+PAGES.length)%PAGES.length; loadPage();};
-const nextPage=()=>{currentPage=(currentPage+1)%PAGES.length; loadPage();};
+  const item = dragItem || touchItem;
+  if(!item || zone.classList.contains('filled')) return;
+  if(item.dataset.id === zone.dataset.id){
+    zone.classList.add('filled'); zone.innerHTML=item.innerHTML; item.remove(); matched++;
+    if(matched===3) setTimeout(nextPage,1000);
+  }else{item.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:200});}
+}
+const prevPage=()=>{page=(page-1+PAGES.length)%PAGES.length;loadPage();};
+const nextPage=()=>{page=(page+1)%PAGES.length;loadPage();};
 loadPage();
 </script>
 </body>
