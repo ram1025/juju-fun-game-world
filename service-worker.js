@@ -13,7 +13,7 @@ const urlsToCache = [
     './drag-drop.html', // <-- FIX: & teesesanu
     './addition.html',
     './alphabets.html',
-    './number.html',
+    './numbers.html',
     './painting.html',
     './free-draw.html',
     './manifest.json?v=108',
