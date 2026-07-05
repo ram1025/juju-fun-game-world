@@ -7,32 +7,23 @@
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
   body {
     margin:0; min-height:100vh; background:#8B5CF6; font-family:'Nunito',sans-serif;
-    padding:15px; padding-top:80px; box-sizing:border-box; /* Paina gap */
-    display:flex; flex-direction:column; align-items:center; /* Centre fix */
+    padding:15px; padding-top:80px; box-sizing:border-box;
+    display:flex; flex-direction:column; align-items:center;
   }
-.top-back {
-  position:absolute; top:15px; left:15px; /* Top-left fixed */
-  background:white; border:none; border-radius:12px; padding:12px 18px;
-  font-size:17px; font-weight:900; color:#8B5CF6; cursor:pointer;
-  box-shadow:0 4px 10px rgba(0,0,0,0.25); z-index:10;
-}
-.card {
-  background:#FDE68A; border-radius:25px; padding:25px; text-align:center;
-  box-shadow:0 8px 0 #F59E0B; overflow:hidden; width:100%; max-width:400px; /* Centre width */
-}
+.top-back { position:absolute; top:15px; left:15px; background:white; border:none; border-radius:12px; padding:12px 18px; font-size:17px; font-weight:900; color:#8B5CF6; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.25); z-index:10; }
+.card { background:#FDE68A; border-radius:25px; padding:25px; text-align:center; box-shadow:0 8px 0 #F59E0B; overflow:hidden; width:100%; max-width:420px; }
 .counter { font-size:26px; font-weight:900; color:#D97706; margin-bottom:20px; }
-.drag-area { display:flex; justify-content:center; gap:15px; margin:25px 0; min-height:110px; flex-wrap:wrap; }
-.drop-area { display:flex; justify-content:space-between; gap:15px; margin:25px 0; }
+.drag-area,.drop-area { display:flex; justify-content:center; gap:12px; margin:20px 0; min-height:110px; flex-wrap:wrap; } /* center chesa */
 .item {
   background:white; border:4px solid #D97706; border-radius:20px;
-  padding:12px 8px; font-size:42px; cursor:grab; box-shadow:0 5px 0 #D97706;
-  width:30%; min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:10px 6px; font-size:40px; cursor:grab; box-shadow:0 5px 0 #D97706;
+  width:calc(33.33% - 8px); min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
   touch-action:none; user-select:none; box-sizing:border-box;
 }
-.item-name { font-size:14px; font-weight:800; color:#DC2626; margin-top:4px; line-height:1.1; }
+.item-name { font-size:13px; font-weight:800; color:#DC2626; margin-top:3px; line-height:1.1; word-break:break-word; text-align:center; } /* Text wrap fix */
 .drop-box {
   background:white; border:4px dashed #D97706; border-radius:20px;
-  padding:12px 8px; font-size:42px; width:30%; min-height:100px;
+  padding:10px 6px; font-size:40px; width:calc(33.33% - 8px); min-height:100px;
   display:flex; flex-direction:column; align-items:center; justify-content:center; box-sizing:border-box;
 }
 .drop-box.hover { border-color:#3B82F6; background:#DBEAFE; border-style:solid; }
@@ -80,7 +71,7 @@ function loadPage(){
   const dragArea = document.getElementById('dragArea'); const dropArea = document.getElementById('dropArea');
   dragArea.innerHTML = ''; dropArea.innerHTML = '';
 
-  const data = pages;
+  const data = pages[page]; // <-- MAIN FIX: [page] add chesa. Only 3 items
   const dropShuffled = [...data].sort(()=>0.5-Math.random());
   const dragShuffled = [...data].sort(()=>0.5-Math.random());
 
@@ -90,18 +81,16 @@ function loadPage(){
     div.innerHTML = `${pair[0]}<div class="item-name">${pair[1]}</div>`;
     div.dataset.match = pair[0]; div.dataset.name = pair[1];
 
-    // Desktop Drag
     div.draggable = true;
     div.ondragstart = (e)=>{ draggedItem = div; speak(pair[1]); };
 
-    // Mobile Touch Drag - NEW CODE
     div.ontouchstart = (e)=>{
       e.preventDefault();
       draggedItem = div;
       div.style.opacity = '0.7';
       speak(pair[1]);
     };
-    div.ontouchmove = (e)=>{ e.preventDefault(); }; // Scroll aapakosam
+    div.ontouchmove = (e)=>{ e.preventDefault(); };
     div.ontouchend = (e)=>{
       div.style.opacity = '1';
       const touch = e.changedTouches[0];
