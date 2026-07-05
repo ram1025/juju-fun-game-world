@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v109'; // <-- v108
+const CACHE_NAME = 'juju-fun-world-v111'; // <-- v108
 
 const urlsToCache = [
     './',
@@ -13,7 +13,7 @@ const urlsToCache = [
     './drag-drop.html', // <-- FIX: & teesesanu
     './addition.html',
     './alphabets.html',
-    './numbers.html',
+    './number.html',
     './painting.html',
     './free-draw.html',
     './manifest.json?v=108',
