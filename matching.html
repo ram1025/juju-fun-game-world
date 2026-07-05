@@ -25,7 +25,7 @@
     min-height:80px; display:flex; flex-direction:column; align-items:center; justify-content:center;
     transition:0.2s;
   }
-.item-name { font-size:16px; font-weight:800; color:#DC2626; margin-top:5px; }
+.item-name { font-size:14px; font-weight:800; color:#DC2626; margin-top:4px; }
 .item.selected { border-color:#3B82F6; box-shadow:0 5px 0 #3B82F6; }
 .item.matched { background:#BBF7D0; border-color:#10B981; cursor:default; }
 .item.wrong { background:#FECACA; border-color:#EF4444; animation:shake 0.3s; }
@@ -46,7 +46,7 @@
 <button class="top-back" onclick="location.href='./dashboard.html'">← Back</button>
 
 <div class="card">
-  <div class="counter" id="counter">Page 1/5: Match Them</div>
+  <div class="counter" id="counter">Page 1/5</div>
 
   <div class="grid">
     <div class="col" id="leftCol"></div>
@@ -64,11 +64,11 @@
 
 <script>
 const pages = [
-  [{l:'A', r:'A', name:'Apple'}, {l:'B', r:'B', name:'Ball'}, {l:'C', r:'C', name:'Cat'}],
-  [{l:'⬛', r:'⬛', name:'Square'}, {l:'⭕', r:'⭕', name:'Circle'}, {l:'⭐', r:'⭐', name:'Star'}],
-  [{l:'🍎', r:'🍎', name:'Apple'}, {l:'🍌', r:'🍌', name:'Banana'}, {l:'🍊', r:'🍊', name:'Orange'}],
-  [{l:'🐶', r:'🐶', name:'Dog'}, {l:'🐱', r:'🐱', name:'Cat'}, {l:'🐰', r:'🐰', name:'Rabbit'}],
-  [{l:'1', r:'1', name:'One'}, {l:'2', r:'2', name:'Two'}, {l:'3', r:'3', name:'Three'}]
+  [['A','A'], ['B','B'], ['C','C']],
+  [['⬛','Square'], ['⭕','Circle'], ['⭐','Star']],
+  [['🍎','Apple'], ['🍌','Banana'], ['🍊','Orange']],
+  [['🐶','Dog'], ['🐱','Cat'], ['🐰','Rabbit']],
+  [['1','One'], ['2','Two'], ['3','Three']]
 ];
 let page = 0;
 let selectedLeft = null;
@@ -77,13 +77,13 @@ let matchedCount = 0;
 function speak(text){
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = 0.7; speechSynthesis.speak(u);
+  u.lang = 'en-US'; u.rate = 0.8; speechSynthesis.speak(u);
 }
 
 function loadPage(){
   selectedLeft = null;
   matchedCount = 0;
-  document.getElementById('counter').textContent = `Page ${page+1}/5: Match Them`;
+  document.getElementById('counter').textContent = `Page ${page+1}/5`;
   document.getElementById('msg').textContent = '';
 
   const leftCol = document.getElementById('leftCol');
@@ -96,27 +96,27 @@ function loadPage(){
   data.forEach((pair)=>{
     const div = document.createElement('div');
     div.className = 'item';
-    div.innerHTML = `${pair.l}<div class="item-name">${pair.name}</div>`;
-    div.dataset.match = pair.r;
-    div.dataset.name = pair.name;
-    div.onclick = () => { speak(pair.name); selectLeft(div); }; // Left tap = Name voice
+    div.innerHTML = `${pair[0]}<div class="item-name">${pair[1]}</div>`;
+    div.dataset.match = pair[0];
+    div.dataset.name = pair[1];
+    div.onclick = () => { speak(pair[1]); selectLeft(div); };
     leftCol.appendChild(div);
   });
 
   rightShuffled.forEach((pair)=>{
     const div = document.createElement('div');
     div.className = 'item';
-    div.innerHTML = `${pair.r}<div class="item-name">${pair.name}</div>`;
-    div.dataset.match = pair.r;
-    div.dataset.name = pair.name;
-    div.onclick = () => { speak(pair.name); selectRight(div); }; // Right tap = Name voice
+    div.innerHTML = `${pair[0]}<div class="item-name">${pair[1]}</div>`;
+    div.dataset.match = pair[0];
+    div.dataset.name = pair[1];
+    div.onclick = () => { speak(pair[1]); selectRight(div); };
     rightCol.appendChild(div);
   });
 }
 
 function selectLeft(el){
   if(el.classList.contains('matched')) return;
-  document.querySelectorAll('#leftCol .item').forEach(i=>i.classList.remove('selected'));
+  document.querySelectorAll('#leftCol.item').forEach(i=>i.classList.remove('selected'));
   el.classList.add('selected');
   selectedLeft = el;
 }
@@ -129,10 +129,10 @@ function selectRight(el){
     el.classList.add('matched');
     selectedLeft.classList.remove('selected');
     matchedCount++;
-    speak('Correct'); // Only Correct
+    speak('Correct'); // Correct voice added
     if(matchedCount === 3){
       document.getElementById('msg').textContent = 'All Matched! ✅';
-      setTimeout(()=>nextPage(), 1200); // Silent ga next page
+      setTimeout(()=>nextPage(), 1200); // Silent next page
     }
   } else {
     selectedLeft.classList.add('wrong');
@@ -141,7 +141,6 @@ function selectRight(el){
       selectedLeft.classList.remove('wrong','selected');
       el.classList.remove('wrong');
     }, 400);
-    speak('Try Again');
   }
   selectedLeft = null;
 }
