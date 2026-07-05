@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v115'; // v114 -> v115 chey
+const CACHE_NAME = 'juju-fun-world-v116'; // v115 -> v116 chey
 
 const urlsToCache = [
     './',
