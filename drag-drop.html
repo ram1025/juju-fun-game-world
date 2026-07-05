@@ -9,7 +9,7 @@
     margin:0; min-height:100vh; background:#8B5CF6; font-family:'Nunito',sans-serif;
     padding:15px; padding-top:80px; box-sizing:border-box;
     display:flex; flex-direction:column; align-items:center;
-    overscroll-behavior:none; /* Page scroll aapakosam */
+    overscroll-behavior:none;
   }
 .top-back { position:absolute; top:15px; left:15px; background:white; border:none; border-radius:12px; padding:12px 18px; font-size:17px; font-weight:900; color:#8B5CF6; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.25); z-index:10; }
 .card { background:#FDE68A; border-radius:25px; padding:25px; text-align:center; box-shadow:0 8px 0 #F59E0B; overflow:hidden; width:100%; max-width:420px; }
@@ -20,7 +20,7 @@
   padding:10px 6px; font-size:40px; cursor:grab; box-shadow:0 5px 0 #D97706;
   width:calc(33.33% - 8px); min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
   touch-action:none; user-select:none; box-sizing:border-box;
-  transition:transform 0.1s; /* Drag feel kosam */
+  transition:transform 0.1s;
 }
 .item.dragging { transform:scale(1.1); opacity:0.8; z-index:99; position:relative; }
 .item-name { font-size:13px; font-weight:800; color:#DC2626; margin-top:3px; line-height:1.1; word-break:break-word; text-align:center; }
@@ -28,7 +28,6 @@
   background:white; border:4px dashed #D97706; border-radius:20px;
   padding:10px 6px; font-size:40px; width:calc(33.33% - 8px); min-height:100px;
   display:flex; flex-direction:column; align-items:center; justify-content:center; box-sizing:border-box;
-  pointer-events:auto; /* Touch detect kosam */
 }
 .drop-box.hover { border-color:#3B82F6; background:#DBEAFE; border-style:solid; transform:scale(1.05); }
 .drop-box.filled { background:#BBF7D0; border-style:solid; border-color:#10B981; }
@@ -65,7 +64,7 @@ const pages = [
   [['🐶','Dog'], ['🐱','Cat'], ['🐰','Rabbit']],
   [['1','One'], ['2','Two'], ['3','Three']]
 ];
-let page = 0; let matchedCount = 0; let draggedItem = null; let currentDropTarget = null; // NEW: Target track cheyadaniki
+let page = 0; let matchedCount = 0; let draggedItem = null; let currentDropTarget = null;
 
 function speak(text){ if('speechSynthesis' in window){ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.8; speechSynthesis.speak(u); } }
 
@@ -76,7 +75,8 @@ function loadPage(){
   const dragArea = document.getElementById('dragArea'); const dropArea = document.getElementById('dropArea');
   dragArea.innerHTML = ''; dropArea.innerHTML = '';
 
-  const data = pages;
+  const data = pages; // <-- IDHE FINAL FIX BRO. ONLY 3 ITEMS
+
   const dropShuffled = [...data].sort(()=>0.5-Math.random());
   const dragShuffled = [...data].sort(()=>0.5-Math.random());
 
@@ -86,12 +86,10 @@ function loadPage(){
     div.innerHTML = `${pair[0]}<div class="item-name">${pair[1]}</div>`;
     div.dataset.match = pair[0]; div.dataset.name = pair[1];
 
-    // Desktop
     div.draggable = true;
     div.ondragstart = (e)=>{ draggedItem = div; speak(pair[1]); };
     div.ondragend = ()=>{ draggedItem = null; clearHover(); };
 
-    // Mobile Touch - COMPLETE REWRITE
     div.ontouchstart = (e)=>{
       e.preventDefault();
       draggedItem = div;
@@ -102,11 +100,10 @@ function loadPage(){
       e.preventDefault();
       const touch = e.touches[0];
       const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-
-      clearHover(); // Mundhu anni hover tey
+      clearHover();
       if(elem && elem.classList.contains('drop-box') &&!elem.classList.contains('filled')){
         elem.classList.add('hover');
-        currentDropTarget = elem; // Iddi meeda vadileyali ani gurthupettukunam
+        currentDropTarget = elem;
       } else {
         currentDropTarget = null;
       }
@@ -115,7 +112,7 @@ function loadPage(){
       e.preventDefault();
       div.classList.remove('dragging');
       clearHover();
-      if(currentDropTarget){ // Gurthupettukunna box unte
+      if(currentDropTarget){
         handleDrop(currentDropTarget);
       }
       draggedItem = null;
