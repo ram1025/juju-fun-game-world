@@ -27,7 +27,7 @@ h1 { font-size:22px; color:#B45309; margin-top:10px; min-height:28px; }
 </head>
 <body>
 
-<button class="top-back" onclick="location.href='dashboard.html'">← Back</button> <!-- FIXED PATH -->
+<button class="top-back" onclick="location.href='dashboard.html'">← Back</button>
 
 <div class="card">
   <div class="counter" id="counter">Page 1/5</div>
@@ -50,20 +50,59 @@ const pages = [
   [['1','One'], ['2','Two'], ['3','Three']]
 ];
 let page = 0; let matchedCount = 0; let draggedItem = null;
+
 function speak(text){ if('speechSynthesis' in window){ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.8; speechSynthesis.speak(u); } }
+
 function loadPage(){
   matchedCount = 0; document.getElementById('counter').textContent = `Page ${page+1}/5`; document.getElementById('msg').textContent = '';
   const dragArea = document.getElementById('dragArea'); const dropArea = document.getElementById('dropArea');
   dragArea.innerHTML = ''; dropArea.innerHTML = '';
   const data = pages; const dropShuffled = [...data].sort(()=>0.5-Math.random()); const dragShuffled = [...data].sort(()=>0.5-Math.random());
-  dragShuffled.forEach((pair)=>{ const div = document.createElement('div'); div.className = 'item'; div.innerHTML = `${pair[0]}<div class="item-name">${pair[1]}</div>`; div.dataset.match = pair[0]; div.dataset.name = pair[1]; div.draggable = true; div.ondragstart = (e)=>{ draggedItem = div; speak(pair[1]); }; div.ontouchstart = (e)=>{ draggedItem = div; speak(pair[1]); }; dragArea.appendChild(div); });
-  dropShuffled.forEach((pair)=>{ const div = document.createElement('div'); div.className = 'drop-box'; div.innerHTML = `<div class="item-name">${pair[1]}</div>`; div.dataset.match = pair[0]; div.ondragover = (e)=>{ e.preventDefault(); div.classList.add('hover'); }; div.ondragleave = ()=>{ div.classList.remove('hover'); }; div.ondrop = ()=>{ handleDrop(div); }; dropArea.appendChild(div); });
+
+  dragShuffled.forEach((pair)=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `${pair[0]}<div class="item-name">${pair[1]}</div>`;
+    div.dataset.match = pair[0]; div.dataset.name = pair[1];
+    div.draggable = true;
+    div.ondragstart = (e)=>{ draggedItem = div; speak(pair[1]); };
+    div.ontouchstart = (e)=>{ draggedItem = div; speak(pair[1]); };
+    dragArea.appendChild(div);
+  });
+
+  dropShuffled.forEach((pair)=>{
+    const div = document.createElement('div');
+    div.className = 'drop-box';
+    div.innerHTML = `<div class="item-name">${pair[1]}</div>`;
+    div.dataset.match = pair[0];
+    div.ondragover = (e)=>{ e.preventDefault(); div.classList.add('hover'); };
+    div.ondragleave = ()=>{ div.classList.remove('hover'); };
+    div.ondrop = ()=>{ handleDrop(div); };
+    dropArea.appendChild(div);
+  });
 }
+
 function handleDrop(box){
-  box.classList.remove('hover'); if(!draggedItem || box.classList.contains('filled')) return;
-  if(draggedItem.dataset.match === box.dataset.match){ box.classList.add('filled'); box.innerHTML = draggedItem.innerHTML; draggedItem.remove(); matchedCount++; speak('Correct'); if(matchedCount === 3){ document.getElementById('msg').textContent = 'All Matched! ✅'; setTimeout(()=>nextPage(), 1200); } else { draggedItem.style.animation = 'shake 0.3s'; setTimeout(()=>{ draggedItem.style.animation = ''; }, 400); }
+  box.classList.remove('hover');
+  if(!draggedItem || box.classList.contains('filled')) return;
+
+  if(draggedItem.dataset.match === box.dataset.match){
+    box.classList.add('filled');
+    box.innerHTML = draggedItem.innerHTML;
+    draggedItem.remove();
+    matchedCount++;
+    speak('Correct');
+    if(matchedCount === 3){
+      document.getElementById('msg').textContent = 'All Matched! ✅';
+      setTimeout(()=>nextPage(), 1200);
+    }
+  } else {
+    draggedItem.style.animation = 'shake 0.3s';
+    setTimeout(()=>{ draggedItem.style.animation = ''; }, 400);
+  }
   draggedItem = null;
-}
+} // <-- IDI MISS AYINDI
+
 function prevPage(){ page = (page - 1 + pages.length) % pages.length; loadPage(); }
 function nextPage(){ page = (page + 1) % pages.length; loadPage(); }
 loadPage();
