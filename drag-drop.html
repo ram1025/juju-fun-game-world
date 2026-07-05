@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Drag & Drop - Juju</title>
-<link rel="manifest" href="./manifest.json?v=112">
+<link rel="manifest" href="./manifest.json?v=115">
 <meta name="theme-color" content="#F97316">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -18,13 +18,13 @@
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:20px}
 .dropzone{background:#F3F4F6;border:3px dashed #D1D5DB;border-radius:20px;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;transition:all.2s}
 .dropzone.hover{border-color:#10B981;background:#D1FAE5;transform:scale(1.05)}
-.dropzone img{width:60px;height:60px;object-fit:contain;margin-bottom:5px;pointer-events:none}
+.dropzone.emoji{font-size:40px;line-height:1;margin-bottom:5px;pointer-events:none} /* EMOJI CSS */
 .dropzone span{font-size:14px;font-weight:800;color:#4B5563;pointer-events:none}
 .dropzone.matched{border-style:solid;border-color:#10B981;background:#ECFDF5;opacity:0.7}
 .draggables{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;min-height:120px}
 .draggable{width:90px;height:90px;background:#fff;border:3px solid #F97316;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:grab;box-shadow:0 4px 0 rgba(0,0,0,.1);user-select:none}
 .draggable:active{cursor:grabbing;transform:scale(.9)}
-.draggable img{width:50px;height:50px;object-fit:contain;pointer-events:none}
+.draggable.emoji{font-size:35px;line-height:1;pointer-events:none} /* EMOJI CSS */
 .draggable span{font-size:12px;font-weight:800;color:#F97316;pointer-events:none}
 .draggable.dragging{opacity:0.4}
 .draggable.hidden{display:none}
@@ -52,25 +52,25 @@
   </div>
 
 <script>
-  // ===== 2 ROUNDS DATA - TOTAL 10 ITEMS =====
+  // ===== EMOJI DATA - NO IMAGES NEEDED =====
   const gameData = [
-    [{id:'dog', name:'Dog', img:'./assets/img/dog.png'},
-     {id:'cat', name:'Cat', img:'./assets/img/cat.png'},
-     {id:'ball', name:'Ball', img:'./assets/img/ball.png'},
-     {id:'apple', name:'Apple', img:'./assets/img/apple.png'},
-     {id:'car', name:'Car', img:'./assets/img/car.png'}],
-    [{id:'lion', name:'Lion', img:'./assets/img/lion.png'},
-     {id:'monkey', name:'Monkey', img:'./assets/img/monkey.png'},
-     {id:'star', name:'Star', img:'./assets/img/star.png'},
-     {id:'fish', name:'Fish', img:'./assets/img/fish.png'},
-     {id:'house', name:'House', img:'./assets/img/house.png'}]
+    [{id:'dog', name:'Dog', img:'🐶'},
+     {id:'cat', name:'Cat', img:'🐱'},
+     {id:'ball', name:'Ball', img:'⚽'},
+     {id:'apple', name:'Apple', img:'🍎'},
+     {id:'car', name:'Car', img:'🚗'}],
+    [{id:'lion', name:'Lion', img:'🦁'},
+     {id:'monkey', name:'Monkey', img:'🐒'},
+     {id:'star', name:'Star', img:'⭐'},
+     {id:'fish', name:'Fish', img:'🐠'},
+     {id:'house', name:'House', img:'🏠'}]
   ];
 
   let currentRound = 0;
   let score = 0;
   let matchedCount = 0;
   let draggedItem = null;
-  const synth = window.speechSynthesis; // Voice API
+  const synth = window.speechSynthesis;
 
   const dropGrid = document.getElementById('dropGrid');
   const dragGrid = document.getElementById('dragGrid');
@@ -79,7 +79,7 @@
   const winText = document.getElementById('winText');
 
   function speak(text){
-    if(synth.speaking){ synth.cancel(); } // Purana voice cut
+    if(synth.speaking){ synth.cancel(); }
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'en-US';
     utter.rate = 0.9;
@@ -98,7 +98,7 @@
       const dz = document.createElement('div');
       dz.className = 'dropzone';
       dz.dataset.match = item.id;
-      dz.innerHTML = `<img src="${item.img}"><span>${item.name}</span>`;
+      dz.innerHTML = `<div class="emoji">${item.img}</div><span>${item.name}</span>`; // IMG -> EMOJI
       dz.addEventListener('dragover', e=>{e.preventDefault(); dz.classList.add('hover')});
       dz.addEventListener('dragleave', ()=>dz.classList.remove('hover'));
       dz.addEventListener('drop', handleDrop);
@@ -110,10 +110,10 @@
       dg.className = 'draggable';
       dg.dataset.id = item.id;
       dg.draggable = true;
-      dg.innerHTML = `<img src="${item.img}"><span>${item.name}</span>`;
-      dg.addEventListener('dragstart', (e)=>{ // VOICE ADDED HERE
+      dg.innerHTML = `<div class="emoji">${item.img}</div><span>${item.name}</span>`; // IMG -> EMOJI
+      dg.addEventListener('dragstart', (e)=>{
         handleDragStart(e);
-        speak(item.name); // Drag chesthe name chepthundi
+        speak(item.name);
       });
       dg.addEventListener('dragend', ()=>dg.classList.remove('dragging'));
       dragGrid.appendChild(dg);
@@ -139,7 +139,7 @@
       matchedCount++;
       score++;
       scoreEl.textContent = `${score}/10`;
-      speak('Correct! ' + name); // CORRECT VOICE
+      speak('Correct! ' + name);
 
       if(matchedCount === 5){
         winText.style.display = 'block';
@@ -149,7 +149,7 @@
         }
       }
     } else {
-      speak('Try Again'); // WRONG VOICE
+      speak('Try Again');
     }
   }
 
@@ -174,13 +174,12 @@
     startRound(0);
   }
 
-  // Mobile Touch Support
   let touchItem = null;
   document.addEventListener('touchstart', e=>{
     if(e.target.closest('.draggable')){
       touchItem = e.target.closest('.draggable');
       touchItem.classList.add('dragging');
-      speak(gameData[currentRound].find(x=>x.id===touchItem.dataset.id).name); // Touch Voice
+      speak(gameData[currentRound].find(x=>x.id===touchItem.dataset.id).name);
     }
   },{passive:true});
   document.addEventListener('touchend', e=>{
