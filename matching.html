@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matching - Juju</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght=700;800;900&display=swap');
+  body { margin:0; min-height:100vh; background:#3B82F6; font-family:'Nunito',sans-serif; padding:15px; }
+.top-back {
+    background:white; border:none; border-radius:12px;
+    padding:10px 15px; font-size:16px; font-weight:800;
+    cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    margin-bottom:15px;
+  }
+.card {
+    background:#FEF3C7; border-radius:25px; padding:20px;
+    text-align:center; box-shadow:0 8px 0 #FDBA74;
+  }
+.counter { font-size:24px; font-weight:900; color:#F97316; margin-bottom:10px; }
+.grid { display:flex; justify-content:space-between; gap:10px; margin:15px 0; }
+.col { display:flex; flex-direction:column; gap:15px; width:45%; }
+.item {
+    background:white; border:4px solid #F97316; border-radius:20px;
+    padding:15px; font-size:50px; cursor:pointer; box-shadow:0 5px 0 #F97316;
+    min-height:80px; display:flex; align-items:center; justify-content:center;
+    transition:0.2s;
+  }
+.item.selected { border-color:#3B82F6; box-shadow:0 5px 0 #3B82F6; }
+.item.matched { background:#BBF7D0; border-color:#10B981; cursor:default; }
+.item.wrong { background:#FECACA; border-color:#EF4444; animation:shake 0.3s; }
+@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+  h1 { font-size:22px; color:#EA580C; margin-top:10px; min-height:28px; }
+.bottom-btns { display:flex; gap:10px; justify-content:center; margin-top:15px; }
+.bottom-btn {
+    border:none; border-radius:12px; padding:12px 25px;
+    font-size:18px; font-weight:800; color:white; cursor:pointer;
+  }
+.btn-clear { background:#EF4444; }
+.btn-back { background:#3B82F6; }
+.btn-next { background:#10B981; }
+</style>
+</head>
+<body>
+
+<button class="top-back" onclick="location.href='./dashboard.html'">← Back</button>
+
+<div class="card">
+  <div class="counter" id="counter">Page 1/5: Match Them</div>
+
+  <div class="grid">
+    <div class="col" id="leftCol"></div>
+    <div class="col" id="rightCol"></div>
+  </div>
+
+  <h1 id="msg"></h1>
+
+  <div class="bottom-btns">
+    <button class="bottom-btn btn-clear" onclick="loadPage()">Clear</button>
+    <button class="bottom-btn btn-back" onclick="prevPage()">← Back</button>
+    <button class="bottom-btn btn-next" onclick="nextPage()">Next →</button>
+  </div>
+</div>
+
+<script>
+const pages = [
+  // Page 1: Letters A,B,C
+  [{l:'A', r:'A'}, {l:'B', r:'B'}, {l:'C', r:'C'}],
+  // Page 2: Shapes
+  [{l:'⬛', r:'⬛'}, {l:'⭕', r:'⭕'}, {l:'⭐', r:'⭐'}],
+  // Page 3: Fruits
+  [{l:'🍎', r:'🍎'}, {l:'🍌', r:'🍌'}, {l:'🍊', r:'🍊'}],
+  // Page 4: Animals
+  [{l:'🐶', r:'🐶'}, {l:'🐱', r:'🐱'}, {l:'🐰', r:'🐰'}],
+  // Page 5: Numbers
+  [{l:'1', r:'1'}, {l:'2', r:'2'}, {l:'3', r:'3'}]
+];
+let page = 0;
+let selectedLeft = null;
+let matchedCount = 0;
+
+function speak(text){
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.7; speechSynthesis.speak(u);
+}
+
+function loadPage(){
+  selectedLeft = null;
+  matchedCount = 0;
+  document.getElementById('counter').textContent = `Page ${page+1}/5: Match Them`;
+  document.getElementById('msg').textContent = '';
+
+  const leftCol = document.getElementById('leftCol');
+  const rightCol = document.getElementById('rightCol');
+  leftCol.innerHTML = ''; rightCol.innerHTML = '';
+
+  const data = pages[page];
+  const rightShuffled = [...data].sort(()=>0.5-Math.random()); // Right side shuffle
+
+  data.forEach((pair, idx)=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.textContent = pair.l;
+    div.dataset.match = pair.r;
+    div.onclick = () => selectLeft(div);
+    leftCol.appendChild(div);
+  });
+
+  rightShuffled.forEach((pair, idx)=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.textContent = pair.r;
+    div.dataset.match = pair.r;
+    div.onclick = () => selectRight(div);
+    rightCol.appendChild(div);
+  });
+  speak('Match the pairs');
+}
+
+function selectLeft(el){
+  if(el.classList.contains('matched')) return;
+  document.querySelectorAll('#leftCol.item').forEach(i=>i.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedLeft = el;
+}
+
+function selectRight(el){
+  if(!selectedLeft || el.classList.contains('matched')) return;
+
+  if(selectedLeft.dataset.match === el.dataset.match){
+    selectedLeft.classList.add('matched');
+    el.classList.add('matched');
+    selectedLeft.classList.remove('selected');
+    matchedCount++;
+    speak('Correct');
+    if(matchedCount === 3){
+      document.getElementById('msg').textContent = 'All Matched! ✅ Page Complete';
+      speak('Page Complete');
+      setTimeout(()=>nextPage(), 1500);
+    }
+  } else {
+    selectedLeft.classList.add('wrong');
+    el.classList.add('wrong');
+    setTimeout(()=>{
+      selectedLeft.classList.remove('wrong','selected');
+      el.classList.remove('wrong');
+    }, 400);
+    speak('Try Again');
+  }
+  selectedLeft = null;
+}
+
+function prevPage(){ page = (page - 1 + pages.length) % pages.length; loadPage(); }
+function nextPage(){ page = (page + 1) % pages.length; loadPage(); }
+loadPage();
+</script>
+</body>
+</html>
