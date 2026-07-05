@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Shapes - Juju</title>
+<link rel="manifest" href="./manifest.json?v=140"><meta name="theme-color" content="#3B82F6">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
+  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:15px}
+ .card{background:#fff;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+ .page-heading{font-size:22px;font-weight:900;color:#1E40AF;margin-bottom:15px;}
+ .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px} /* 4 -> 5 columns chesanu */
+ .btn{aspect-ratio:1/1;border-radius:18px;border:0;background:#DBEAFE;font-size:34px;cursor:pointer;box-shadow:0 4px 0 #93C5FD;transition:.2s;display:flex;align-items:center;justify-content:center;padding:5px}
+ .btn:active{transform:scale(.9)}
+ .back{margin-top:15px;background:#6B7280;color:#fff;border:0;border-radius:12px;padding:12px 20px;font-size:16px;font-weight:900;font-family:Nunito;box-shadow:0 4px 0 #4B5563}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="page-heading">⭐ Shapes</div>
+    <div class="grid" id="grid"></div>
+    <button class="back" onclick="location.href='./dashboard.html'">← Back</button>
+  </div>
+<script>
+  const shapes = [
+    {name:'Circle', emoji:'⚪'},{name:'Square', emoji:'⬜'},{name:'Triangle', emoji:'🔺'},{name:'Star', emoji:'⭐'},{name:'Heart', emoji:'❤️'},
+    {name:'Rectangle', emoji:'🟦'},{name:'Oval', emoji:'🟡'},{name:'Diamond', emoji:'💎'},{name:'Pentagon', emoji:'⬟'},{name:'Hexagon', emoji:'⬡'} // NEW 2 ADDED
+  ];
+  const synth = window.speechSynthesis;
+  function speak(text){ if(synth.speaking){ synth.cancel(); } const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.8; synth.speak(u); }
+  const grid=document.getElementById('grid');
+  shapes.forEach(s=>{
+    const b=document.createElement('button');
+    b.className='btn'; b.textContent=s.emoji; b.title=s.name; b.onclick=()=>speak(s.name);
+    grid.appendChild(b);
+  });
+</script>
+</body>
+</html>
