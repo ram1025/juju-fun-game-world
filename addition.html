@@ -6,46 +6,55 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
   body { margin:0; min-height:100vh; background:#3B82F6; font-family:'Nunito',sans-serif; padding:15px; }
- .top-back {
+.top-back {
     background:white; border:none; border-radius:12px;
     padding:10px 15px; font-size:16px; font-weight:800;
     cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2);
     margin-bottom:15px;
   }
- .card {
+.card {
     background:#FEF3C7; border-radius:25px; padding:20px;
     text-align:center; box-shadow:0 8px 0 #FDBA74;
   }
- .counter { font-size:24px; font-weight:900; color:#F97316; }
- .sum { font-size:80px; font-weight:800; color:#DC2626; margin:10px 0; }
- .objects { font-size:50px; margin:10px 0; }
- .options { display:flex; gap:15px; justify-content:center; margin-top:15px; }
- .btn {
+.counter { font-size:24px; font-weight:900; color:#F97316; }
+.sum { font-size:80px; font-weight:800; color:#DC2626; margin:10px 0; }
+.sum span { margin:0 10px; }
+ #ans {
+    display:inline-block; min-width:60px; border-bottom:6px dashed #DC2626;
+  }
+ #ans.filled { border-bottom:none; }
+ #ans.correct { color:#10B981; }
+ #ans.wrong { color:#EF4444; }
+.objects { font-size:50px; margin:10px 0; }
+.options { display:flex; gap:15px; justify-content:center; margin-top:15px; }
+.btn {
     font-size:40px; font-weight:900; background:white;
     border:4px solid #F97316; border-radius:20px; padding:15px 30px;
     cursor:pointer; box-shadow:0 6px 0 #F97316;
   }
- .btn:active { transform:translateY(4px); box-shadow:0 2px 0 #F97316; }
- .bottom-btns { display:flex; gap:10px; justify-content:center; margin-top:20px; }
- .bottom-btn {
+.btn:disabled { opacity:0.6; cursor:not-allowed; }
+  h1 { font-size:24px; color:#EA580C; margin-top:10px; min-height:30px; }
+.bottom-btns { display:flex; gap:10px; justify-content:center; margin-top:20px; }
+.bottom-btn {
     border:none; border-radius:12px; padding:12px 25px;
     font-size:18px; font-weight:800; color:white; cursor:pointer;
   }
- .btn-clear { background:#EF4444; }
- .btn-back { background:#3B82F6; }
- .btn-next { background:#10B981; }
-  h1 { font-size:24px; color:#EA580C; margin-top:10px; min-height:30px; }
+.btn-clear { background:#EF4444; }
+.btn-back { background:#3B82F6; }
+.btn-next { background:#10B981; }
 </style>
 </head>
 <body>
 
-<button class="top-back" onclick="location.href='./index.html'">← Back</button>
+<button class="top-back" onclick="location.href='./dashboard.html'">← Back</button>
 
 <div class="card">
   <div class="counter" id="counter">1/10: Addition</div>
 
   <div class="objects" id="obj1"></div>
-  <div class="sum" id="sumBox"></div>
+  <div class="sum" id="sumBox">
+    <span id="a"></span> <span>+</span> <span id="b"></span> <span>=</span> <span id="ans">?</span>
+  </div>
   <div class="objects" id="obj2"></div>
 
   <div class="options" id="optionsBox"></div>
@@ -67,6 +76,7 @@ const data = [
 ];
 let i = 0;
 let locked = false;
+let correctAns = 0;
 
 function speak(text){
   speechSynthesis.cancel();
@@ -77,16 +87,18 @@ function speak(text){
 function loadSum(){
   locked = false;
   const {a,b,emoji} = data[i];
-  const total = a+b;
-  let wrong = total + (Math.random() > 0.5? 1 : -1);
-  if(wrong < 1 || wrong > 10) wrong = total + 1;
-
-  const opts = [total, wrong].sort(()=>0.5-Math.random());
+  correctAns = a+b;
+  let wrong = correctAns + (Math.random() > 0.5? 1 : -1);
+  if(wrong < 1 || wrong > 10) wrong = correctAns + 1;
+  const opts = [correctAns, wrong].sort(()=>0.5-Math.random());
 
   document.getElementById('counter').textContent = `${i+1}/10: Addition`;
   document.getElementById('obj1').textContent = emoji.repeat(a);
   document.getElementById('obj2').textContent = emoji.repeat(b);
-  document.getElementById('sumBox').innerHTML = `${a} + ${b} =?`;
+  document.getElementById('a').textContent = a;
+  document.getElementById('b').textContent = b;
+  document.getElementById('ans').textContent = '?';
+  document.getElementById('ans').className = ''; // Reset color
   document.getElementById('msg').textContent = '';
 
   const box = document.getElementById('optionsBox');
@@ -95,34 +107,36 @@ function loadSum(){
     const btn = document.createElement('button');
     btn.className = 'btn';
     btn.textContent = num;
-    btn.onclick = () => checkAnswer(num, total);
+    btn.onclick = () => checkAnswer(num, btn);
     box.appendChild(btn);
   });
   speak(`${a} plus ${b} equals?`);
 }
 
-function checkAnswer(picked, correct){
+function checkAnswer(picked, btnEl){
   if(locked) return;
   locked = true;
-  if(picked === correct){
+  document.querySelectorAll('.btn').forEach(b=>b.disabled=true); // Buttons lock
+
+  const ansSpan = document.getElementById('ans');
+  ansSpan.textContent = picked;
+  ansSpan.classList.add('filled');
+
+  if(picked === correctAns){
+    ansSpan.classList.add('correct'); // Green
     document.getElementById('msg').textContent = 'Correct! ✅';
     speak('Correct!');
     setTimeout(()=>{ i = (i + 1) % data.length; loadSum(); }, 1200);
   } else {
+    ansSpan.classList.add('wrong'); // Red
     document.getElementById('msg').textContent = 'Try Again ❌';
     speak('Try Again');
-    locked = false;
+    setTimeout(()=>{ loadSum(); }, 1200); // 1.2s tarvatha reset
   }
 }
 
-function prevSum(){
-  i = (i - 1 + data.length) % data.length; // Loop back
-  loadSum();
-}
-function skipNext(){
-  i = (i + 1) % data.length; // Skip
-  loadSum();
-}
+function prevSum(){ i = (i - 1 + data.length) % data.length; loadSum(); }
+function skipNext(){ i = (i + 1) % data.length; loadSum(); }
 loadSum();
 </script>
 </body>
