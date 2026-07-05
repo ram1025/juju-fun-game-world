@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Wild Animals - Juju</title>
-<link rel="manifest" href="./manifest.json?v=118">
-<meta name="theme-color" content="#F59E0B">
+<link rel="manifest" href="./manifest.json?v=127">
+<meta name="theme-color" content="#F97316">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#F59E0B;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
+  body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
-.animal-box{width:100%;aspect-ratio:1/1;background:#FEF3C7;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
+.animal-box{width:100%;aspect-ratio:1/1;background:#FFEDD5;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
 .animal-box:active{transform:scale(.95)}
 .animal-emoji{font-size:120px;line-height:1;pointer-events:none}
-.animal-name{font-size:28px;font-weight:900;color:#D97706;margin-bottom:20px;min-height:40px}
+.animal-name{font-size:28px;font-weight:900;color:#C2410C;margin-bottom:20px;min-height:40px}
 .controls{display:flex;gap:12px;justify-content:center}
-.btn{background:#F59E0B;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #D97706;flex:1}
+.btn{background:#F97316;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #C2410C;flex:1}
 .btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
 .btn.back{background:#6B7280;box-shadow:0 4px 0 #4B5563}
 .counter{font-size:14px;font-weight:800;color:#6B7280;margin-top:10px}
@@ -30,24 +30,28 @@
       <button class="btn back" onclick="location.href='./dashboard.html'">← Back</button>
       <button class="btn" id="nextBtn" onclick="nextAnimal()">Next ></button>
     </div>
-    <div class="counter" id="counter">1 / 5</div>
+    <div class="counter" id="counter">1 / 10</div>
   </div>
 <script>
   const animals = [
-    {name:'Lion', emoji:'🦁'}, {name:'Tiger', emoji:'🐅'},
-    {name:'Elephant', emoji:'🐘'}, {name:'Giraffe', emoji:'🦒'},
-    {name:'Zebra', emoji:'🦓'}
+    {name:'Lion', emoji:'🦁'},
+    {name:'Tiger', emoji:'🐯'},
+    {name:'Elephant', emoji:'🐘'},
+    {name:'Monkey', emoji:'🐒'},
+    {name:'Giraffe', emoji:'🦒'},
+    {name:'Zebra', emoji:'🦓'},
+    {name:'Bear', emoji:'🐻'},
+    {name:'Wolf', emoji:'🐺'},
+    {name:'Fox', emoji:'🦊'},
+    {name:'Crocodile', emoji:'🐊'}
   ];
   let currentIndex = 0; const synth = window.speechSynthesis;
   const animalBox = document.getElementById('animalBox'); const animalEmoji = document.getElementById('animalEmoji');
-  const animalName = document.getElementById('animalName'); const counter = document.getElementById('counter');
-  const nextBtn = document.getElementById('nextBtn');
+  const animalName = document.getElementById('animalName'); const counter = document.getElementById('counter'); const nextBtn = document.getElementById('nextBtn');
   function speak(text){ if(synth.speaking){ synth.cancel(); } const utter = new SpeechSynthesisUtterance(text); utter.lang = 'en-US'; utter.rate = 0.9; synth.speak(utter); }
   function loadAnimal(index){
-    const animal = animals[index]; animalEmoji.textContent = animal.emoji; animalName.textContent = animal.name;
-    counter.textContent = `${index + 1} / ${animals.length}`;
-    if(index === animals.length - 1){ nextBtn.disabled = true; nextBtn.textContent = 'Completed ✓'; }
-    else { nextBtn.disabled = false; nextBtn.textContent = 'Next >'; }
+    const animal = animals[index]; animalEmoji.textContent = animal.emoji; animalName.textContent = animal.name; counter.textContent = `${index + 1} / ${animals.length}`;
+    if(index === animals.length - 1){ nextBtn.disabled = true; nextBtn.textContent = 'Completed ✓'; } else { nextBtn.disabled = false; nextBtn.textContent = 'Next >'; }
     speak(animal.name);
   }
   function nextAnimal(){ if(currentIndex < animals.length - 1){ currentIndex++; loadAnimal(currentIndex); } }
