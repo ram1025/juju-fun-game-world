@@ -2,42 +2,53 @@
 <html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Drag Drop - Juju</title>
+<title>Drag Drop Game</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-  body {
-    margin:0; min-height:100vh; background:#8B5CF6; font-family:'Nunito',sans-serif;
-    padding:15px; padding-top:80px; box-sizing:border-box;
-    display:flex; flex-direction:column; align-items:center;
-    overscroll-behavior:none;
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+  :root {
+    --bg: #8B5CF6;
+    --card: #FDE68A;
+    --border: #D97706;
+    --accent: #3B82F6;
+    --correct: #10B981;
   }
-.top-back { position:absolute; top:15px; left:15px; background:white; border:none; border-radius:12px; padding:12px 18px; font-size:17px; font-weight:900; color:#8B5CF6; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.25); z-index:10; }
-.card { background:#FDE68A; border-radius:25px; padding:25px; text-align:center; box-shadow:0 8px 0 #F59E0B; overflow:hidden; width:100%; max-width:420px; }
-.counter { font-size:26px; font-weight:900; color:#D97706; margin-bottom:20px; }
-.drag-area,.drop-area { display:flex; justify-content:center; gap:12px; margin:20px 0; min-height:110px; flex-wrap:wrap; }
-.item {
-  background:white; border:4px solid #D97706; border-radius:20px;
-  padding:10px 6px; font-size:40px; cursor:grab; box-shadow:0 5px 0 #D97706;
-  width:calc(33.33% - 8px); min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  touch-action:none; user-select:none; box-sizing:border-box;
-  transition:transform 0.1s;
-}
-.item.dragging { transform:scale(1.1); opacity:0.8; z-index:99; position:relative; }
-.item-name { font-size:13px; font-weight:800; color:#DC2626; margin-top:3px; line-height:1.1; word-break:break-word; text-align:center; }
-.drop-box {
-  background:white; border:4px dashed #D97706; border-radius:20px;
-  padding:10px 6px; font-size:40px; width:calc(33.33% - 8px); min-height:100px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; box-sizing:border-box;
-}
-.drop-box.hover { border-color:#3B82F6; background:#DBEAFE; border-style:solid; transform:scale(1.05); }
-.drop-box.filled { background:#BBF7D0; border-style:solid; border-color:#10B981; }
-h1 { font-size:22px; color:#B45309; margin-top:10px; min-height:28px; }
-.bottom-btns { display:flex; gap:12px; justify-content:center; margin-top:20px; }
-.bottom-btn { border:none; border-radius:12px; padding:14px 22px; font-size:17px; font-weight:800; color:white; cursor:pointer; }
-.btn-clear { background:#EF4444; }
-.btn-back { background:#3B82F6; }
-.btn-next { background:#10B981; }
-@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin:0; min-height:100vh; background:var(--bg); font-family:'Nunito',sans-serif;
+    padding:20px; padding-top:80px; display:flex; justify-content:center; align-items:flex-start;
+    overscroll-behavior: none;
+  }
+ .top-back {
+    position:absolute; top:15px; left:15px; background:white; border:none; border-radius:12px;
+    padding:12px 18px; font-size:17px; font-weight:900; color:var(--bg); cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,0.25); z-index:10;
+  }
+ .card {
+    background:var(--card); border-radius:24px; padding:24px; text-align:center;
+    box-shadow:0 8px 0 var(--border); width:100%; max-width:420px;
+  }
+ .counter { font-size:24px; font-weight:900; color:#B45309; margin-bottom:16px; }
+ .board {
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin:16px 0;
+  }
+ .slot {
+    background:white; border:4px solid var(--border); border-radius:18px;
+    min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:40px; padding:8px; user-select:none;
+  }
+ .slot.label { font-size:13px; font-weight:800; color:#DC2626; margin-top:4px; text-align:center; word-break:break-word; }
+ .slot.drag-item { cursor: grab; box-shadow:0 5px 0 var(--border); }
+ .slot.drop-zone { border-style:dashed; }
+ .slot.drop-zone.over { border-color:var(--accent); background:#DBEAFE; border-style:solid; transform:scale(1.03); }
+ .slot.filled { background:#D1FAE5; border-color:var(--correct); border-style:solid; }
+ .msg { font-size:20px; color:#B45309; font-weight:900; min-height:26px; margin-top:8px; }
+ .btns { display:flex; gap:12px; justify-content:center; margin-top:16px; }
+ .btn {
+    border:none; border-radius:12px; padding:14px 20px; font-size:16px; font-weight:800;
+    color:white; cursor:pointer; font-family:'Nunito';
+  }
+ .btn.red { background:#EF4444; }.btn.blue { background:#3B82F6; }.btn.green { background:#10B981; }
+ .dragging { opacity:0.6; transform:scale(1.08); z-index:99; }
 </style>
 </head>
 <body>
@@ -46,119 +57,136 @@ h1 { font-size:22px; color:#B45309; margin-top:10px; min-height:28px; }
 
 <div class="card">
   <div class="counter" id="counter">Page 1/5</div>
-  <div class="drag-area" id="dragArea"></div>
-  <div class="drop-area" id="dropArea"></div>
-  <h1 id="msg"></h1>
-  <div class="bottom-btns">
-    <button class="bottom-btn btn-clear" onclick="loadPage()">Clear</button>
-    <button class="bottom-btn btn-back" onclick="prevPage()">← Back</button>
-    <button class="bottom-btn btn-next" onclick="nextPage()">Next →</button>
+
+  <div class="board" id="dragBoard"></div>
+  <div class="board" id="dropBoard"></div>
+
+  <div class="msg" id="msg"></div>
+  <div class="btns">
+    <button class="btn red" onclick="loadPage()">Clear</button>
+    <button class="btn blue" onclick="prevPage()">← Back</button>
+    <button class="btn green" onclick="nextPage()">Next →</button>
   </div>
 </div>
 
 <script>
-const pages = [
+const PAGES = [
   [['A','A'], ['B','B'], ['C','C']], // Page 1: Letters
   [['⬛','Square'], ['⭕','Circle'], ['⭐','Star']], // Page 2: Shapes
   [['🍎','Apple'], ['🍌','Banana'], ['🍊','Orange']], // Page 3: Fruits
   [['🐶','Dog'], ['🐱','Cat'], ['🐰','Rabbit']], // Page 4: Animals
   [['1','One'], ['2','Two'], ['3','Three']] // Page 5: Numbers
 ];
-let page = 0; let matchedCount = 0; let draggedItem = null; let currentDropTarget = null;
 
-function speak(text){ if('speechSynthesis' in window){ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.8; speechSynthesis.speak(u); } }
+let currentPage = 0;
+let matched = 0;
+let dragEl = null;
+
+const speak = (text) => {
+  if('speechSynthesis' in window){
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.85;
+    speechSynthesis.speak(u);
+  }
+};
+
+const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
 function loadPage(){
-  matchedCount = 0; currentDropTarget = null;
-  document.getElementById('counter').textContent = `Page ${page+1}/${pages.length}`;
+  matched = 0;
+  const data = PAGES[currentPage]; // <-- IDHE MAIN: 3 items matrame
+  document.getElementById('counter').textContent = `Page ${currentPage+1}/${PAGES.length}`;
   document.getElementById('msg').textContent = '';
-  const dragArea = document.getElementById('dragArea'); const dropArea = document.getElementById('dropArea');
-  dragArea.innerHTML = ''; dropArea.innerHTML = '';
 
-  const data = pages; // <-- IDHE MAIN FIX: Okka page = 3 objects matrame
+  const dragBoard = document.getElementById('dragBoard');
+  const dropBoard = document.getElementById('dropBoard');
+  dragBoard.innerHTML = ''; dropBoard.innerHTML = '';
 
-  const dropShuffled = [...data].sort(()=>0.5-Math.random());
-  const dragShuffled = [...data].sort(()=>0.5-Math.random());
+  const dragData = shuffle(data);
+  const dropData = shuffle(data);
 
-  dragShuffled.forEach((pair)=>{
-    const div = document.createElement('div');
-    div.className = 'item';
-    div.innerHTML = `${pair[0]}<div class="item-name">${pair[1]}</div>`;
-    div.dataset.match = pair[0]; div.dataset.name = pair[1];
-
-    div.draggable = true;
-    div.ondragstart = (e)=>{ draggedItem = div; speak(pair[1]); };
-    div.ondragend = ()=>{ draggedItem = null; clearHover(); };
-
-    div.ontouchstart = (e)=>{
-      e.preventDefault();
-      draggedItem = div;
-      div.classList.add('dragging');
-      speak(pair[1]);
-    };
-    div.ontouchmove = (e)=>{
-      e.preventDefault();
-      const touch = e.touches[0];
-      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-      clearHover();
-      if(elem && elem.classList.contains('drop-box') &&!elem.classList.contains('filled')){
-        elem.classList.add('hover');
-        currentDropTarget = elem;
-      } else {
-        currentDropTarget = null;
-      }
-    };
-    div.ontouchend = (e)=>{
-      e.preventDefault();
-      div.classList.remove('dragging');
-      clearHover();
-      if(currentDropTarget){
-        handleDrop(currentDropTarget);
-      }
-      draggedItem = null;
-      currentDropTarget = null;
-    };
-    dragArea.appendChild(div);
+  // Create Drag Items - Top 3 boxes
+  dragData.forEach(([emoji, name]) => {
+    const el = document.createElement('div');
+    el.className = 'slot drag-item';
+    el.innerHTML = `${emoji}<div class="label">${name}</div>`;
+    el.dataset.id = emoji;
+    el.setAttribute('draggable', 'true'); // Desktop
+    dragBoard.appendChild(el);
   });
 
-  dropShuffled.forEach((pair)=>{
-    const div = document.createElement('div');
-    div.className = 'drop-box';
-    div.innerHTML = `<div class="item-name">${pair[1]}</div>`;
-    div.dataset.match = pair[0];
-    div.ondragover = (e)=>{ e.preventDefault(); div.classList.add('hover'); };
-    div.ondragleave = ()=>{ div.classList.remove('hover'); };
-    div.ondrop = ()=>{ handleDrop(div); };
-    dropArea.appendChild(div);
+  // Create Drop Zones - Bottom 3 boxes
+  dropData.forEach(([emoji, name]) => {
+    const el = document.createElement('div');
+    el.className = 'slot drop-zone';
+    el.innerHTML = `<div class="label">${name}</div>`;
+    el.dataset.id = emoji;
+    dropBoard.appendChild(el);
+  });
+
+  initPointerEvents(); // Mobile + Desktop drag setup
+}
+
+function initPointerEvents(){
+  const dragItems = document.querySelectorAll('.drag-item');
+  const dropZones = document.querySelectorAll('.drop-zone');
+
+  dragItems.forEach(item => {
+    item.addEventListener('pointerdown', (e) => {
+      dragEl = item;
+      item.classList.add('dragging');
+      item.setPointerCapture(e.pointerId);
+      speak(item.querySelector('.label').textContent);
+    });
+
+    item.addEventListener('pointermove', (e) => {
+      if (!dragEl) return;
+      const elBelow = document.elementFromPoint(e.clientX, e.clientY);
+      dropZones.forEach(z => z.classList.remove('over'));
+      if (elBelow && elBelow.classList.contains('drop-zone') &&!elBelow.classList.contains('filled')) {
+        elBelow.classList.add('over');
+      }
+    });
+
+    item.addEventListener('pointerup', (e) => {
+      if (!dragEl) return;
+      const elBelow = document.elementFromPoint(e.clientX, e.clientY);
+      dropZones.forEach(z => z.classList.remove('over'));
+
+      if (elBelow && elBelow.classList.contains('drop-zone')) {
+        handleDrop(elBelow);
+      }
+
+      dragEl.classList.remove('dragging');
+      dragEl = null;
+      item.releasePointerCapture(e.pointerId);
+    });
   });
 }
 
-function clearHover(){
-  document.querySelectorAll('.drop-box.hover').forEach(b=>b.classList.remove('hover'));
-}
+function handleDrop(zone){
+  if(!dragEl || zone.classList.contains('filled')) return;
 
-function handleDrop(box){
-  if(!draggedItem || box.classList.contains('filled')) return;
-
-  if(draggedItem.dataset.match === box.dataset.match){
-    box.classList.add('filled');
-    box.innerHTML = draggedItem.innerHTML;
-    draggedItem.remove();
-    matchedCount++;
+  if(dragEl.dataset.id === zone.dataset.id){
+    zone.classList.add('filled');
+    zone.innerHTML = dragEl.innerHTML;
+    dragEl.remove();
+    matched++;
     speak('Correct');
-    if(matchedCount === 3){
+    if(matched === 3){
       document.getElementById('msg').textContent = 'All Matched! ✅';
-      setTimeout(()=>nextPage(), 1200);
+      setTimeout(nextPage, 1200);
     }
   } else {
-    draggedItem.style.animation = 'shake 0.3s';
-    setTimeout(()=>{ draggedItem.style.animation = ''; }, 400);
+    dragEl.animate([{transform:'translateX(0)'}, {transform:'translateX(-6px)'}, {transform:'translateX(6px)'}, {transform:'translateX(0)'}], {duration:250});
     speak('Try Again');
   }
 }
 
-function prevPage(){ page = (page - 1 + pages.length) % pages.length; loadPage(); }
-function nextPage(){ page = (page + 1) % pages.length; loadPage(); }
+const prevPage = () => { currentPage = (currentPage - 1 + PAGES.length) % PAGES.length; loadPage(); };
+const nextPage = () => { currentPage = (currentPage + 1) % PAGES.length; loadPage(); };
+
 loadPage();
 </script>
 </body>
