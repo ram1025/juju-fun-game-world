@@ -14,8 +14,7 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
 .title{font-size:24px;font-weight:900;color:#7C3AED}
 .progress{font-size:16px;font-weight:800;color:#6B7280;margin-top:-5px}
 .img-wrap{background:#FEFCE8;border-radius:25px;padding:20px}
-.img-box{width:100%;height:160px;display:flex;align-items:center;justify-content:center}
-.img-box img{width:100%;height:100%;object-fit:contain}
+.emoji-box{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:100px;line-height:1} /* 🔥 Emoji kosam */
 .boxes{display:flex;gap:10px;justify-content:center;margin-top:5px;flex-wrap:wrap}
 .box{width:50px;height:50px;background:#F3F4F6;border:2px dashed #D1D5DB;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#7C3AED;transition:.2s}
 .box.filled{background:#EDE9FE;border:2px solid #7C3AED}
@@ -26,7 +25,7 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
 .letter-btn:disabled{opacity:.3;box-shadow:none;background:#F3F4F6}
 .bottom-nav{display:flex;gap:12px;margin-top:10px}
 .nav-btn{flex:1;border:0;border-radius:15px;padding:14px;font-size:16px;font-weight:800;font-family:Nunito;cursor:pointer;color:#fff}
-.btn-prev{background:#6B7280} /* 🔥 Name change */
+.btn-prev{background:#6B7280}
 .btn-next{background:#8B5CF6}
 .nav-btn:disabled{opacity:.4;cursor:not-allowed}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
@@ -36,7 +35,7 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
 
 <div class="game-card">
   <div class="topbar">
-    <button class="back-btn" id="backBtn">← Back</button> <!-- Top: Dashboard ki -->
+    <button class="back-btn" id="backBtn">← Back</button>
     <div class="title">Spell-It 🧩</div>
     <div style="width:70px"></div>
   </div>
@@ -44,34 +43,35 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
   <div class="progress" id="progress">1 / 10</div>
 
   <div class="img-wrap">
-    <div class="img-box"><img id="wordImg" src="" alt=""></div>
+    <div class="emoji-box" id="emojiBox">🍎</div> <!-- 🔥 img tag tisi div pettam -->
   </div>
 
   <div class="boxes" id="boxes"></div>
   <div class="letters" id="letters"></div>
 
   <div class="bottom-nav">
-    <button class="nav-btn btn-prev" id="prevBtn">← Previous</button> <!-- 🔥 Name change -->
+    <button class="nav-btn btn-prev" id="prevBtn">← Previous</button>
     <button class="nav-btn btn-next" id="nextBtn">Next ></button>
   </div>
 </div>
 
 <script>
+// 🔥 FIX: Image link tisi Emoji pettam
 const words=[
-  {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png',word:'APPLE'},
-  {img:'https://cdn-icons-png.flaticon.com/512/147/147144.png',word:'BALL'},
-  {img:'https://cdn-icons-png.flaticon.com/512/616/616430.png',word:'CAT'},
-  {img:'https://cdn-icons-png.flaticon.com/512/616/616408.png',word:'DOG'},
-  {img:'https://cdn-icons-png.flaticon.com/512/616/616452.png',word:'FISH'},
-  {img:'https://cdn-icons-png.flaticon.com/512/415/415727.png',word:'MANGO'},
-  {img:'https://cdn-icons-png.flaticon.com/512/3222/3222853.png',word:'SUN'},
-  {img:'https://cdn-icons-png.flaticon.com/512/628/628324.png',word:'TREE'},
-  {img:'https://cdn-icons-png.flaticon.com/512/741/741407.png',word:'CAR'},
-  {img:'https://cdn-icons-png.flaticon.com/512/2232/2232688.png',word:'BOOK'}
+  {emoji:'🍎',word:'APPLE'}, // 1/10
+  {emoji:'⚽',word:'BALL'}, // 2/10
+  {emoji:'🐱',word:'CAT'}, // 3/10
+  {emoji:'🐶',word:'DOG'}, // 4/10
+  {emoji:'🐟',word:'FISH'}, // 5/10
+  {emoji:'🥭',word:'MANGO'}, // 6/10
+  {emoji:'☀️',word:'SUN'}, // 7/10
+  {emoji:'🌳',word:'TREE'}, // 8/10
+  {emoji:'🚗',word:'CAR'}, // 9/10
+  {emoji:'📚',word:'BOOK'} // 10/10
 ];
 let page=0,currentBoxes=[];
 
-document.getElementById('backBtn').onclick=()=>{location.href='./dashboard.html';}; // Top btn
+document.getElementById('backBtn').onclick=()=>{location.href='./dashboard.html';};
 
 const prevBtn=document.getElementById('prevBtn');
 const nextBtn=document.getElementById('nextBtn');
@@ -79,15 +79,15 @@ const nextBtn=document.getElementById('nextBtn');
 function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang='en-US';speechSynthesis.speak(u);}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
-function updateNavBtns(){ // 🔥 NEW: Btns enable/disable cheyadaniki
+function updateNavBtns(){
   prevBtn.disabled = page === 0;
   nextBtn.disabled = page === words.length - 1;
 }
 
 function loadPage(){
-  const w=words; // 🔥 CRITICAL FIX: page index pettanu. Idhe valla image empty undedi.
+  const w=words; // 🔥 page index fix
   document.getElementById('progress').textContent=`${page+1} / 10`;
-  document.getElementById('wordImg').src=w.img;
+  document.getElementById('emojiBox').textContent=w.emoji; // 🔥 img.src tisi textContent
 
   const boxesDiv=document.getElementById('boxes');
   boxesDiv.innerHTML='';
@@ -107,10 +107,9 @@ function loadPage(){
     btn.onclick=()=>fillLetter(l,btn);
     lettersDiv.appendChild(btn);
   });
-  updateNavBtns(); // Btn state update
+  updateNavBtns();
 }
 
-// 🔥 NEW: Previous/Next btn logic
 prevBtn.onclick=()=>{if(page>0){page--;loadPage();}};
 nextBtn.onclick=()=>{if(page<words.length-1){page++;loadPage();}};
 
@@ -124,7 +123,7 @@ function fillLetter(l,btn){
 
   if(!currentBoxes.includes('')){
     const word=currentBoxes.join('');
-    if(word===words.word){ // 🔥 page index fix
+    if(word===words.word){
       speak(word);
       document.querySelectorAll('.box').forEach(b=>b.style.background='#D1FAE5');
       setTimeout(()=>{if(page<words.length-1){page++;loadPage();}else{alert('All Done! 🎉')}},1200);
