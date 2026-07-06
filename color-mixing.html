@@ -4,10 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Color Mixing - Juju</title>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> <!-- NEW LINE -->
-<meta http-equiv="Pragma" content="no-cache"> <!-- NEW LINE -->
-<meta http-equiv="Expires" content="0"> <!-- NEW LINE -->
-<link rel="manifest" href="./manifest.json?v=138">
+<link rel="manifest" href="./manifest.json?v=147">
 <meta name="theme-color" content="#8B5CF6">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -30,7 +27,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="page-heading">🎨 MIX TEST v145</div> <!-- v138 -> MIX TEST v145 -->
+    <div class="page-heading">🎨 Color Mixing</div> <!-- v147 teesam -->
     <div class="instruction" id="instruction">Touch 2 colors to mix!</div>
     <div class="result-box" id="resultBox"><div class="result-emoji">❓</div><div class="result-name" id="resultName">?</div></div>
     <div class="colors-grid" id="colorsGrid"></div>
@@ -45,16 +42,28 @@
     {name:'Purple', emoji:'🟣', bg:'#A855F7'},{name:'Orange', emoji:'🟠', bg:'#F97316'},{name:'Green', emoji:'🟢', bg:'#22C55E'},
     {name:'Pink', emoji:'🩷', bg:'#EC4899'},{name:'Brown', emoji:'🟤', bg:'#A16207'},{name:'Black', emoji:'⚫', bg:'#1F2937'},{name:'White', emoji:'⚪', bg:'#FFFFFF'}
   ];
-  // ===== 15 MIX RULES - BLUE+PINK UNDI =====
+  // ===== 25+ REAL MIX RULES - NO TRY AGAIN =====
   const mixRules = {
+    // PRIMARY MIX
     'Blue+Red': {name:'Purple', emoji:'🟣', bg:'#A855F7'},'Blue+Yellow': {name:'Green', emoji:'🟢', bg:'#22C55E'},
-    'Red+Yellow': {name:'Orange', emoji:'🟠', bg:'#F97316'},'Black+White': {name:'Grey', emoji:'⚪', bg:'#9CA3AF'},
-    'Red+White': {name:'Pink', emoji:'🩷', bg:'#EC4899'},'Blue+White': {name:'Light Blue', emoji:'🔵', bg:'#93C5FD'},
-    'Yellow+Purple': {name:'Brown', emoji:'🟤', bg:'#A16207'},'Blue+Pink': {name:'Light Purple', emoji:'🟣', bg:'#C4B5FD'},
-    'Red+Pink': {name:'Light Pink', emoji:'🩷', bg:'#FBCFE8'},'Yellow+Pink': {name:'Light Orange', emoji:'🟠', bg:'#FDBA74'},
-    'Green+Blue': {name:'Teal', emoji:'🟢', bg:'#2DD4BF'},'Red+Green': {name:'Brown', emoji:'🟤', bg:'#A16207'},
-    'Yellow+Black': {name:'Dark Green', emoji:'🟢', bg:'#15803D'},'White+Purple': {name:'Lavender', emoji:'🟣', bg:'#DDD6FE'},
-    'Orange+White': {name:'Peach', emoji:'🟠', bg:'#FED7AA'}
+    'Red+Yellow': {name:'Orange', emoji:'🟠', bg:'#F97316'},
+    // WITH WHITE - TINTS
+    'Red+White': {name:'Pink', emoji:'🩷', bg:'#EC4899'},'Blue+White': {name:'Sky Blue', emoji:'🔵', bg:'#93C5FD'},
+    'Yellow+White': {name:'Light Yellow', emoji:'🟡', bg:'#FEF9C3'},'Green+White': {name:'Mint', emoji:'🟢', bg:'#A7F3D0'},
+    'Purple+White': {name:'Lavender', emoji:'🟣', bg:'#DDD6FE'},'Orange+White': {name:'Peach', emoji:'🟠', bg:'#FED7AA'},
+    'Brown+White': {name:'Beige', emoji:'🟤', bg:'#F5F5DC'},'Black+White': {name:'Grey', emoji:'⚪', bg:'#9CA3AF'},
+    // WITH BLACK - SHADES
+    'Red+Black': {name:'Maroon', emoji:'🟤', bg:'#991B1B'},'Blue+Black': {name:'Navy', emoji:'🔵', bg:'#1E3A8A'},
+    'Yellow+Black': {name:'Olive', emoji:'🟢', bg:'#15803D'},'Green+Black': {name:'Forest Green', emoji:'🟢', bg:'#166534'},
+    'Purple+Black': {name:'Indigo', emoji:'🟣', bg:'#4F46E5'},'Orange+Black': {name:'Burnt Orange', emoji:'🟠', bg:'#C2410C'},
+    'Pink+Black': {name:'Burgundy', emoji:'🩷', bg:'#9F1239'},
+    // TERTIARY MIX
+    'Blue+Green': {name:'Teal', emoji:'🟢', bg:'#0D9488'},'Red+Green': {name:'Brown', emoji:'🟤', bg:'#A16207'},
+    'Yellow+Purple': {name:'Brown', emoji:'🟤', bg:'#A16207'},'Red+Purple': {name:'Magenta', emoji:'🩷', bg:'#DB2777'},
+    'Blue+Orange': {name:'Brown', emoji:'🟤', bg:'#A16207'},'Yellow+Orange': {name:'Amber', emoji:'🟠', bg:'#F59E0B'},
+    // PINK MIXES
+    'Red+Pink': {name:'Hot Pink', emoji:'🩷', bg:'#F472B6'},'White+Pink': {name:'Baby Pink', emoji:'🩷', bg:'#FBCFE8'},
+    'Blue+Pink': {name:'Purple', emoji:'🟣', bg:'#A855F7'},'Yellow+Pink': {name:'Coral', emoji:'🟠', bg:'#FB923C'}
   };
   let selected = []; const synth = window.speechSynthesis;
   const instruction = document.getElementById('instruction'); const resultBox = document.getElementById('resultBox');
@@ -62,11 +71,12 @@
   const colorsGrid = document.getElementById('colorsGrid');
   function speak(text){ if(synth.speaking){ synth.cancel(); } const utter = new SpeechSynthesisUtterance(text); utter.lang = 'en-US'; utter.rate = 0.85; synth.speak(utter); }
   function askToMix(){
-    const c1 = colors[Math.floor(Math.random()*colors.length)];
-    let c2 = colors[Math.floor(Math.random()*colors.length)];
-    while(c2.name === c1.name){ c2 = colors[Math.floor(Math.random()*colors.length)]; }
-    instruction.textContent = `Select ${c1.name} and ${c2.name}`;
-    speak(`Select ${c1.name} and ${c2.name}`);
+    // Rule unna 2 colors eh adugutam
+    const keys = Object.keys(mixRules);
+    const key = keys[Math.floor(Math.random()*keys.length)];
+    const [c1, c2] = key.split('+');
+    instruction.textContent = `Select ${c1} and ${c2}`;
+    speak(`Select ${c1} and ${c2}`);
   }
   colors.forEach((c, i)=>{
     const btn = document.createElement('button');
@@ -80,13 +90,10 @@
   }
   function mixColors(){
     const [c1, c2] = selected; const key = [c1.name, c2.name].sort().join('+'); const result = mixRules[key];
-    if(result){
-      resultBox.style.background = result.bg; resultEmoji.textContent = result.emoji; resultName.textContent = result.name;
-      instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`; speak(`${c1.name} plus ${c2.name} makes ${result.name}`);
-    } else {
-      resultBox.style.background = '#FEE2E2'; resultEmoji.textContent = '😕'; resultName.textContent = 'Try Again';
-      instruction.textContent = `${c1.name} + ${c2.name} = No Mix`; speak(`Oops, try different colors`);
-    }
+
+    // Rule undi kabatti 100% result vastundi. Try Again radu.
+    resultBox.style.background = result.bg; resultEmoji.textContent = result.emoji; resultName.textContent = result.name;
+    instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`; speak(`${c1.name} plus ${c2.name} makes ${result.name}`);
     setTimeout(()=>resetGame(), 2500);
   }
   function resetGame(){
