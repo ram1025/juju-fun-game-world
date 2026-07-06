@@ -6,141 +6,132 @@
 <title>Spell It! - Juju Fun World</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:linear-gradient(135deg,#3B82F6,#60A5FA);font-family:'Nunito',sans-serif;min-height:100vh;display:flex;flex-direction:column;color:#fff;padding:15px} /* Blue bg like example */
-
-  /* 🔥 NEW: Main Card */
- .game-card{background:#FFF7E1;border-radius:30px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:15px;flex:1}
-
- .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
- .back-btn{background:#fff;border:0;border-radius:15px;padding:10px 15px;color:#F97316;font-weight:800;font-size:16px;font-family:Nunito;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.1)}
- .title{font-size:24px;font-weight:900;text-align:center;color:#F97316} /* Orange like example */
-
- .progress{font-size:22px;font-weight:900;color:#F97316;text-align:center}
- .subtitle{font-size:18px;font-weight:800;color:#1F2937;text-align:center}
- .hint{font-size:14px;font-weight:700;color:#92400E;text-align:center;margin-bottom:5px}
-
- .img-box{width:100%;height:200px;background:#fff;border:3px solid #FBBF24;border-radius:25px;display:flex;align-items:center;justify-content:center;overflow:hidden}
- .img-box img{width:100%;height:100%;object-fit:contain;padding:10px}
-
- .boxes{display:flex;gap:10px;justify-content:center;margin-top:5px}
- .box{width:55px;height:55px;background:#FFF7E1;border:3px solid #FBBF24;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#A855F7;transition:.2s}
- .box.filled{background:#fff;color:#A855F7}
- .box.shake{animation:shake.3s}
-
- .letters{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:10px}
- .letter-btn{width:55px;height:55px;background:#fff;border:0;border-radius:18px;color:#A855F7;font-size:28px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.1)}
- .letter-btn:active{transform:scale(.9)}
- .letter-btn:disabled{opacity:.3;box-shadow:none}
-
- .bottom-nav{display:flex;gap:10px;margin-top:auto} /* madyalo */
- .nav-btn{flex:1;border:0;border-radius:18px;padding:14px;font-size:16px;font-weight:800;font-family:Nunito;cursor:pointer;color:#fff}
- .btn-clear{background:#EF4444}
- .btn-back{background:#3B82F6}
- .btn-next{background:#10B981}
- .nav-btn:disabled{opacity:.4}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+.game-card{background:#fff;border-radius:35px;padding:25px 20px;box-shadow:0 15px 40px rgba(0,0,0,.25);width:100%;max-width:380px;display:flex;flex-direction:column;gap:15px;text-align:center}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.back-btn{background:#E5E7EB;border:0;border-radius:12px;padding:8px 14px;color:#374151;font-weight:800;font-size:15px;font-family:Nunito;cursor:pointer}
+.title{font-size:24px;font-weight:900;color:#7C3AED}
+.progress{font-size:16px;font-weight:800;color:#6B7280;margin-top:-5px}
+.img-wrap{background:#FEFCE8;border-radius:25px;padding:20px}
+.img-box{width:100%;height:160px;display:flex;align-items:center;justify-content:center}
+.img-box img{width:100%;height:100%;object-fit:contain}
+.word-name{font-size:28px;font-weight:900;color:#7C3AED;margin-top:5px}
+.boxes{display:flex;gap:10px;justify-content:center;margin-top:5px;flex-wrap:wrap}
+.box{width:50px;height:50px;background:#F3F4F6;border:2px dashed #D1D5DB;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#7C3AED;transition:.2s}
+.box.filled{background:#EDE9FE;border:2px solid #7C3AED}
+.box.shake{animation:shake.3s}
+.letters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:5px}
+.letter-btn{width:50px;height:50px;background:#fff;border:2px solid #E5E7EB;border-radius:15px;color:#7C3AED;font-size:26px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.08)}
+.letter-btn:active{transform:scale(.9)}
+.letter-btn:disabled{opacity:.3;box-shadow:none;background:#F3F4F6}
+.bottom-nav{display:flex;gap:12px;margin-top:10px}
+.nav-btn{flex:1;border:0;border-radius:15px;padding:14px;font-size:16px;font-weight:800;font-family:Nunito;cursor:pointer;color:#fff}
+.btn-back{background:#6B7280}
+.btn-next{background:#8B5CF6}
+.nav-btn:disabled{opacity:.4}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 </style>
 </head>
 <body>
 
-<!-- 🔥 ALL INSIDE ONE CARD -->
 <div class="game-card">
   <div class="topbar">
     <button class="back-btn" id="backBtn">← Back</button>
-    <div class="title">Spell It! 🧩</div>
+    <div class="title">Spell-It 🧩</div>
     <div style="width:70px"></div>
   </div>
 
   <div class="progress" id="progress">1/10</div>
-  <div class="subtitle">Spell the Word</div>
-  <div class="hint">Letters ni correct order lo tap cheyi ✏️</div>
 
-  <div class="img-box"><img id="wordImg" src="" alt=""></div>
+  <div class="img-wrap">
+    <div class="img-box"><img id="wordImg" src="" alt=""></div>
+  </div>
+
+  <div class="word-name" id="wordName">Apple</div>
   <div class="boxes" id="boxes"></div>
   <div class="letters" id="letters"></div>
 
   <div class="bottom-nav">
-    <button class="nav-btn btn-clear" id="clearBtn">Clear</button>
     <button class="nav-btn btn-back" id="prevBtn">← Back</button>
-    <button class="nav-btn btn-next" id="nextBtn">Next →</button>
+    <button class="nav-btn btn-next" id="nextBtn">Next ></button>
   </div>
 </div>
 
 <script>
-  const words = [
-    {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png', word:'APPLE'},
-    {img:'https://cdn-icons-png.flaticon.com/512/616/616408.png', word:'BALL'},
-    {img:'https://cdn-icons-png.flaticon.com/512/616/616430.png', word:'CAT'},
-    {img:'https://cdn-icons-png.flaticon.com/512/616/616458.png', word:'DOG'},
-    {img:'https://cdn-icons-png.flaticon.com/512/616/616492.png', word:'FISH'},
-    {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png', word:'MANGO'},
-    {img:'https://cdn-icons-png.flaticon.com/512/869/869.png', word:'SUN'},
-    {img:'https://cdn-icons-png.flaticon.com/512/2933/2933245.png', word:'TREE'},
-    {img:'https://cdn-icons-png.flaticon.com/512/741/741407.png', word:'CAR'},
-    {img:'https://cdn-icons-png.flaticon.com/512/2232/2232688.png', word:'BOOK'}
-  ];
-  let page = 0, currentBoxes = [];
+const words=[
+  {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png',word:'APPLE'},
+  {img:'https://cdn-icons-png.flaticon.com/512/616/616408.png',word:'BALL'},
+  {img:'https://cdn-icons-png.flaticon.com/512/616/616430.png',word:'CAT'},
+  {img:'https://cdn-icons-png.flaticon.com/512/616/616458.png',word:'DOG'},
+  {img:'https://cdn-icons-png.flaticon.com/512/616/616492.png',word:'FISH'},
+  {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png',word:'MANGO'},
+  {img:'https://cdn-icons-png.flaticon.com/512/869/869.png',word:'SUN'},
+  {img:'https://cdn-icons-png.flaticon.com/512/2933/2933245.png',word:'TREE'},
+  {img:'https://cdn-icons-png.flaticon.com/512/741/741407.png',word:'CAR'},
+  {img:'https://cdn-icons-png.flaticon.com/512/2232/2232688.png',word:'BOOK'}
+];
+let page=0,currentBoxes=[];
 
-  document.getElementById('backBtn').onclick = () => {location.href = './dashboard.html';};
+document.getElementById('backBtn').onclick=()=>{location.href='./dashboard.html';};
 
-  const cardOrder = ['alphabets.html','body-parts.html','colors.html','color-mixing.html','drag-drop.html','fruits.html','matching.html','numbers.html','painting.html','pet-animals.html','rhymes.html','shapes.html','vehicles.html','vegetables.html','wild-animals.html','addition.html','free-draw.html','spell-it.html'];
-  const idx = cardOrder.indexOf('spell-it.html');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const clearBtn = document.getElementById('clearBtn');
+const cardOrder=['alphabets.html','body-parts.html','colors.html','color-mixing.html','drag-drop.html','fruits.html','matching.html','numbers.html','painting.html','pet-animals.html','rhymes.html','shapes.html','vehicles.html','vegetables.html','wild-animals.html','addition.html','free-draw.html','spell-it.html'];
+const idx=cardOrder.indexOf('spell-it.html');
+const prevBtn=document.getElementById('prevBtn');
+const nextBtn=document.getElementById('nextBtn');
+if(idx<=0)prevBtn.disabled=true;else prevBtn.onclick=()=>location.href='./'+cardOrder[idx-1];
+if(idx>=cardOrder.length-1)nextBtn.disabled=true;else nextBtn.onclick=()=>location.href='./'+cardOrder[idx+1];
 
-  if(idx<=0) prevBtn.disabled=true; else prevBtn.onclick=()=>location.href='./'+cardOrder[idx-1];
-  if(idx>=cardOrder.length-1) nextBtn.disabled=true; else nextBtn.onclick=()=>location.href='./'+cardOrder[idx+1];
+function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang='en-US';speechSynthesis.speak(u);}
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
-  clearBtn.onclick = () => loadPage(); // Clear btn
+function loadPage(){
+  const w=words[page]; // 🔥 page index fix
+  document.getElementById('progress').textContent=`${page+1} / 10`;
+  document.getElementById('wordName').textContent=w.word;
+  document.getElementById('wordImg').src=w.img;
 
-  function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang='en-US';speechSynthesis.speak(u);}
-  function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+  const boxesDiv=document.getElementById('boxes');
+  boxesDiv.innerHTML='';
+  currentBoxes=Array(w.word.length).fill('');
+  w.word.split('').forEach((_,i)=>{
+    const div=document.createElement('div');
+    div.className='box';div.id='box'+i;
+    boxesDiv.appendChild(div);
+  });
 
-  function loadPage(){
-    const w = words;
-    document.getElementById('progress').textContent = `${page+1}/10: ${w.word}`;
-    document.getElementById('wordImg').src = w.img;
-    const boxesDiv = document.getElementById('boxes');
-    boxesDiv.innerHTML = '';
-    currentBoxes = Array(w.word.length).fill('');
-    w.word.split('').forEach((_,i)=>{
-      const div = document.createElement('div');
-      div.className='box'; div.id='box'+i;
-      boxesDiv.appendChild(div);
-    });
-    const lettersDiv = document.getElementById('letters');
-    lettersDiv.innerHTML = '';
-    const jumbled = shuffle(w.word.split(''));
-    jumbled.forEach(l=>{
-      const btn = document.createElement('button');
-      btn.className='letter-btn'; btn.textContent=l;
-      btn.onclick=()=>fillLetter(l,btn);
-      lettersDiv.appendChild(btn);
-    });
-  }
+  const lettersDiv=document.getElementById('letters');
+  lettersDiv.innerHTML='';
+  const jumbled=shuffle(w.word.split(''));
+  jumbled.forEach(l=>{
+    const btn=document.createElement('button');
+    btn.className='letter-btn';btn.textContent=l;
+    btn.onclick=()=>fillLetter(l,btn);
+    lettersDiv.appendChild(btn);
+  });
+}
 
-  function fillLetter(l,btn){
-    const emptyIndex = currentBoxes.indexOf('');
-    if(emptyIndex==-1) return;
-    currentBoxes[emptyIndex]=l;
-    document.getElementById('box'+emptyIndex).textContent=l;
-    document.getElementById('box'+emptyIndex).classList.add('filled');
-    btn.disabled=true;
-    if(!currentBoxes.includes('')){
-      const word = currentBoxes.join('');
-      if(word===words.word){
-        speak(word);
-        document.querySelectorAll('.box').forEach(b=>b.style.background='#10B981');
-        setTimeout(()=>{if(page<words.length-1){page++;loadPage();}else{alert('All Done! 🎉')}},1200);
-      }else{
-        document.querySelectorAll('.box').forEach(b=>b.classList.add('shake'));
-        setTimeout(()=>{currentBoxes=Array(words.word.length).fill('');loadPage();},800);
-      }
+function fillLetter(l,btn){
+  const emptyIndex=currentBoxes.indexOf('');
+  if(emptyIndex==-1)return;
+  currentBoxes[emptyIndex]=l;
+  document.getElementById('box'+emptyIndex).textContent=l;
+  document.getElementById('box'+emptyIndex).classList.add('filled');
+  btn.disabled=true;
+
+  if(!currentBoxes.includes('')){
+    const word=currentBoxes.join('');
+    if(word===words[page].word){ // 🔥 page index fix
+      speak(word);
+      document.querySelectorAll('.box').forEach(b=>b.style.background='#D1FAE5');
+      setTimeout(()=>{if(page<words.length-1){page++;loadPage();}else{alert('All Done! 🎉')}},1200);
+    }else{
+      document.querySelectorAll('.box').forEach(b=>b.classList.add('shake'));
+      setTimeout(()=>{currentBoxes=Array(words[page].word.length).fill('');loadPage();},800);
     }
   }
-  loadPage();
+}
+loadPage();
 </script>
 </body>
 </html>
