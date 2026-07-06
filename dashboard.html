@@ -51,7 +51,7 @@
   </div>
   <div class="profile-section">
     <img src="./icon-192.png?v=144" class="avatar" id="avatar">
-    <div class="name" id="name">JU</div>
+    <div class="name" id="name">JUJU</div>
     <div class="sub">Swipe Left/Right 👉</div>
 
     <div class="carousel-wrapper" id="carousel">
@@ -102,7 +102,7 @@
     <div class="dots" id="dots"></div>
   </div>
 <script>
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=186');}
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=188');}
   document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JUJU';
   document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png';
   function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
