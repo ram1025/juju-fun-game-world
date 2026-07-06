@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Spell It! - Juju Fun World</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:linear-gradient(135deg,#A855F7,#C084FC);font-family:'Nunito',sans-serif;min-height:100vh;display:flex;flex-direction:column;color:#fff;overflow:hidden}
+
+  /* ===== TOP BAR ===== */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:15px 20px}
+.back-btn{background:rgba(255,255,255,.2);border:0;border-radius:12px;padding:10px 15px;color:#fff;font-weight:800;font-size:16px;font-family:Nunito;cursor:pointer}
+.title{font-size:22px;font-weight:900;text-align:center;flex:1}
+
+  /* ===== CONTENT ===== */
+.content{flex:1;padding:10px 20px;display:flex;flex-direction:column;align-items:center;gap:15px}
+.img-box{width:90%;max-width:280px;height:180px;background:#fff;border-radius:25px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.img-box img{width:100%;height:100%;object-fit:contain}
+
+.boxes{display:flex;gap:10px;margin-top:10px}
+.box{width:60px;height:60px;background:rgba(255,255,255,.3);border:3px solid #fff;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;transition:.2s}
+.box.filled{background:#fff;color:#A855F7}
+.box.shake{animation:shake.3s}
+
+.letters{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:10px;max-width:320px}
+.letter-btn{width:60px;height:60px;background:#fff;border:0;border-radius:18px;color:#A855F7;font-size:32px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.letter-btn:active{transform:scale(.9)}
+.letter-btn:disabled{opacity:.3}
+
+  /* ===== BOTTOM NAV ===== */
+.bottom-nav{display:flex;gap:15px;padding:15px 20px}
+.nav-btn{flex:1;background:#fff;border:0;border-radius:20px;padding:16px;font-size:18px;font-weight:800;font-family:Nunito;color:#A855F7;cursor:pointer}
+.nav-btn:disabled{opacity:.4}
+ @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<div class="topbar">
+  <button class="back-btn" id="backBtn">← Back</button>
+  <div class="title">Spell It! 🧩</div>
+  <div style="width:70px"></div>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div class="content">
+  <div class="img-box"><img id="wordImg" src="" alt=""></div>
+  <div class="boxes" id="boxes"></div>
+  <div class="letters" id="letters"></div>
+</div>
+
+<!-- ===== BOTTOM NAV ===== -->
+<div class="bottom-nav">
+  <button class="nav-btn" id="prevBtn">← Previous</button>
+  <button class="nav-btn" id="nextBtn">Next →</button>
+</div>
+
+<script>
+  const words = [
+    {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png', word:'APPLE'},
+    {img:'https://cdn-icons-png.flaticon.com/512/616/616408.png', word:'BALL'},
+    {img:'https://cdn-icons-png.flaticon.com/512/616/616430.png', word:'CAT'},
+    {img:'https://cdn-icons-png.flaticon.com/512/616/616408.png', word:'DOG'},
+    {img:'https://cdn-icons-png.flaticon.com/512/616/616492.png', word:'FISH'},
+    {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png', word:'MANGO'},
+    {img:'https://cdn-icons-png.flaticon.com/512/869/869869.png', word:'SUN'},
+    {img:'https://cdn-icons-png.flaticon.com/512/2933/2933245.png', word:'TREE'},
+    {img:'https://cdn-icons-png.flaticon.com/512/741/741407.png', word:'CAR'},
+    {img:'https://cdn-icons-png.flaticon.com/512/2232/2232688.png', word:'BOOK'}
+  ];
+  let page = 0, currentBoxes = [];
+
+  // ===== BACK BTN =====
+  const slideIndex = localStorage.getItem('jujuLastPage') || 0;
+  document.getElementById('backBtn').onclick = () => {
+    localStorage.setItem('jujuGoToSlide', slideIndex);
+    location.href = './dashboard.html';
+  };
+
+  // ===== PREV/NEXT =====
+  const cardOrder = ['alphabets.html','body-parts.html','colors.html','color-mixing.html','drag-drop.html','fruits.html','matching.html','numbers.html','painting.html','pet-animals.html','rhymes.html','shapes.html','vehicles.html','vegetables.html','wild-animals.html','addition.html','free-draw.html','spell-it.html'];
+  const idx = cardOrder.indexOf('spell-it.html');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  if(idx<=0) prevBtn.disabled=true; else prevBtn.onclick=()=>location.href='./'+cardOrder[idx-1];
+  if(idx>=cardOrder.length-1) nextBtn.disabled=true; else nextBtn.onclick=()=>location.href='./'+cardOrder[idx+1];
+
+  function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang='en-US';speechSynthesis.speak(u);}
+
+  function loadPage(){
+    const w = words[page];
+    document.getElementById('wordImg').src = w.img;
+    const boxesDiv = document.getElementById('boxes');
+    boxesDiv.innerHTML = '';
+    currentBoxes = Array(w.word.length).fill('');
+    w.word.split('').forEach((_,i)=>{
+      const div = document.createElement('div');
+      div.className='box'; div.id='box'+i;
+      boxesDiv.appendChild(div);
+    });
+
+    const lettersDiv = document.getElementById('letters');
+    lettersDiv.innerHTML = '';
+    const jumbled = w.word.split('').sort(()=>Math.random()-0.5);
+    jumbled.forEach(l=>{
+      const btn = document.createElement('button');
+      btn.className='letter-btn'; btn.textContent=l;
+      btn.onclick=()=>fillLetter(l,btn);
+      lettersDiv.appendChild(btn);
+    });
+  }
+
+  function fillLetter(l,btn){
+    const emptyIndex = currentBoxes.indexOf('');
+    if(emptyIndex==-1) return;
+    currentBoxes[emptyIndex]=l;
+    document.getElementById('box'+emptyIndex).textContent=l;
+    document.getElementById('box'+emptyIndex).classList.add('filled');
+    btn.disabled=true;
+
+    if(!currentBoxes.includes('')){
+      const word = currentBoxes.join('');
+      if(word===words[page].word){
+        speak(word);
+        document.querySelectorAll('.box').forEach(b=>b.style.background='#10B981');
+        setTimeout(()=>{if(page<words.length-1){page++;loadPage();}},1200);
+      }else{
+        document.querySelectorAll('.box').forEach(b=>b.classList.add('shake'));
+        setTimeout(()=>{currentBoxes=Array(words[page].word.length).fill('');loadPage();},800);
+      }
+    }
+  }
+  loadPage();
+</script>
+</body>
+</html>
