@@ -1,67 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Shapes - Juju Fun World</title>
-<link rel="manifest" href="./manifest.json?v=158">
-<meta name="theme-color" content="#3B82F6">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px;display:flex;flex-direction:column;align-items:center}
-.top-bar{width:100%;max-width:450px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center}
-.back-top{background:#fff;border:0;border-radius:15px;padding:10px 18px;font-size:16px;font-weight:800;color:#F97316;cursor:pointer;font-family:Nunito;box-shadow:0 3px 8px rgba(0,0,0,.2)}
-.counter-top{font-size:18px;font-weight:800;color:#fff}
-.card-box{background:#FEF3C7;border-radius:30px;padding:25px;width:100%;max-width:450px;box-shadow:0 8px 25px rgba(0,0,0,.2);text-align:center}
-.shape-display{background:#fff;border-radius:20px;padding:40px;margin-bottom:20px;min-height:280px;display:flex;align-items:center;justify-content:center}
-.shape-emoji{font-size:150px;line-height:1}
-.name{font-size:32px;font-weight:900;color:#F97316;margin-bottom:20px}
-.btn-row{display:flex;gap:12px;margin-bottom:10px}
-.btn{flex:1;border:0;border-radius:15px;padding:14px;font-size:18px;font-weight:800;color:#fff;cursor:pointer;font-family:Nunito;box-shadow:0 4px 8px rgba(0,0,0,.2)}
-.btn-grey{background:#6B7280}
-.btn-orange{background:#F97316}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Shapes - Juju Fun World</title>
+  <link rel="manifest" href="./manifest.json?v=158">
+  <meta name="theme-color" content="#3B82F6">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px;display:flex;flex-direction:column;align-items:center}
+    .top-bar{width:100%;max-width:450px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center}
+    .back-top{background:#fff;border:0;border-radius:15px;padding:10px 18px;font-size:16px;font-weight:800;color:#F97316;cursor:pointer;font-family:Nunito;box-shadow:0 3px 8px rgba(0,0,0,.2)}
+    .counter-top{font-size:18px;font-weight:800;color:#fff}
+    .card-box{background:#FEF3C7;border-radius:30px;padding:25px;width:100%;max-width:450px;box-shadow:0 8px 25px rgba(0,0,0,.2);text-align:center}
+    .shape-display{background:#fff;border-radius:20px;padding:40px;margin-bottom:20px;min-height:280px;display:flex;align-items:center;justify-content:center}
+    .shape-emoji{font-size:150px;line-height:1}
+    .name{font-size:32px;font-weight:900;color:#F97316;margin-bottom:20px}
+    .btn-row{display:flex;gap:12px;margin-bottom:10px}
+    .btn{flex:1;border:0;border-radius:15px;padding:14px;font-size:18px;font-weight:800;color:#fff;cursor:pointer;font-family:Nunito;box-shadow:0 4px 8px rgba(0,0,0,.2)}
+    .btn-grey{background:#6B7280}
+    .btn-orange{background:#F97316}
+  </style>
 </head>
 <body>
   <div class="top-bar">
     <button class="back-top" onclick="goBack()">← Back</button>
     <div class="counter-top" id="counterTop">1 / 10</div>
   </div>
-
   <div class="card-box">
+    <h1 style="font-size:36px;font-weight:900;color:#F97316;margin-bottom:10px">Shapes</h1>
     <div class="shape-display">
       <div class="shape-emoji" id="shapeEmoji">⚪</div>
     </div>
     <div class="name" id="shapeName">Circle</div>
     <div class="btn-row">
-      <button class="btn btn-grey" onclick="prevShape()">← Back</button>
+      <button class="btn btn-grey" onclick="prevShape()">← Previous</button>
       <button class="btn btn-orange" onclick="nextShape()">Next ></button>
     </div>
   </div>
-
-<script>
-  const shapes = [
-    {emoji:'⚪', name:'Circle'},{emoji:'⬜', name:'Square'},{emoji:'🔺', name:'Triangle'},
-    {emoji:'⭐', name:'Star'},{emoji:'❤️', name:'Heart'},{emoji:'🟦', name:'Square'},
-    {emoji:'🟠', name:'Oval'},{emoji:'💎', name:'Diamond'},{emoji:'⬟', name:'Pentagon'},{emoji:'⬡', name:'Hexagon'}
-  ];
-  let currentIndex = 0;
-
-  function renderShape(){
-    const s = shapes[currentIndex];
-    document.getElementById('shapeEmoji').textContent = s.emoji;
-    document.getElementById('shapeName').textContent = s.name;
-    document.getElementById('counterTop').textContent = `${currentIndex+1} / ${shapes.length}`;
-  }
-  function nextShape(){ if(currentIndex < shapes.length-1){ currentIndex++; renderShape(); } }
-  function prevShape(){ if(currentIndex > 0){ currentIndex--; renderShape(); } else { goBack(); } }
-  function goBack(){
-    const lastSlide = localStorage.getItem('jujuLastPage') || 4;
-    localStorage.setItem('jujuGoToSlide', lastSlide);
-    location.href = './dashboard.html';
-  }
-  renderShape();
-</script>
+  <audio id="shapeSound"></audio>
+  <script>
+    const shapes = [
+      {emoji:'⚪', name:'Circle', sound:'circle.mp3'},
+      {emoji:'⬜', name:'Square', sound:'square.mp3'},
+      {emoji:'🔺', name:'Triangle', sound:'triangle.mp3'},
+      {emoji:'⭐', name:'Star', sound:'star.mp3'},
+      {emoji:'❤️', name:'Heart', sound:'heart.mp3'},
+      {emoji:'🟦', name:'Square', sound:'square.mp3'},
+      {emoji:'🟠', name:'Oval', sound:'oval.mp3'},
+      {emoji:'💎', name:'Diamond', sound:'diamond.mp3'},
+      {emoji:'⬟', name:'Pentagon', sound:'pentagon.mp3'},
+      {emoji:'⬡', name:'Hexagon', sound:'hexagon.mp3'}
+    ];
+    let currentIndex = 0;
+    function renderShape(){
+      const s = shapes[currentIndex];
+      document.getElementById('shapeEmoji').textContent = s.emoji;
+      document.getElementById('shapeName').textContent = s.name;
+      document.getElementById('counterTop').textContent = `${currentIndex+1} / ${shapes.length}`;
+      document.getElementById('shapeSound').src = `./sounds/${s.sound}`;
+      document.getElementById('shapeSound').play();
+    }
+    function nextShape(){
+      if(currentIndex < shapes.length-1){
+        currentIndex++;
+        renderShape();
+      }
+    }
+    function prevShape(){
+      if(currentIndex > 0){
+        currentIndex--;
+        renderShape();
+      }
+      else { goBack(); }
+    }
+    function goBack(){
+      const lastSlide = localStorage.getItem('jujuLastPage') || 4;
+      localStorage.setItem('jujuGoToSlide', lastSlide);
+      location.href = './dashboard.html';
+    }
+    renderShape();
+  </script>
 </body>
 </html>
