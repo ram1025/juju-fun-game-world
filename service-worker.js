@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v186'; // VERSIO IKKADA MATRAM
+const CACHE_NAME = 'juju-fun-world-v188'; // VERSIO IKKADA MATRAM
 
 const urlsToCache = [
     './',
