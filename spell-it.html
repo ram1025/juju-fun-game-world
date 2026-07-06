@@ -16,7 +16,6 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
 .img-wrap{background:#FEFCE8;border-radius:25px;padding:20px}
 .img-box{width:100%;height:160px;display:flex;align-items:center;justify-content:center}
 .img-box img{width:100%;height:100%;object-fit:contain}
-.word-name{font-size:28px;font-weight:900;color:#7C3AED;margin-top:5px}
 .boxes{display:flex;gap:10px;justify-content:center;margin-top:5px;flex-wrap:wrap}
 .box{width:50px;height:50px;background:#F3F4F6;border:2px dashed #D1D5DB;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#7C3AED;transition:.2s}
 .box.filled{background:#EDE9FE;border:2px solid #7C3AED}
@@ -42,13 +41,13 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
     <div style="width:70px"></div>
   </div>
 
-  <div class="progress" id="progress">1/10</div>
+  <div class="progress" id="progress">1 / 10</div>
 
   <div class="img-wrap">
     <div class="img-box"><img id="wordImg" src="" alt=""></div>
   </div>
 
-  <div class="word-name" id="wordName">Apple</div>
+  <!-- 🔥 WORD HIDE CHESAM. Div ne tisesa -->
   <div class="boxes" id="boxes"></div>
   <div class="letters" id="letters"></div>
 
@@ -59,17 +58,18 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
 </div>
 
 <script>
+// 🔥 FIX: Image + Word 100% Match chesanu
 const words=[
-  {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png',word:'APPLE'},
-  {img:'https://cdn-icons-png.flaticon.com/512/616/616408.png',word:'BALL'},
-  {img:'https://cdn-icons-png.flaticon.com/512/616/616430.png',word:'CAT'},
-  {img:'https://cdn-icons-png.flaticon.com/512/616/616458.png',word:'DOG'},
-  {img:'https://cdn-icons-png.flaticon.com/512/616/616492.png',word:'FISH'},
-  {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png',word:'MANGO'},
-  {img:'https://cdn-icons-png.flaticon.com/512/869/869.png',word:'SUN'},
-  {img:'https://cdn-icons-png.flaticon.com/512/2933/2933245.png',word:'TREE'},
-  {img:'https://cdn-icons-png.flaticon.com/512/741/741407.png',word:'CAR'},
-  {img:'https://cdn-icons-png.flaticon.com/512/2232/2232688.png',word:'BOOK'}
+  {img:'https://cdn-icons-png.flaticon.com/512/415/415733.png',word:'APPLE'}, // 1/10 Apple
+  {img:'https://cdn-icons-png.flaticon.com/512/147/147144.png',word:'BALL'}, // 2/10 Ball 
+  {img:'https://cdn-icons-png.flaticon.com/512/616/616430.png',word:'CAT'}, // 3/10 Cat
+  {img:'https://cdn-icons-png.flaticon.com/512/616/616408.png',word:'DOG'}, // 4/10 Dog
+  {img:'https://cdn-icons-png.flaticon.com/512/616/616452.png',word:'FISH'}, // 5/10 Fish
+  {img:'https://cdn-icons-png.flaticon.com/512/415/415727.png',word:'MANGO'}, // 6/10 Mango
+  {img:'https://cdn-icons-png.flaticon.com/512/3222/3222853.png',word:'SUN'}, // 7/10 Sun - Broken link fix
+  {img:'https://cdn-icons-png.flaticon.com/512/628/628324.png',word:'TREE'}, // 8/10 Tree - Monitor fix
+  {img:'https://cdn-icons-png.flaticon.com/512/741/741407.png',word:'CAR'}, // 9/10 Car
+  {img:'https://cdn-icons-png.flaticon.com/512/2232/2232688.png',word:'BOOK'} // 10/10 Book
 ];
 let page=0,currentBoxes=[];
 
@@ -79,16 +79,19 @@ const cardOrder=['alphabets.html','body-parts.html','colors.html','color-mixing.
 const idx=cardOrder.indexOf('spell-it.html');
 const prevBtn=document.getElementById('prevBtn');
 const nextBtn=document.getElementById('nextBtn');
-if(idx<=0)prevBtn.disabled=true;else prevBtn.onclick=()=>location.href='./'+cardOrder[idx-1];
-if(idx>=cardOrder.length-1)nextBtn.disabled=true;else nextBtn.onclick=()=>location.href='./'+cardOrder[idx+1];
+
+if(idx<=0){prevBtn.disabled=true;prevBtn.style.opacity=.4;}
+else{prevBtn.onclick=()=>location.href='./'+cardOrder[idx-1];}
+
+if(idx>=cardOrder.length-1){nextBtn.disabled=true;nextBtn.style.opacity=.4;}
+else{nextBtn.onclick=()=>location.href='./'+cardOrder[idx+1];}
 
 function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang='en-US';speechSynthesis.speak(u);}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
 function loadPage(){
-  const w=words[page]; // 🔥 page index fix
+  const w=words; // 🔥 page index fix
   document.getElementById('progress').textContent=`${page+1} / 10`;
-  document.getElementById('wordName').textContent=w.word;
   document.getElementById('wordImg').src=w.img;
 
   const boxesDiv=document.getElementById('boxes');
@@ -121,13 +124,13 @@ function fillLetter(l,btn){
 
   if(!currentBoxes.includes('')){
     const word=currentBoxes.join('');
-    if(word===words[page].word){ // 🔥 page index fix
+    if(word===words.word){ // 🔥 page index fix
       speak(word);
       document.querySelectorAll('.box').forEach(b=>b.style.background='#D1FAE5');
       setTimeout(()=>{if(page<words.length-1){page++;loadPage();}else{alert('All Done! 🎉')}},1200);
     }else{
       document.querySelectorAll('.box').forEach(b=>b.classList.add('shake'));
-      setTimeout(()=>{currentBoxes=Array(words[page].word.length).fill('');loadPage();},800);
+      setTimeout(()=>{currentBoxes=Array(words.word.length).fill('');loadPage();},800);
     }
   }
 }
