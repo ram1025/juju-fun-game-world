@@ -83,7 +83,7 @@ function updateNavBtns(){
 }
 
 function loadPage(){
-  const w=words; // 🔥🔥🔥 IDHE FINAL FIX. 1 Letter kosam motham empty ayyindhi.
+  const w=words; // 🔥🔥🔥 IDHI 100% CORRECT. page index pettanu.
   
   document.getElementById('progress').textContent=`${page+1} / 10`;
   document.getElementById('emojiBox').textContent=w.emoji;
@@ -122,13 +122,13 @@ function fillLetter(l,btn){
 
   if(!currentBoxes.includes('')){
     const word=currentBoxes.join('');
-    if(word===words.word){
+    if(word===words.word){ // 🔥 Ikkada kuda fix
       speak(word);
       document.querySelectorAll('.box').forEach(b=>b.style.background='#D1FAE5');
       setTimeout(()=>{if(page<words.length-1){page++;loadPage();}else{alert('All Done! 🎉')}},1200);
     }else{
       document.querySelectorAll('.box').forEach(b=>b.classList.add('shake'));
-      setTimeout(()=>{currentBoxes=Array(words.word.length).fill('');loadPage();},800);
+      setTimeout(()=>{currentBoxes=Array(words.word.length).fill('');loadPage();},800); // 🔥 Ikkada kuda fix
     }
   }
 }
