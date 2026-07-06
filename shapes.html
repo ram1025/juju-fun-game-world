@@ -55,13 +55,16 @@
     ];
     let currentIndex = 0;
     function renderShape(){
-      const s = shapes[currentIndex];
-      document.getElementById('shapeEmoji').textContent = s.emoji;
-      document.getElementById('shapeName').textContent = s.name;
-      document.getElementById('counterTop').textContent = `${currentIndex+1} / ${shapes.length}`;
-      document.getElementById('shapeSound').src = `./sounds/${s.sound}`;
-      document.getElementById('shapeSound').play();
-    }
+  const s = shapes[currentIndex];
+  document.getElementById('shapeEmoji').textContent = s.emoji;
+  document.getElementById('shapeName').textContent = s.name;
+  document.getElementById('counterTop').textContent = `${currentIndex+1} / ${shapes.length}`;
+  
+  // MP3 lines 62-63 delete chesi idhi pettu
+  const msg = new SpeechSynthesisUtterance(s.name);
+  msg.lang = 'en-US';
+  window.speechSynthesis.speak(msg);
+}
     function nextShape(){
       if(currentIndex < shapes.length-1){
         currentIndex++;
