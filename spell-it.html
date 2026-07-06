@@ -13,13 +13,13 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
 .back-btn{background:#E5E7EB;border:0;border-radius:12px;padding:8px 14px;color:#374151;font-weight:800;font-size:15px;font-family:Nunito;cursor:pointer}
 .title{font-size:24px;font-weight:900;color:#7C3AED}
 .progress{font-size:16px;font-weight:800;color:#6B7280;margin-top:-5px}
-.img-wrap{background:#FEFCE8;border-radius:25px;padding:20px}
-.emoji-box{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:100px;line-height:1} /* 🔥 Emoji kosam */
-.boxes{display:flex;gap:10px;justify-content:center;margin-top:5px;flex-wrap:wrap}
+.img-wrap{background:#FEFCE8;border-radius:25px;padding:20px;min-height:160px;display:flex;align-items:center;justify-content:center} /* 🔥 min-height add */
+.emoji-box{font-size:100px;line-height:1} /* 🔥 Emoji size pedda */
+.boxes{display:flex;gap:10px;justify-content:center;margin-top:5px;flex-wrap:wrap;min-height:50px}
 .box{width:50px;height:50px;background:#F3F4F6;border:2px dashed #D1D5DB;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#7C3AED;transition:.2s}
 .box.filled{background:#EDE9FE;border:2px solid #7C3AED}
 .box.shake{animation:shake.3s}
-.letters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:5px}
+.letters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:5px;min-height:50px}
 .letter-btn{width:50px;height:50px;background:#fff;border:2px solid #E5E7EB;border-radius:15px;color:#7C3AED;font-size:26px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.08)}
 .letter-btn:active{transform:scale(.9)}
 .letter-btn:disabled{opacity:.3;box-shadow:none;background:#F3F4F6}
@@ -43,11 +43,11 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
   <div class="progress" id="progress">1 / 10</div>
 
   <div class="img-wrap">
-    <div class="emoji-box" id="emojiBox">🍎</div> <!-- 🔥 img tag tisi div pettam -->
+    <div class="emoji-box" id="emojiBox">🍎</div> <!-- 🔥 Emoji akkada kanipistundi -->
   </div>
 
-  <div class="boxes" id="boxes"></div>
-  <div class="letters" id="letters"></div>
+  <div class="boxes" id="boxes"></div> <!-- 🔥 Empty boxes akkada -->
+  <div class="letters" id="letters"></div> <!-- 🔥 Jumbling letters akkada -->
 
   <div class="bottom-nav">
     <button class="nav-btn btn-prev" id="prevBtn">← Previous</button>
@@ -56,28 +56,26 @@ body{background:linear-gradient(135deg,#8B5CF6,#A78BFA);font-family:'Nunito',san
 </div>
 
 <script>
-// 🔥 FIX: Image link tisi Emoji pettam
 const words=[
-  {emoji:'🍎',word:'APPLE'}, // 1/10
-  {emoji:'⚽',word:'BALL'}, // 2/10
-  {emoji:'🐱',word:'CAT'}, // 3/10
-  {emoji:'🐶',word:'DOG'}, // 4/10
-  {emoji:'🐟',word:'FISH'}, // 5/10
-  {emoji:'🥭',word:'MANGO'}, // 6/10
-  {emoji:'☀️',word:'SUN'}, // 7/10
-  {emoji:'🌳',word:'TREE'}, // 8/10
-  {emoji:'🚗',word:'CAR'}, // 9/10
-  {emoji:'📚',word:'BOOK'} // 10/10
+  {emoji:'🍎',word:'APPLE'},
+  {emoji:'⚽',word:'BALL'},
+  {emoji:'🐱',word:'CAT'},
+  {emoji:'🐶',word:'DOG'},
+  {emoji:'🐟',word:'FISH'},
+  {emoji:'🥭',word:'MANGO'},
+  {emoji:'☀️',word:'SUN'},
+  {emoji:'🌳',word:'TREE'},
+  {emoji:'🚗',word:'CAR'},
+  {emoji:'📚',word:'BOOK'}
 ];
 let page=0,currentBoxes=[];
 
 document.getElementById('backBtn').onclick=()=>{location.href='./dashboard.html';};
-
 const prevBtn=document.getElementById('prevBtn');
 const nextBtn=document.getElementById('nextBtn');
 
 function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang='en-US';speechSynthesis.speak(u);}
-function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+function shuffle(arr){return arr.sort(()=>Math.random()-0.5);} // 🔥 Short shuffle
 
 function updateNavBtns(){
   prevBtn.disabled = page === 0;
@@ -85,9 +83,10 @@ function updateNavBtns(){
 }
 
 function loadPage(){
-  const w=words; // 🔥 page index fix
+  console.log("Loading page:", page); // 🔥 Debug kosam
+  const w=words; // 🔥 page index. Idhi lekkapothey empty vasthundi
   document.getElementById('progress').textContent=`${page+1} / 10`;
-  document.getElementById('emojiBox').textContent=w.emoji; // 🔥 img.src tisi textContent
+  document.getElementById('emojiBox').textContent=w.emoji; // 🔥 Emoji set
 
   const boxesDiv=document.getElementById('boxes');
   boxesDiv.innerHTML='';
@@ -133,7 +132,7 @@ function fillLetter(l,btn){
     }
   }
 }
-loadPage();
+loadPage(); // 🔥 First time load
 </script>
 </body>
 </html>
