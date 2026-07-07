@@ -93,7 +93,7 @@
 <div class="carousel-page"><div class="grid">
   <div class="card pink" onclick="location.href='./free-draw.html?v=172'"><div class="card-icon">🎨</div><div class="card-title">Free Draw</div></div>
   <div class="card violet" onclick="location.href='./spell-it.html?v=173'"><div class="card-icon">🧩</div><div class="card-title">Spell It!</div></div>
-  <div class="card violet" onclick="location.href='./shape-studio.html?v=173'"><div class="card-icon">🎨</div><div class="card-title">Shape Studio</div></div>
+ <div class="card violet" onclick="location.href='./juju-car-race.html?v=11-4'"><div class="card-icon">🚗</div><div class="card-title">Juju Car Race</div></div>
   <div class="card pink" onclick="location.href='./balloon-pop.html?v=11-3'"><div class="card-icon">🎈</div><div class="card-title">Balloon Pop</div></div>
 </div></div>
 
@@ -102,7 +102,7 @@
     <div class="dots" id="dots"></div>
   </div>
 <script>
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-3');}
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-4');}
   document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JUJU';
   document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png';
   function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
