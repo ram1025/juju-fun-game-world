@@ -1,11 +1,12 @@
-const CACHE_NAME = 'juju-fun-world-v195'; // 🔥 V192 -> V193. Idhi chaala imp.
+const CACHE_NAME = 'juju-fun-world-v196'; // 🔥 V195 -> V196. Art Book add chesam
 
 const urlsToCache = [
     './',
     './index.html',         
     './dashboard.html', 
     './profile.html',
-    './spell-it.html', // 🔥🔥 IDHI MISS AINDHI BRO. IDHI ADD CHESAV
+    './spell-it.html', 
+    './art-book.html', // 🔥🔥 IDHI NEW ADD CHESAM BRO
     './fruits.html',
     './pet-animals.html',
     './wild-animals.html',
@@ -51,7 +52,7 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.filter((cacheName) => cacheName!== CACHE_NAME)
-                   .map((cacheName) => caches.delete(cacheName)) // 🔥 V192 motham delete avthundi
+                   .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
     );
