@@ -6,7 +6,8 @@ const urlsToCache = [
     './dashboard.html', 
     './profile.html',
     './spell-it.html', 
-    './shape-studio.html', // 🔥 IDHI NEW ADD
+    './shape-studio.html', 
+    './balloon-pop.html', // 🔥 IDHI NEW ADD
     './fruits.html',
     './pet-animals.html',
     './wild-animals.html',
