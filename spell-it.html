@@ -36,11 +36,11 @@ function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang='en-US';s
 function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 function updateNavBtns(){prevBtn.disabled=page===0;nextBtn.disabled=page===words.length-1;}
 function loadPage(){
-  const w=words; // ✅ 1. FIX
+  const w=words[page]; // ✅ 1. FIX: [page] pettam
   document.getElementById('progress').textContent=`${page+1} / 10`;
   document.getElementById('emojiBox').textContent=w.emoji;
   const boxesDiv=document.getElementById('boxes');boxesDiv.innerHTML='';
-  currentBoxes=Array(w.word.length).fill('');
+  currentBoxes=Array(w.word.length).fill(''); // ✅ 2. FIX
   w.word.split('').forEach((_,i)=>{const div=document.createElement('div');div.className='box';div.id='box'+i;boxesDiv.appendChild(div);});
   const lettersDiv=document.getElementById('letters');lettersDiv.innerHTML='';
   shuffle(w.word.split('')).forEach(l=>{const btn=document.createElement('button');btn.className='letter-btn';btn.textContent=l;btn.onclick=()=>fillLetter(l,btn);lettersDiv.appendChild(btn);});
@@ -53,16 +53,17 @@ function fillLetter(l,btn){
   currentBoxes[emptyIndex]=l;document.getElementById('box'+emptyIndex).textContent=l;document.getElementById('box'+emptyIndex).classList.add('filled');btn.disabled=true;
   if(!currentBoxes.includes('')){
     const word=currentBoxes.join('');
-    if(word===words.word){ // ✅ 2. FIX - IDHI MISS AINDHI
+    const w=words[page]; // ✅ 3. FIX: [page] pettam
+    if(word===w.word){ // ✅ 4. FIX
       speak(word);document.querySelectorAll('.box').forEach(b=>b.style.background='#D1FAE5');
       setTimeout(()=>{if(page<words.length-1){page++;loadPage();}else{alert('All Done! 🎉')}},1200);
     }else{
       document.querySelectorAll('.box').forEach(b=>b.classList.add('shake'));
-      setTimeout(()=>{currentBoxes=Array(words.word.length).fill('');loadPage();},800); // ✅ 3. FIX
+      setTimeout(()=>{currentBoxes=Array(w.word.length).fill('');loadPage();},800); // ✅ 5. FIX
     }
   }
 }
 loadPage();
-    </script>
+</script>
 </body>
 </html>
