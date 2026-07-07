@@ -3,27 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1e3a8a">
 <title>Juju Car Driving</title>
-<link rel="manifest" href="./manifest.json">
 <style>
 :root{--road:#2d3748;--line:#fbbf24;--sky:#1e40af}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0;background:var(--sky);overflow:hidden;font-family:system-ui}
-.road{width:100%;height:100%;background:linear-gradient(#1e40af 0 40%,var(--road) 40% 100%);position:relative;overflow:hidden;perspective:1000px}
-.road-3d{position:absolute;bottom:0;width:100%;height:60%;background:var(--road);transform:rotateX(70deg);transform-origin:bottom}
-.road-lines{position:absolute;bottom:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent 0 50px,var(--line) 50px 70px);animation:scroll 0.6s linear infinite;transform:rotateX(70deg) translateZ(-50px)}
-@keyframes scroll{0%{background-position-y:0}100%{background-position-y:70px}}
-.player{position:absolute;bottom:8%;left:50%;width:60px;height:100px;transform:translateX(-50%);z-index:5;transition:transform .2s, left .2s}
+html,body{height:100%;margin:0;background:var(--sky);overflow:hidden}
+.road{width:100%;height:100%;background:linear-gradient(#1e40af 0 35%,var(--road) 35% 100%);position:relative;overflow:hidden;perspective:1200px}
+.road-3d{position:absolute;bottom:0;width:100%;height:65%;background:var(--road);transform:rotateX(75deg);transform-origin:bottom}
+.road-lines{position:absolute;bottom:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent 0 40px,var(--line) 40px 60px);animation:scroll 0.7s linear infinite;transform:rotateX(75deg) translateZ(-80px)}
+@keyframes scroll{0%{background-position-y:0}100%{background-position-y:60px}}
+.player{position:absolute;bottom:8%;left:50%;width:55px;height:90px;transform:translateX(-50%);z-index:5;transition:transform .15s, left .15s}
 .player svg{width:100%;height:100%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
-.car{position:absolute;width:60px;height:100px;z-index:2;transition:font-size .1s linear}
+.car{position:absolute;width:55px;height:90px;z-index:2;transform-style:preserve-3d}
 .hud{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;z-index:10}
-.btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:14px}
-.horn{background:#f59e0b;color:#fff}
+.btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px}
 .score{color:#fff;font-weight:900;font-size:18px;text-shadow:0 2px 4px #000}
-.controls{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:space-between;padding:0 30px;z-index:10}
-.steer{background:rgba(255,255,255,.9);border:0;border-radius:50%;width:70px;height:70px;font-size:32px}
-.accel{background:#10b981;color:#fff;border:0;border-radius:50%;width:70px;height:70px;font-size:32px}
+.controls{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 20px;z-index:10;gap:10px}
+.steer{background:rgba(255,255,255,.9);border:0;border-radius:50%;width:65px;height:65px;font-size:28px;flex-shrink:0}
+.horn{background:#f59e0b;color:#fff;border:0;border-radius:50%;width:65px;height:65px;font-size:28px;flex-shrink:0} /* 🔥 Horn button style */
+.accel{background:#10b981;color:#fff;border:0;border-radius:50%;width:75px;height:75px;font-size:32px;flex-shrink:0;box-shadow:0 0 20px #10b981}
 .crash{position:absolute;inset:0;background:rgba(239,68,68,.9);display:none;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#fff;flex-direction:column;z-index:20}
 </style>
 </head>
@@ -31,32 +29,20 @@ html,body{height:100%;margin:0;background:var(--sky);overflow:hidden;font-family
 <div class="road" id="road">
   <div class="road-3d"></div>
   <div class="road-lines"></div>
-  
-  <!-- Horizontal Car SVG - Top View -->
-  <div class="player" id="player">
-    <svg viewBox="0 0 60 100">
-      <rect x="15" y="0" width="30" height="100" rx="8" fill="#ef4444"/>
-      <rect x="18" y="15" width="24" height="20" rx="4" fill="#1e3a8a"/>
-      <rect x="18" y="65" width="24" height="20" rx="4" fill="#1e3a8a"/>
-      <circle cx="20" cy="25" r="3" fill="#000"/>
-      <circle cx="40" cy="25" r="3" fill="#000"/>
-      <circle cx="20" cy="75" r="3" fill="#000"/>
-      <circle cx="40" cy="75" r="3" fill="#000"/>
-    </svg>
-  </div>
+  <div class="player" id="player"><svg viewBox="0 0 60 100"><rect x="15" y="0" width="30" height="100" rx="8" fill="#ef4444"/><rect x="18" y="15" width="24" height="20" rx="4" fill="#1e3a8a"/><rect x="18" y="65" width="24" height="20" rx="4" fill="#1e3a8a"/></svg></div>
   
   <div class="hud">
-    <a href="./dashboard.html" class="btn">←</a>
-    <button class="btn horn" onclick="playHorn()">📢</button>
+    <a href="./dashboard.html" class="btn">← Back</a>
     <div class="score" id="score">0</div>
   </div>
 
+  <!-- 🔥 New Layout: Horn is now bottom left -->
   <div class="controls">
     <button class="steer" onmousedown="steer(-1)" onmouseup="steer(0)" ontouchstart="steer(-1)" ontouchend="steer(0)">⬅️</button>
-    <button class="accel" onmousedown="boost()" onmouseup="boostStop()" ontouchstart="boost()" ontouchend="boostStop()">🚀</button>
+    <button class="horn" onclick="playHorn()">📢</button> <!-- Horn here -->
+    <button class="accel" onmousedown="boost()" onmouseup="boostStop()" ontouchstart="boost()" ontouchend="boostStop()">🚀</button> <!-- Speed -->
     <button class="steer" onmousedown="steer(1)" onmouseup="steer(0)" ontouchstart="steer(1)" ontouchend="steer(0)">➡️</button>
   </div>
-  
   <div class="crash" id="crash" onclick="location.reload()">💥 CRASH!<br><span style="font-size:16px">Tap to Restart</span></div>
 </div>
 
@@ -65,7 +51,7 @@ html,body{height:100%;margin:0;background:var(--sky);overflow:hidden;font-family
 <audio id="crashSound" src="data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQIAAAAAAAAAAAAAAAAAAAAAAAAA"></audio>
 
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-8');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-10');}
 const player = document.getElementById('player');
 const scoreEl = document.getElementById('score');
 const crashEl = document.getElementById('crash');
@@ -78,12 +64,11 @@ engine.volume = 0.2; engine.play().catch(()=>{});
 
 function steer(dir){ 
   steerVal = dir; 
-  // 🔥 Horizontal Tilt Effect: Left=-15deg, Right=+15deg
-  player.style.transform = `translateX(-50%) rotate(${dir * -15}deg)`;
+  player.style.transform = `translateX(-50%) rotateY(${dir * -25}deg) rotateZ(${dir * -10}deg)`;
 }
-function boost(){ speed = 1.2; document.querySelector('.road-lines').style.animationDuration = '0.3s'; }
-function boostStop(){ speed = 0.5; document.querySelector('.road-lines').style.animationDuration = '0.6s'; }
-function playHorn(){ horn.currentTime = 0; horn.play(); speak('Horn'); }
+function boost(){ speed = 1.3; document.querySelector('.road-lines').style.animationDuration = '0.35s'; } // 🔥 Rocket = Speed
+function boostStop(){ speed = 0.5; document.querySelector('.road-lines').style.animationDuration = '0.7s'; }
+function playHorn(){ horn.currentTime = 0; horn.play(); } // No voice
 
 function gameLoop(){
   if(gameOver) return requestAnimationFrame(gameLoop);
@@ -96,41 +81,38 @@ function gameLoop(){
 }
 gameLoop();
 
-// Spawn Enemy Cars - Top View SVG
 function spawnEnemy(){
   if(gameOver) return;
   const car = document.createElement('div');
   car.className = 'car';
   let laneX = Math.random()*70+15;
   car.style.left = laneX + '%';
-  car.style.bottom = '100%';
-  car.innerHTML = `<svg viewBox="0 0 60 100"><rect x="15" y="0" width="30" height="100" rx="8" fill="#3b82f6"/><rect x="18" y="15" width="24" height="20" rx="4" fill="#000"/><rect x="18" y="65" width="24" height="20" rx="4" fill="#000"/></svg>`;
+  car.style.bottom = '120%';
+  car.style.transform = 'translateZ(-300px) scale(0.3)';
+  car.innerHTML = `<svg viewBox="0 0 60 100"><rect x="15" y="0" width="30" height="100" rx="8" fill="#3b82f6"/><rect x="18" y="15" width="24" height="20" rx="4" fill="#000"/></svg>`;
   document.getElementById('road').appendChild(car);
   
-  let bottom = 100;
+  let z = -300; let bottom = 120;
   const fall = setInterval(()=>{
     if(gameOver){clearInterval(fall); car.remove(); return;}
-    bottom -= speed * 4;
+    bottom -= speed * 3.5;
+    z += speed * 8;
     car.style.bottom = bottom + '%';
-    car.style.transform = `scale(${1 - bottom*0.008})`; // 3D scale
+    car.style.transform = `translateZ(${z}px) scale(${0.3 + (z+300)/600})`;
     
     const carRect = car.getBoundingClientRect();
     const playerRect = player.getBoundingClientRect();
-    if(carRect.bottom > playerRect.top && carRect.top < playerRect.bottom && Math.abs(carRect.left - playerRect.left) < 35){
+    if(carRect.bottom > playerRect.top && carRect.top < playerRect.bottom && Math.abs(carRect.left - playerRect.left) < 32){
       gameOver = true;
       engine.pause();
       crashSound.play();
       crashEl.style.display = 'flex';
-      speak('Crash!');
       clearInterval(fall);
     }
     if(bottom < -10){ clearInterval(fall); car.remove(); }
   }, 30);
 }
-setInterval(spawnEnemy, 1100);
-
-function speak(t){ if('speechSynthesis' in window){speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=1.2; speechSynthesis.speak(u);}}
-speak('Start Driving');
+setInterval(spawnEnemy, 1300);
 </script>
 </body>
 </html>
