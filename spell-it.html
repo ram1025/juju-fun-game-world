@@ -35,7 +35,6 @@ const prevBtn=document.getElementById('prevBtn');const nextBtn=document.getEleme
 function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang='en-US';speechSynthesis.speak(u);}
 function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 function updateNavBtns(){prevBtn.disabled=page===0;nextBtn.disabled=page===words.length-1;}
-
 function loadPage(){
   const w=words; // ✅ 1. FIX
   document.getElementById('progress').textContent=`${page+1} / 10`;
@@ -47,16 +46,14 @@ function loadPage(){
   shuffle(w.word.split('')).forEach(l=>{const btn=document.createElement('button');btn.className='letter-btn';btn.textContent=l;btn.onclick=()=>fillLetter(l,btn);lettersDiv.appendChild(btn);});
   updateNavBtns();
 }
-
 prevBtn.onclick=()=>{if(page>0){page--;loadPage();}};
 nextBtn.onclick=()=>{if(page<words.length-1){page++;loadPage();}};
-
 function fillLetter(l,btn){
   const emptyIndex=currentBoxes.indexOf('');if(emptyIndex==-1)return;
   currentBoxes[emptyIndex]=l;document.getElementById('box'+emptyIndex).textContent=l;document.getElementById('box'+emptyIndex).classList.add('filled');btn.disabled=true;
   if(!currentBoxes.includes('')){
     const word=currentBoxes.join('');
-    if(word===words.word){ // ✅ 2. FIX
+    if(word===words.word){ // ✅ 2. FIX - IDHI MISS AINDHI
       speak(word);document.querySelectorAll('.box').forEach(b=>b.style.background='#D1FAE5');
       setTimeout(()=>{if(page<words.length-1){page++;loadPage();}else{alert('All Done! 🎉')}},1200);
     }else{
@@ -66,6 +63,6 @@ function fillLetter(l,btn){
   }
 }
 loadPage();
-</script>
+    </script>
 </body>
 </html>
