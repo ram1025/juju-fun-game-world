@@ -24,7 +24,7 @@ html,body{height:100%;margin:0;background:var(--blue);font-family:system-ui,-app
 .box svg{width:180px;height:180px}
 .outline{fill:none;stroke:#d1d5db;stroke-width:6;stroke-dasharray:8 6}
 .pieces{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;min-height:70px}
-.piece{width:64px;height:64px;background:#fff;border:2px solid #e5e7eb;border-radius:14px;display:grid;place-items:center;cursor:grab;box-shadow:0 4px 10px rgba(0,0,0,.1)}
+.piece{width:64px;height:64px;background:#fff;border:2px solid #e5e7eb;border-radius:14px;display:grid;place-items:center;cursor:grab;box-shadow:0 4px 10px rgba(0,0,0,.1);touch-action:none}
 .piece.dragging{position:fixed;z-index:999;opacity:.7;pointer-events:none}
 .nav{display:flex;gap:12px;margin-top:6px}
 .btn{flex:1;height:52px;border-radius:16px;border:0;font-weight:800;font-size:16px;color:#fff;cursor:pointer}
@@ -35,7 +35,6 @@ html,body{height:100%;margin:0;background:var(--blue);font-family:system-ui,-app
 </head>
 <body>
 <div class="app">
-  <!-- Top Left Back -> Dashboard.html -->
   <button class="topback" onclick="goDashboard()">← Back</button>
 
   <div class="card">
@@ -51,7 +50,6 @@ html,body{height:100%;margin:0;background:var(--blue);font-family:system-ui,-app
     <div class="pieces" id="tray"></div>
     <div class="msg" id="msg">Drag pieces to complete the shape</div>
 
-    <!-- Buttons Bottom Lo -->
     <div class="nav">
       <button class="btn back" onclick="prevShape()">← Back</button>
       <button class="btn next" onclick="nextShape()">Next →</button>
@@ -60,11 +58,9 @@ html,body{height:100%;margin:0;background:var(--blue);font-family:system-ui,-app
 </div>
 
 <script>
-// 🔥 PWA Cache v9
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=9'); }
-const CACHE_NAME = 'juju-shape-v9';
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=11'); }
+const CACHE_NAME = 'juju-shape-v11';
 
-// 10 Shapes: Outline + 2 Missing Pieces
 const SHAPES = [
   {name:"Rocket", outline:"M100,20 L85,80 L115,80 Z M85,80 L100,140 L115,80 Z M85,140 L100,160 L115,140 Z", pieces:[{d:"M70,140 L85,140 L85,160 L70,160 Z",c:"#ef4444",x:10,y:10},{d:"M115,140 L130,140 L130,160 L115,160 Z",c:"#3b82f6",x:90,y:10}]},
   {name:"House", outline:"M50,100 L100,50 L150,100 L150,140 L50,140 Z", pieces:[{d:"M80,120 L80,140 L120,140 L120,120 Z",c:"#f59e0b",x:10,y:10},{d:"M100,50 L150,100 L100,100 Z",c:"#22c55e",x:90,y:10}]},
@@ -109,13 +105,15 @@ function enableDrag(){
       const rect = el.getBoundingClientRect();
       offsetX = e.clientX-rect.left; offsetY = e.clientY-rect.top;
       move(e);
+      e.preventDefault();
     });
   });
-  document.addEventListener('pointermove', e=>{ if(dragging) move(e); });
+  document.addEventListener('pointermove', e=>{ if(dragging){ move(e); e.preventDefault(); } });
   document.addEventListener('pointerup', e=>{ if(dragging) drop(e); });
 }
 
 function move(e){
+  if(!dragging) return;
   dragging.style.left = (e.clientX-offsetX)+'px';
   dragging.style.top = (e.clientY-offsetY)+'px';
 }
@@ -129,8 +127,16 @@ function drop(e){
     board.innerHTML += `<path fill="${pieceData.c}" d="${pieceData.d}"/>`;
     dragging.remove();
     placed.push(i);
+
     if(placed.length === SHAPES[cur].pieces.length){
       msg.textContent = "Super! ✅ Shape Complete";
+
+      // 🔥 ENGLISH VOICE HERE
+      const speak = new SpeechSynthesisUtterance("Super! Shape Complete");
+      speak.lang = 'en-US';
+      speak.rate = 1.0;
+      speak.pitch = 1.2;
+      speechSynthesis.speak(speak);
     }
   }
   dragging.classList.remove('dragging');
@@ -141,7 +147,6 @@ function drop(e){
 function nextShape(){ if(cur<SHAPES.length-1){cur++;render();} }
 function prevShape(){ if(cur>0){cur--;render();} }
 
-// 🔥 Dashboard.html ki velthundi
 function goDashboard(){
   window.location='dashboard.html#shape-studio';
 }
