@@ -4,74 +4,123 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#3b82f6">
-<title>Juju Car Race</title>
+<title>Juju Car Driving</title>
 <link rel="manifest" href="./manifest.json">
 <style>
-:root{--blue:#3b82f6;--road:#1f2937;--text:#fff;--shadow:0 12px 40px rgba(0,0,0,.2)}
+:root{--blue:#3b82f6;--road:#2c3e50;--line:#f1c40f;--shadow:0 12px 40px rgba(0,0,0,.3)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0;background:var(--blue);font-family:system-ui;overflow:hidden}
 .app{max-width:480px;margin:0 auto;min-height:100%;padding:16px;display:flex;flex-direction:column}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .btn{border:0;border-radius:16px;padding:10px 16px;font-weight:900;cursor:pointer}
 .btn-back{background:#fff;color:var(--blue);box-shadow:var(--shadow)}
-.score{color:#fff;font-weight:900;font-size:20px;text-shadow:0 2px 4px rgba(0,0,0,.3)}
-.road{flex:1;background:repeating-linear-gradient(0deg,var(--road) 0 40px,#374151 40px 80px);border-radius:24px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
-.car{position:absolute;bottom:20px;left:50%;width:60px;height:90px;transform:translateX(-50%);transition:left .15s;font-size:60px}
+.horn-btn{background:#f59e0b;color:#fff;font-size:16px}
+.score{color:#fff;font-weight:900;font-size:20px}
+.road{flex:1;background:var(--road);border-radius:24px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 8px #1a202c}
+.road-lines{position:absolute;width:100%;height:200%;background:repeating-linear-gradient(0deg,transparent 0 40px,var(--line) 40px 60px);animation:scroll 0.8s linear infinite}
+@keyframes scroll{0%{top:-100px}100%{top:0}}
+.player{position:absolute;bottom:20px;left:50%;width:50px;height:90px;transform:translateX(-50%);transition:left.2s;font-size:60px;z-index:10}
+.car{position:absolute;width:50px;height:90px;font-size:60px;display:flex;align-items:center;justify-content:center}
 .controls{display:flex;gap:12px;margin-top:12px}
-.ctrl{flex:1;background:#fff;color:var(--blue);border:0;border-radius:16px;padding:16px;font-size:28px;font-weight:900;box-shadow:var(--shadow)}
-.obs{position:absolute;width:60px;height:90px;border-radius:12px;animation:fall 3s linear forwards;font-size:60px;display:flex;align-items:center;justify-content:center}
-@keyframes fall{0%{top:-100px}100%{top:110%}}
-.info{text-align:center;color:#fff;margin:10px 0;font-weight:800}
+.ctrl{flex:1;background:#fff;color:var(--blue);border:0;border-radius:16px;padding:18px;font-size:32px;font-weight:900;box-shadow:var(--shadow)}
+.crash{position:absolute;inset:0;background:rgba(239,68,68,.9);display:none;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#fff;flex-direction:column}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
     <a href="./dashboard.html" class="btn btn-back">← Back</a>
+    <button class="btn horn-btn" ontouchstart="playHorn()">📢 Horn</button>
     <div class="score" id="score">Score: 0</div>
   </div>
-  <div class="road" id="road"></div>
-  <div class="info">Tap ⬅️ ➡️ to dodge! 🚗</div>
+  <div class="road" id="road">
+    <div class="road-lines"></div>
+    <div class="player" id="player">🚗</div>
+    <div class="crash" id="crash">💥 CRASH!<br><span style="font-size:16px">Tap to Restart</span></div>
+  </div>
   <div class="controls">
-    <button class="ctrl" onclick="moveCar('left')">⬅️</button>
-    <button class="ctrl" onclick="moveCar('right')">➡️</button>
+    <button class="ctrl" ontouchstart="moveCar('left')">⬅️</button>
+    <button class="ctrl" ontouchstart="moveCar('right')">➡️</button>
   </div>
 </div>
-<audio id="vroom" src="data:audio/wav;base64,UklGRlIAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQYAAAD//v//f///"></audio>
+
+<!-- All Sounds Base64 -->
+<audio id="engine" loop src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA="></audio>
+<audio id="horn" src="data:audio/wav;base64,UklGRlIAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQYAAACAgICAgICAgICAgICAgICAgICAgICAgICAg"></audio>
+<audio id="crashSound" src="data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQIAAAAAAAAAAAAAAAAAAAAAAAAA"></audio>
+
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-4');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-6');}
 const road = document.getElementById('road');
+const player = document.getElementById('player');
 const scoreEl = document.getElementById('score');
-const vroom = document.getElementById('vroom');
-let score = 0; let carPos = 50; 
-const lanes = [25, 50, 75];
+const crashEl = document.getElementById('crash');
+const engine = document.getElementById('engine');
+const horn = document.getElementById('horn');
+const crashSound = document.getElementById('crashSound');
+
+let score = 0; let carLane = 1; 
+const lanePos = ['25%','50%','75%'];
+let gameOver = false;
+const vehicles = ['🚗','🚙','🚚','🚌','🏍️']; // All types
+
+engine.volume = 0.3;
+engine.play().catch(()=>{}); // Autoplay start
 
 function moveCar(dir){
-  if(dir==='left' && carPos>25) carPos-=25;
-  if(dir==='right' && carPos<75) carPos+=25;
-  document.querySelector('.car').style.left = carPos + '%';
-  vroom.currentTime = 0; vroom.play();
-  speak('Vroom!');
+  if(gameOver) return;
+  if(dir==='left' && carLane>0) carLane--;
+  if(dir==='right' && carLane<2) carLane++;
+  player.style.left = lanePos[carLane];
 }
 
-function spawnCar(){
-  road.innerHTML = `<div class="car">🚗</div>`;
+function playHorn(){
+  if(gameOver) return;
+  horn.currentTime = 0; horn.play();
+  speak('Horn!');
 }
-spawnCar();
 
-function spawnObs(){
-  const o = document.createElement('div');
-  o.className = 'obs';
-  o.style.left = lanes[Math.floor(Math.random()*3)] + '%';
-  o.style.transform = 'translateX(-50%)';
-  o.textContent = '🚙';
-  road.appendChild(o);
-  setTimeout(()=>o.remove(), 3000);
+function spawnEnemy(){
+  if(gameOver) return;
+  const car = document.createElement('div');
+  car.className = 'car';
+  let enemyLane = Math.floor(Math.random()*3);
+  car.style.left = lanePos[enemyLane];
+  car.style.top = '-100px';
+  car.textContent = vehicles[Math.floor(Math.random()*vehicles.length)]; // Random vehicle
+  road.appendChild(car);
+  
+  let top = -100;
+  const speed = 6 + Math.random()*4; // Random speed
+  const fall = setInterval(()=>{
+    if(gameOver){clearInterval(fall); car.remove(); return;}
+    top += speed;
+    car.style.top = top + 'px';
+    
+    // Collision
+    if(top > window.innerHeight - 150 && enemyLane === carLane){
+      gameOver = true;
+      engine.pause();
+      crashSound.play();
+      crashEl.style.display = 'flex';
+      speak('Crash! Game Over');
+      clearInterval(fall);
+    }
+    
+    if(top > window.innerHeight){
+      clearInterval(fall);
+      car.remove();
+      score += 10;
+      scoreEl.textContent = `Score: ${score}`;
+    }
+  }, 30);
 }
-setInterval(spawnObs, 900);
-setInterval(()=>{score+=5; scoreEl.textContent=`Score: ${score}`}, 1000);
+setInterval(spawnEnemy, 1000);
 
-function speak(t){ if('speechSynthesis' in window){speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=1.3; u.pitch=1.2; speechSynthesis.speak(u);}}
+crashEl.onclick = ()=>location.reload();
+
+function speak(t){ if('speechSynthesis' in window){speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=1.2; speechSynthesis.speak(u);}}
+speak('Start Driving');
 </script>
 </body>
 </html>
