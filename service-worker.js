@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v1'; // 🔥 V195 -> V196. Art Book add chesam
+const CACHE_NAME = 'juju-fun-world-v5'; // 🔥 V195 -> V196. Art Book add chesam
 
 const urlsToCache = [
     './',
@@ -6,7 +6,7 @@ const urlsToCache = [
     './dashboard.html', 
     './profile.html',
     './spell-it.html', 
-    './art-book.html', // 🔥🔥 IDHI NEW ADD CHESAM BRO
+    './shape-studio.html', // 🔥🔥 IDHI NEW ADD CHESAM BRO
     './fruits.html',
     './pet-animals.html',
     './wild-animals.html',
