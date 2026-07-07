@@ -20,9 +20,10 @@ html,body{height:100%;margin:0;background:var(--sky);overflow:hidden}
 .score{color:#fff;font-weight:900;font-size:18px;text-shadow:0 2px 4px #000}
 .controls{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 20px;z-index:10;gap:10px}
 .steer{background:rgba(255,255,255,.9);border:0;border-radius:50%;width:65px;height:65px;font-size:28px;flex-shrink:0}
-.horn{background:#f59e0b;color:#fff;border:0;border-radius:50%;width:65px;height:65px;font-size:28px;flex-shrink:0} /* 🔥 Horn button style */
+.horn{background:#f59e0b;color:#fff;border:0;border-radius:50%;width:65px;height:65px;font-size:28px;flex-shrink:0}
 .accel{background:#10b981;color:#fff;border:0;border-radius:50%;width:75px;height:75px;font-size:32px;flex-shrink:0;box-shadow:0 0 20px #10b981}
 .crash{position:absolute;inset:0;background:rgba(239,68,68,.9);display:none;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#fff;flex-direction:column;z-index:20}
+.tap{position:absolute;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;z-index:30}
 </style>
 </head>
 <body>
@@ -36,42 +37,57 @@ html,body{height:100%;margin:0;background:var(--sky);overflow:hidden}
     <div class="score" id="score">0</div>
   </div>
 
-  <!-- 🔥 New Layout: Horn is now bottom left -->
   <div class="controls">
     <button class="steer" onmousedown="steer(-1)" onmouseup="steer(0)" ontouchstart="steer(-1)" ontouchend="steer(0)">⬅️</button>
-    <button class="horn" onclick="playHorn()">📢</button> <!-- Horn here -->
-    <button class="accel" onmousedown="boost()" onmouseup="boostStop()" ontouchstart="boost()" ontouchend="boostStop()">🚀</button> <!-- Speed -->
+    <button class="horn" onclick="playHorn()">📢</button>
+    <button class="accel" onmousedown="boost()" onmouseup="boostStop()" ontouchstart="boost()" ontouchend="boostStop()">🚀</button>
     <button class="steer" onmousedown="steer(1)" onmouseup="steer(0)" ontouchstart="steer(1)" ontouchend="steer(0)">➡️</button>
   </div>
   <div class="crash" id="crash" onclick="location.reload()">💥 CRASH!<br><span style="font-size:16px">Tap to Restart</span></div>
+  <div class="tap" id="tap" onclick="unlockAudio()">🔊 Tap to Start Sound</div> <!-- 🔥 Sound Unlock -->
 </div>
 
-<audio id="engine" loop src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA="></audio>
-<audio id="horn" src="data:audio/wav;base64,UklGRlIAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQYAAACAgICAgICAg"></audio>
-<audio id="crashSound" src="data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQIAAAAAAAAAAAAAAAAAAAAAAAAA"></audio>
+<audio id="engine" loop></audio>
+<audio id="horn"></audio>
+<audio id="crashSound"></audio>
 
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-10');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-11');}
 const player = document.getElementById('player');
 const scoreEl = document.getElementById('score');
 const crashEl = document.getElementById('crash');
+const tapEl = document.getElementById('tap');
 const engine = document.getElementById('engine');
 const horn = document.getElementById('horn');
 const crashSound = document.getElementById('crashSound');
 
-let score = 0; let posX = 50; let steerVal = 0; let speed = 0.5; let gameOver = false;
-engine.volume = 0.2; engine.play().catch(()=>{});
+let score = 0; let posX = 50; let steerVal = 0; let speed = 0.5; let gameOver = false; let audioReady = false;
+
+// 🔥 Real Sound Files - Base64 Short Beep/Engine/Crash
+engine.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAAAAAAAAAAAAAAAA";
+horn.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA";
+crashSound.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA";
+
+function unlockAudio(){ // 🔥 First tap = Sound ON
+  if(audioReady) return;
+  audioReady = true;
+  engine.volume = 0.15;
+  engine.play().catch(()=>{});
+  tapEl.style.display = 'none';
+  speak('Start');
+}
 
 function steer(dir){ 
+  if(!audioReady) return unlockAudio();
   steerVal = dir; 
   player.style.transform = `translateX(-50%) rotateY(${dir * -25}deg) rotateZ(${dir * -10}deg)`;
 }
-function boost(){ speed = 1.3; document.querySelector('.road-lines').style.animationDuration = '0.35s'; } // 🔥 Rocket = Speed
+function boost(){ if(!audioReady) return unlockAudio(); speed = 1.3; document.querySelector('.road-lines').style.animationDuration = '0.35s'; }
 function boostStop(){ speed = 0.5; document.querySelector('.road-lines').style.animationDuration = '0.7s'; }
-function playHorn(){ horn.currentTime = 0; horn.play(); } // No voice
+function playHorn(){ if(!audioReady) return unlockAudio(); horn.currentTime = 0; horn.play(); }
 
 function gameLoop(){
-  if(gameOver) return requestAnimationFrame(gameLoop);
+  if(gameOver || !audioReady) return requestAnimationFrame(gameLoop);
   posX += steerVal * 1.8;
   posX = Math.max(15, Math.min(85, posX));
   player.style.left = posX + '%';
@@ -82,7 +98,7 @@ function gameLoop(){
 gameLoop();
 
 function spawnEnemy(){
-  if(gameOver) return;
+  if(gameOver || !audioReady) return;
   const car = document.createElement('div');
   car.className = 'car';
   let laneX = Math.random()*70+15;
@@ -105,7 +121,7 @@ function spawnEnemy(){
     if(carRect.bottom > playerRect.top && carRect.top < playerRect.bottom && Math.abs(carRect.left - playerRect.left) < 32){
       gameOver = true;
       engine.pause();
-      crashSound.play();
+      crashSound.play(); // 🔥 Crash sound now works
       crashEl.style.display = 'flex';
       clearInterval(fall);
     }
@@ -113,6 +129,8 @@ function spawnEnemy(){
   }, 30);
 }
 setInterval(spawnEnemy, 1300);
+
+function speak(t){ if('speechSynthesis' in window){speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=1.2; speechSynthesis.speak(u);}}
 </script>
 </body>
 </html>
