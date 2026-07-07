@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v11-3'; // 🔥 V11 nunchi V11-1 ki marcham. Shape Studio Voice Add
+const CACHE_NAME = 'juju-fun-world-v11-4'; // 🔥 V11 nunchi V11-1 ki marcham. Shape Studio Voice Add
 
 const urlsToCache = [
     './',
@@ -6,8 +6,8 @@ const urlsToCache = [
     './dashboard.html', 
     './profile.html',
     './spell-it.html', 
-    './shape-studio.html', 
-    './balloon-pop.html', // 🔥 IDHI NEW ADD
+    './juju-car-race.html', // 🔥 IDHI NEW ADD
+    './balloon-pop.html', 
     './fruits.html',
     './pet-animals.html',
     './wild-animals.html',
