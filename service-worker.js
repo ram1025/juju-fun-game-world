@@ -1,10 +1,11 @@
-const CACHE_NAME = 'juju-fun-world-v192'; // VERSIO IKKADA MATRAM
+const CACHE_NAME = 'juju-fun-world-v193'; // 🔥 V192 -> V193. Idhi chaala imp.
 
 const urlsToCache = [
     './',
-    './index.html',         // ?v=144 teesesanu
+    './index.html',         
     './dashboard.html', 
     './profile.html',
+    './spell-it.html', // 🔥🔥 IDHI MISS AINDHI BRO. IDHI ADD CHESAV
     './fruits.html',
     './pet-animals.html',
     './wild-animals.html',
@@ -36,12 +37,12 @@ const urlsToCache = [
     './assets/audio/a.mp3','./assets/audio/b.mp3',
     './assets/audio/number-1.mp3','./assets/audio/number-2.mp3','./assets/audio/number-3.mp3','./assets/audio/number-4.mp3','./assets/audio/number-5.mp3',
     './assets/audio/number-6.mp3','./assets/audio/number-7.mp3','./assets/audio/number-8.mp3','./assets/audio/number-9.mp3','./assets/audio/number-10.mp3',
-    './assets/audio/number-11.mp3','./assets/audio/number-12.mp3','./assets.audio/number-13.mp3','./assets/audio/number-14.mp3','./assets/audio/number-15.mp3',
+    './assets/audio/number-11.mp3','./assets/audio/number-12.mp3','./assets/audio/number-13.mp3','./assets/audio/number-14.mp3','./assets/audio/number-15.mp3',
     './assets/audio/number-16.mp3','./assets/audio/number-17.mp3','./assets/audio/number-18.mp3','./assets/audio/number-19.mp3','./assets/audio/number-20.mp3'
 ];
 
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); // New SW ni ventane activate chey
+    self.skipWaiting(); 
     event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
 });
 
@@ -50,7 +51,7 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.filter((cacheName) => cacheName!== CACHE_NAME)
-                   .map((cacheName) => caches.delete(cacheName)) // Old Cache motham delete
+                   .map((cacheName) => caches.delete(cacheName)) // 🔥 V192 motham delete avthundi
             );
         }).then(() => self.clients.claim())
     );
