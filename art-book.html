@@ -3,78 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Art Book 1/10</title>
+<title>Art Book 1/1: Parrot</title>
 <style>
   body{margin:0;font-family:system-ui;background:#4f8cff;display:flex;justify-content:center;padding:16px}
   .wrap{background:#fff7d6;border-radius:24px;padding:16px;max-width:420px;width:100%;box-shadow:0 8px 24px rgba(0,0,0,.15)}
   h2{text-align:center;color:#f97316;margin:4px 0 8px;font-size:24px}
   h3{text-align:center;margin:0 0 4px;font-size:18px}
   p{text-align:center;color:#b45309;margin:0 0 12px;font-size:14px}
-  .box{background:#fff;border:3px solid #fbbf24;border-radius:20px;padding:12px}
-  canvas{width:100%;height:280px;touch-action:none;border-radius:12px;display:block}
-  .row{display:flex;gap:8px;margin:12px 0}
-  .btn{flex:1;padding:12px;border:0;border-radius:12px;color:#fff;font-weight:700;font-size:16px}
-  .red{background:#ef4444}.blue{background:#3b82f6}.green{background:#10b981}
-  .colors{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-  .swatch{width:40px;height:40px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.2)}
-  .swatch.active{border:4px solid #000}
+  .box{background:#fff;border:3px solid #fbbf24;border-radius:20px;padding:12px;position:relative}
+  canvas{width:100%;height:340px;touch-action:none;border-radius:12px;display:block}
+  .btn{width:100%;padding:12px;border:0;border-radius:12px;color:#fff;font-weight:700;font-size:16px;background:#ef4444;margin-top:12px}
   .topback{display:inline-block;background:#fff;padding:8px 14px;border-radius:12px;text-decoration:none;color:#f97316;font-weight:700;margin-bottom:8px;box-shadow:0 4px 10px rgba(0,0,0,.1)}
+  .ref{position:absolute;top:12px;left:12px;width:60px;height:60px;border:2px solid #f97316;border-radius:8px;background:#fff}
 </style>
 </head>
 <body>
 <div class="wrap">
   <a href="./dashboard.html" class="topback">← Back</a>
-  <h2 id="title">1/10: Table</h2>
+  <h2>1/1: Parrot</h2>
   <h3>Color the Picture</h3>
-  <p>Outline lopala matrame rayi ✏️</p>
+  <p>Dotted line lopala tap chey 🎨</p>
   
   <div class="box">
+    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTAgMzAgTDEwIDQwIEwyMCA0MCBMMjAgMzBaIE0zMCAyMCBMMzAgMTAgTDQwIDEwIEw0MCAyMFoiIGZpbGw9IiMyMmM1NTUiLz48cGF0aCBkPSJNMzUgMjUgTDM1IDM1IEw0NSAzNSBMNDUgMjVaIiBmaWxsPSIjZjk3MzE2Ii8+PC9zdmc+" class="ref"/>
     <canvas id="c"></canvas>
   </div>
 
-  <div class="row">
-    <button class="btn red" onclick="clearC()">Clear</button>
-    <button class="btn blue" onclick="prev()">← Back</button>
-    <button class="btn green" onclick="next()">Next →</button>
-  </div>
-
-  <div class="colors" id="colors"></div>
+  <button class="btn" onclick="clearC()">Clear</button>
 </div>
 
 <script>
-const data = [
-  {n:"Table", d:"M 50,80 L 250,80 L 250,100 L 50,100 Z M 90,100 L 90,220 M 210,100 L 210,220"}, // Table
-  {n:"Chair", d:"M 80,60 L 220,60 L 220,180 L 80,180 Z M 80,180 L 100,240 M 220,180 L 200,240"},
-  {n:"Car", d:"M 40,160 L 260,160 L 240,120 L 200,100 L 100,100 L 60,120 Z M 90,160 A20,20 0 1,1 91,160 M 210,160 A20,20 0 1,1 211,160"},
-  {n:"Tree", d:"M 150,240 L 150,120 M 150,120 L 80,180 M 150,120 L 220,180 M 150,60 L 100,120 L 200,120 Z"},
-  {n:"Cone", d:"M 100,240 L 200,240 L 150,60 Z"},
-  {n:"Ice", d:"M 150,60 L 110,120 L 110,180 L 150,220 L 190,180 L 190,120 Z"},
-  {n:"Mango", d:"M 150,60 C 80,80 80,180 150,220 C 220,180 220,80 150,60 Z M 150,60 L 140,40"},
-  {n:"Orange", d:"M 150,60 A90,90 0 1,1 151,60 Z"},
-  {n:"Airplane", d:"M 40,150 L 260,150 L 240,130 L 200,140 L 120,140 L 80,120 L 60,140 Z"},
-  {n:"Bus", d:"M 40,120 L 260,120 L 260,200 L 40,200 Z M 80,200 A20,20 0 1,1 81,200 M 220,200 A20,20 0 1,1 221,200"}
-];
-let i=0, color="#ef4444";
 const c=document.getElementById('c'), x=c.getContext('2d');
-c.width=300; c.height=280;
-const cols=["#ef4444","#f97316","#f59e0b","#eab308","#10b981","#14b8a6","#3b82f6","#8b5cf6","#a855f7","#ec4899"];
-document.getElementById('colors').innerHTML=cols.map((co,j)=>`<div class="swatch ${j?'' : 'active'}" style="background:${co}" onclick="pick('${co}',this)"></div>`).join('');
+c.width=300; c.height=340;
+
+// Parrot Dotted Outline - SVG Path laaga
+const parrot = new Path2D("M140,40 C130,30 110,30 100,40 C90,50 90,70 100,80 L110,120 C110,150 120,180 140,200 C160,180 170,150 170,120 L180,80 C190,70 190,50 180,40 C170,30 150,30 140,40 Z M140,80 L140,120 M140,120 C120,130 110,150 110,180 M140,120 C160,130 170,150 170,180 M140,200 L140,230 M160,130 L190,120 L200,100 M130,60 A10,10 0 1,1 131,60");
 
 function draw(){
   x.clearRect(0,0,c.width,c.height);
-  x.strokeStyle="#9ca3af"; x.lineWidth=3; x.setLineDash([6,6]);
-  new Path2D(data[i].d); x.stroke(new Path2D(data[i].d));
-  document.getElementById('title').textContent=`${i+1}/10: ${data[i].n}`;
+  x.strokeStyle="#9ca3af"; x.lineWidth=2.5; x.setLineDash([4,4]); // Dotted line
+  x.stroke(parrot);
 }
-function pick(co,el){color=co;document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));el.classList.add('active')}
-function clearC(){draw()}
-function next(){if(i<9){i++;draw()}}
-function prev(){if(i>0){i--;draw()}}
-let drawing=0;
-c.onpointerdown=e=>{drawing=1;x.beginPath();x.moveTo(e.offsetX,e.offsetY);x.strokeStyle=color;x.lineWidth=6;x.lineCap="round";x.setLineDash([])};
-c.onpointermove=e=>{if(drawing){x.lineTo(e.offsetX,e.offsetY);x.stroke()}};
-c.onpointerup=()=>drawing=0;
 draw();
+
+c.onclick = (e) => { // Tap chesthe fill
+  if(x.isPointInPath(parrot, e.offsetX, e.offsetY)){
+    x.fillStyle="#22c55e"; // Parrot Green color
+    x.fill(parrot);
+    x.strokeStyle="#9ca3af"; x.lineWidth=2.5; x.setLineDash([4,4]); // Outline malli
+    x.stroke(parrot);
+  }
+};
+
+function clearC(){draw()} // Clear chesthe malli dotted line
 </script>
 </body>
 </html>
