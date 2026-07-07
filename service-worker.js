@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v11'; // 🔥 V195 -> V196. Art Book add chesam
+const CACHE_NAME = 'juju-fun-world-v11-1'; // 🔥 V11 nunchi V11-1 ki marcham. Shape Studio Voice Add
 
 const urlsToCache = [
     './',
@@ -6,7 +6,7 @@ const urlsToCache = [
     './dashboard.html', 
     './profile.html',
     './spell-it.html', 
-    './shape-studio.html', // 🔥🔥 IDHI NEW ADD CHESAM BRO
+    './shape-studio.html', // 🔥 IDHI NEW ADD
     './fruits.html',
     './pet-animals.html',
     './wild-animals.html',
@@ -51,7 +51,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.filter((cacheName) => cacheName!== CACHE_NAME)
+                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v11 anni delete
                    .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
