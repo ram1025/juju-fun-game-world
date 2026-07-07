@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v194'; // 🔥 V192 -> V193. Idhi chaala imp.
+const CACHE_NAME = 'juju-fun-world-v195'; // 🔥 V192 -> V193. Idhi chaala imp.
 
 const urlsToCache = [
     './',
