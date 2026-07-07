@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1e3a8a">
 <title>Juju Car Driving</title>
 <style>
-:root{--road:#2d3748;--line:#fbbf24;--sky:#1e40af}
+:root{--road:#1f2937;--line:#fff;--border:#fbbf24;--sky:#1e40af}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0;background:var(--sky);overflow:hidden}
-.road{width:100%;height:100%;background:linear-gradient(#1e40af 0 35%,var(--road) 35% 100%);position:relative;overflow:hidden;perspective:1200px}
+.road{width:100%;height:100%;background:var(--road);position:relative;overflow:hidden;perspective:1200px;border-left:8px solid var(--border);border-right:8px solid var(--border)} /* 🔥 Yellow Borders */
 .road-3d{position:absolute;bottom:0;width:100%;height:65%;background:var(--road);transform:rotateX(75deg);transform-origin:bottom}
-.road-lines{position:absolute;bottom:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent 0 40px,var(--line) 40px 60px);animation:scroll 0.7s linear infinite;transform:rotateX(75deg) translateZ(-80px)}
-@keyframes scroll{0%{background-position-y:0}100%{background-position-y:60px}}
-.player{position:absolute;bottom:8%;left:50%;width:55px;height:90px;transform:translateX(-50%);z-index:5;transition:transform .15s, left .15s}
+.road-center-line{position:absolute;bottom:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent 0 40px,var(--line) 40px 60px);background-size:100% 100px;animation:scroll 0.7s linear infinite;transform:rotateX(75deg) translateZ(-80px);opacity:.8} /* 🔥 Single Center Line */
+@keyframes scroll{0%{background-position-y:0}100%{background-position-y:100px}}
+.player{position:absolute;bottom:8%;left:50%;width:55px;height:90px;transform:translateX(-50%);z-index:5;transition:transform.15s, left.15s}
 .player svg{width:100%;height:100%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
 .car{position:absolute;width:55px;height:90px;z-index:2;transform-style:preserve-3d}
 .hud{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;z-index:10}
@@ -23,15 +24,15 @@ html,body{height:100%;margin:0;background:var(--sky);overflow:hidden}
 .horn{background:#f59e0b;color:#fff;border:0;border-radius:50%;width:65px;height:65px;font-size:28px;flex-shrink:0}
 .accel{background:#10b981;color:#fff;border:0;border-radius:50%;width:75px;height:75px;font-size:32px;flex-shrink:0;box-shadow:0 0 20px #10b981}
 .crash{position:absolute;inset:0;background:rgba(239,68,68,.9);display:none;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#fff;flex-direction:column;z-index:20}
-.tap{position:absolute;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;z-index:30}
+.tap{position:absolute;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;z-index:30;text-align:center;padding:20px}
 </style>
 </head>
 <body>
 <div class="road" id="road">
   <div class="road-3d"></div>
-  <div class="road-lines"></div>
+  <div class="road-center-line"></div> <!-- 🔥 Only 1 line -->
   <div class="player" id="player"><svg viewBox="0 0 60 100"><rect x="15" y="0" width="30" height="100" rx="8" fill="#ef4444"/><rect x="18" y="15" width="24" height="20" rx="4" fill="#1e3a8a"/><rect x="18" y="65" width="24" height="20" rx="4" fill="#1e3a8a"/></svg></div>
-  
+
   <div class="hud">
     <a href="./dashboard.html" class="btn">← Back</a>
     <div class="score" id="score">0</div>
@@ -44,50 +45,63 @@ html,body{height:100%;margin:0;background:var(--sky);overflow:hidden}
     <button class="steer" onmousedown="steer(1)" onmouseup="steer(0)" ontouchstart="steer(1)" ontouchend="steer(0)">➡️</button>
   </div>
   <div class="crash" id="crash" onclick="location.reload()">💥 CRASH!<br><span style="font-size:16px">Tap to Restart</span></div>
-  <div class="tap" id="tap" onclick="unlockAudio()">🔊 Tap to Start Sound</div> <!-- 🔥 Sound Unlock -->
+  <div class="tap" id="tap" onclick="unlockAudio()">🔊 TAP HERE<br><span style="font-size:14px">To Enable Engine + Horn Sound</span></div> <!-- 🔥 Bigger Tap -->
 </div>
 
-<audio id="engine" loop></audio>
-<audio id="horn"></audio>
-<audio id="crashSound"></audio>
-
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-11');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11-13');}
 const player = document.getElementById('player');
 const scoreEl = document.getElementById('score');
 const crashEl = document.getElementById('crash');
 const tapEl = document.getElementById('tap');
-const engine = document.getElementById('engine');
-const horn = document.getElementById('horn');
-const crashSound = document.getElementById('crashSound');
 
-let score = 0; let posX = 50; let steerVal = 0; let speed = 0.5; let gameOver = false; let audioReady = false;
+let score = 0; let posX = 50; let steerVal = 0; let speed = 0.5; let gameOver = false; let audioCtx; let engineOsc; let engineGain;
 
-// 🔥 Real Sound Files - Base64 Short Beep/Engine/Crash
-engine.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAAAAAAAAAAAAAAAA";
-horn.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA";
-crashSound.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA";
+// 🔥 Web Audio API - Fixed Loop
+function initAudio(){
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  engineOsc = audioCtx.createOscillator();
+  engineGain = audioCtx.createGain();
+  engineOsc.type = 'sawtooth';
+  engineOsc.frequency.setValueAtTime(80, audioCtx.currentTime);
+  engineGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+  engineOsc.connect(engineGain).connect(audioCtx.destination);
+  engineOsc.start();
+}
+function playHorn(){ // Beep
+  if(!audioCtx) return;
+  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+  osc.type = 'square'; osc.frequency.setValueAtTime(900, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+  osc.connect(gain).connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+}
+function playCrash(){ // Dhum
+  if(!audioCtx) return;
+  const bufSize = audioCtx.sampleRate * 0.5; const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate); const output = buffer.getChannelData(0);
+  for(let i=0; i<bufSize; i++) output[i] = Math.random() * 2 - 1;
+  const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+  const gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.4, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+  noise.connect(gain).connect(audioCtx.destination); noise.start();
+}
 
-function unlockAudio(){ // 🔥 First tap = Sound ON
-  if(audioReady) return;
-  audioReady = true;
-  engine.volume = 0.15;
-  engine.play().catch(()=>{});
+function unlockAudio(){ // 🔥 MUST TAP
+  if(audioCtx) return;
+  initAudio();
   tapEl.style.display = 'none';
   speak('Start');
 }
 
-function steer(dir){ 
-  if(!audioReady) return unlockAudio();
-  steerVal = dir; 
+function steer(dir){
+  if(!audioCtx) return unlockAudio();
+  steerVal = dir;
+  if(engineOsc) engineOsc.frequency.setValueAtTime(80 + dir*20, audioCtx.currentTime); // Turn sound
   player.style.transform = `translateX(-50%) rotateY(${dir * -25}deg) rotateZ(${dir * -10}deg)`;
 }
-function boost(){ if(!audioReady) return unlockAudio(); speed = 1.3; document.querySelector('.road-lines').style.animationDuration = '0.35s'; }
-function boostStop(){ speed = 0.5; document.querySelector('.road-lines').style.animationDuration = '0.7s'; }
-function playHorn(){ if(!audioReady) return unlockAudio(); horn.currentTime = 0; horn.play(); }
+function boost(){ if(!audioCtx) return unlockAudio(); speed = 1.3; document.querySelector('.road-center-line').style.animationDuration = '0.35s'; if(engineOsc) engineOsc.frequency.setValueAtTime(140, audioCtx.currentTime); }
+function boostStop(){ speed = 0.5; document.querySelector('.road-center-line').style.animationDuration = '0.7s'; if(engineOsc) engineOsc.frequency.setValueAtTime(80, audioCtx.currentTime); }
 
 function gameLoop(){
-  if(gameOver || !audioReady) return requestAnimationFrame(gameLoop);
+  if(gameOver ||!audioCtx) return requestAnimationFrame(gameLoop);
   posX += steerVal * 1.8;
   posX = Math.max(15, Math.min(85, posX));
   player.style.left = posX + '%';
@@ -98,7 +112,7 @@ function gameLoop(){
 gameLoop();
 
 function spawnEnemy(){
-  if(gameOver || !audioReady) return;
+  if(gameOver ||!audioCtx) return;
   const car = document.createElement('div');
   car.className = 'car';
   let laneX = Math.random()*70+15;
@@ -107,7 +121,7 @@ function spawnEnemy(){
   car.style.transform = 'translateZ(-300px) scale(0.3)';
   car.innerHTML = `<svg viewBox="0 0 60 100"><rect x="15" y="0" width="30" height="100" rx="8" fill="#3b82f6"/><rect x="18" y="15" width="24" height="20" rx="4" fill="#000"/></svg>`;
   document.getElementById('road').appendChild(car);
-  
+
   let z = -300; let bottom = 120;
   const fall = setInterval(()=>{
     if(gameOver){clearInterval(fall); car.remove(); return;}
@@ -115,13 +129,13 @@ function spawnEnemy(){
     z += speed * 8;
     car.style.bottom = bottom + '%';
     car.style.transform = `translateZ(${z}px) scale(${0.3 + (z+300)/600})`;
-    
+
     const carRect = car.getBoundingClientRect();
     const playerRect = player.getBoundingClientRect();
     if(carRect.bottom > playerRect.top && carRect.top < playerRect.bottom && Math.abs(carRect.left - playerRect.left) < 32){
       gameOver = true;
-      engine.pause();
-      crashSound.play(); // 🔥 Crash sound now works
+      engineOsc.stop(); // Stop engine
+      playCrash(); // 🔥 Crash Sound
       crashEl.style.display = 'flex';
       clearInterval(fall);
     }
