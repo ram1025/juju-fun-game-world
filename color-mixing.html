@@ -71,7 +71,6 @@
   const colorsGrid = document.getElementById('colorsGrid');
   function speak(text){ if(synth.speaking){ synth.cancel(); } const utter = new SpeechSynthesisUtterance(text); utter.lang = 'en-US'; utter.rate = 0.85; synth.speak(utter); }
   function askToMix(){
-    // Rule unna 2 colors eh adugutam
     const keys = Object.keys(mixRules);
     const key = keys[Math.floor(Math.random()*keys.length)];
     const [c1, c2] = key.split('+');
@@ -88,12 +87,21 @@
     selected.push(colors[index]); btn.classList.add('selected'); speak(colors[index].name);
     if(selected.length === 2){ mixColors(); }
   }
-  function mixColors(){
-    const [c1, c2] = selected; const key = [c1.name, c2.name].sort().join('+'); const result = mixRules[key];
 
-    // Rule undi kabatti 100% result vastundi. Try Again radu.
-    resultBox.style.background = result.bg; resultEmoji.textContent = result.emoji; resultName.textContent = result.name;
-    instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`; speak(`${c1.name} plus ${c2.name} makes ${result.name}`);
+  // ===== FIXED: NO SORT() BUG =====
+  function mixColors(){
+    const [c1, c2] = selected;
+    const key1 = c1.name+'+c2.name; // Red+Blue
+    const key2 = c2.name+'+c1.name; // Blue+Red
+    const result = mixRules || mixRules; // 2 sides check chestundi
+
+    if(!result){ resetGame(); return; } // Safety: rule lekapothey reset
+
+    resultBox.style.background = result.bg;
+    resultEmoji.textContent = result.emoji;
+    resultName.textContent = result.name;
+    instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`;
+    speak(`${c1.name} plus ${c2.name} makes ${result.name}`);
     setTimeout(()=>resetGame(), 2500);
   }
   function resetGame(){
