@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v12-07'; // 🔥 V12-01 nunchi V12-03 ki marcham. All 9 screens center UI
+const CACHE_NAME = 'juju-fun-world-v12-08'; // 🔥 V12-01 nunchi V12-03 ki marcham. All 9 screens center UI
 
 const urlsToCache = [
     './',
