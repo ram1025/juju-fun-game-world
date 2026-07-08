@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v11-17'; // 🔥 V11-16 nunchi V11-17 ki marcham. Path Fix
+const CACHE_NAME = 'juju-fun-world-v11-18'; // 🔥 V11-16 nunchi V11-17 ki marcham. Path Fix
 
 const urlsToCache = [
     './',
