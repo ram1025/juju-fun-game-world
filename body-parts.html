@@ -4,20 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Body Parts - Juju</title>
-<link rel="manifest" href="./manifest.json?v=135"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=136"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#EC4899">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
 
-  body{font-family:'Nunito',sans-serif;background:#EC4899;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff;justify-content:center} /* 🔥 flex-start -> center. Screen madhya ki vasthundi */
+  body{font-family:'Nunito',sans-serif;background:#EC4899;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff;justify-content:center}
 
-.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
+.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
 .back-btn{position:absolute;left:0;background:#fff;color:#BE185D;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .back-btn:active{transform:scale(.95)}
-.page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center} /* 🔥 Heading clear ga kanipisthundi */
+.page-heading{display:none} /* 🔥 Top heading hide */
 
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:0 0 auto;display:flex;flex-direction:column;justify-content:center}
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;justify-content:center;margin-top:10px}
+
+.card-heading{background:#EC4899;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px} /* 🔥 Card lopala heading box */
+
 .animal-box{width:100%;aspect-ratio:1/1;background:#FCE7F3;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
 .animal-box:active{transform:scale(.95)}
 .animal-emoji{font-size:120px;line-height:1;pointer-events:none}
@@ -33,10 +36,11 @@
 
   <div class="header">
     <button class="back-btn" onclick="location.href='./dashboard.html#body-parts'">←</button>
-    <div class="page-heading">🧒 Body Parts</div> <!-- 🔥 Top centre heading -->
   </div>
 
   <div class="card">
+    <div class="card-heading" id="cardHeading">🧒 Body Parts</div> <!-- 🔥 Red mark chesina chotla idhe vastundi -->
+
     <div class="animal-box" id="animalBox"><div class="animal-emoji" id="animalEmoji">👦</div></div>
     <div class="animal-name" id="animalName">Head</div>
     <div class="controls">
@@ -57,6 +61,7 @@
   const animalBox = document.getElementById('animalBox');
   const animalEmoji = document.getElementById('animalEmoji');
   const animalName = document.getElementById('animalName');
+  const cardHeading = document.getElementById('cardHeading'); // 🔥 new
   const counter = document.getElementById('counter');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
@@ -73,6 +78,7 @@
     const animal = animals[index];
     animalEmoji.textContent = animal.emoji;
     animalName.textContent = animal.name;
+    cardHeading.innerHTML = `${animal.emoji} ${animal.name}`; // 🔥 Heading kuda part name tho update avthundi
     counter.textContent = `${index + 1} / ${animals.length}`;
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === animals.length - 1;
