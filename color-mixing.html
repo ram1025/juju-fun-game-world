@@ -9,9 +9,14 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#8B5CF6;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
-.page-heading{font-size:22px;font-weight:900;color:#7C3AED;margin-bottom:10px;}
+  body{font-family:'Nunito',sans-serif;background:#8B5CF6;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
+
+.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
+.back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.back-btn:active{transform:scale(.95)}
+.page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
+
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column;justify-content:center}
 .instruction{font-size:16px;font-weight:700;color:#6B7280;margin-bottom:15px;min-height:40px;}
 .result-box{width:100%;height:100px;background:#F3F4F6;border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:15px;border:3px dashed #D1D5DB}
 .result-emoji{font-size:60px;transition:all.3s}
@@ -21,95 +26,139 @@
 .color-btn:active{transform:scale(.9)}
 .color-btn.selected{border-color:#F97316;box-shadow:0 0 0 4px #FED7AA}
 .controls{display:flex;gap:12px;justify-content:center}
-.btn{background:#8B5CF6;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED;flex:1}
-.btn.back{background:#6B7280;box-shadow:0 4px 0 #4B5563}
+.btn{flex:1;background:#8B5CF6;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
+.btn:active{transform:scale(.97)}
+.btn.reset{background:#EC4899;box-shadow:0 4px 0 #BE185D}
 </style>
 </head>
 <body>
+
+  <div class="header">
+    <button class="back-btn" onclick="location.href='./dashboard.html#color-mixing'">←</button> <!-- 🔥 Dashboard same card ki -->
+    <div class="page-heading">🎨 Color Mixing</div> <!-- 🔥 Top centre heading -->
+  </div>
+
   <div class="card">
-    <div class="page-heading">🎨 Color Mixing</div> <!-- v147 teesam -->
     <div class="instruction" id="instruction">Touch 2 colors to mix!</div>
     <div class="result-box" id="resultBox"><div class="result-emoji">❓</div><div class="result-name" id="resultName">?</div></div>
     <div class="colors-grid" id="colorsGrid"></div>
     <div class="controls">
-      <button class="btn back" onclick="location.href='./dashboard.html'">← Back</button>
-      <button class="btn" onclick="resetGame()">Reset</button>
+      <button class="btn" onclick="prevMix()">← Previous</button> <!-- 🔥 Prev btn -->
+      <button class="btn reset" onclick="resetGame()">Reset</button> <!-- 🔥 Next ki badhulu Reset -->
     </div>
   </div>
+
 <script>
   const colors = [
     {name:'Red', emoji:'🔴', bg:'#EF4444'},{name:'Blue', emoji:'🔵', bg:'#3B82F6'},{name:'Yellow', emoji:'🟡', bg:'#FACC15'},
     {name:'Purple', emoji:'🟣', bg:'#A855F7'},{name:'Orange', emoji:'🟠', bg:'#F97316'},{name:'Green', emoji:'🟢', bg:'#22C55E'},
     {name:'Pink', emoji:'🩷', bg:'#EC4899'},{name:'Brown', emoji:'🟤', bg:'#A16207'},{name:'Black', emoji:'⚫', bg:'#1F2937'},{name:'White', emoji:'⚪', bg:'#FFFFFF'}
   ];
-  // ===== 25+ REAL MIX RULES - NO TRY AGAIN =====
+
   const mixRules = {
-    // PRIMARY MIX
     'Blue+Red': {name:'Purple', emoji:'🟣', bg:'#A855F7'},'Blue+Yellow': {name:'Green', emoji:'🟢', bg:'#22C55E'},
     'Red+Yellow': {name:'Orange', emoji:'🟠', bg:'#F97316'},
-    // WITH WHITE - TINTS
     'Red+White': {name:'Pink', emoji:'🩷', bg:'#EC4899'},'Blue+White': {name:'Sky Blue', emoji:'🔵', bg:'#93C5FD'},
     'Yellow+White': {name:'Light Yellow', emoji:'🟡', bg:'#FEF9C3'},'Green+White': {name:'Mint', emoji:'🟢', bg:'#A7F3D0'},
     'Purple+White': {name:'Lavender', emoji:'🟣', bg:'#DDD6FE'},'Orange+White': {name:'Peach', emoji:'🟠', bg:'#FED7AA'},
     'Brown+White': {name:'Beige', emoji:'🟤', bg:'#F5F5DC'},'Black+White': {name:'Grey', emoji:'⚪', bg:'#9CA3AF'},
-    // WITH BLACK - SHADES
     'Red+Black': {name:'Maroon', emoji:'🟤', bg:'#991B1B'},'Blue+Black': {name:'Navy', emoji:'🔵', bg:'#1E3A8A'},
     'Yellow+Black': {name:'Olive', emoji:'🟢', bg:'#15803D'},'Green+Black': {name:'Forest Green', emoji:'🟢', bg:'#166534'},
     'Purple+Black': {name:'Indigo', emoji:'🟣', bg:'#4F46E5'},'Orange+Black': {name:'Burnt Orange', emoji:'🟠', bg:'#C2410C'},
     'Pink+Black': {name:'Burgundy', emoji:'🩷', bg:'#9F1239'},
-    // TERTIARY MIX
     'Blue+Green': {name:'Teal', emoji:'🟢', bg:'#0D9488'},'Red+Green': {name:'Brown', emoji:'🟤', bg:'#A16207'},
     'Yellow+Purple': {name:'Brown', emoji:'🟤', bg:'#A16207'},'Red+Purple': {name:'Magenta', emoji:'🩷', bg:'#DB2777'},
     'Blue+Orange': {name:'Brown', emoji:'🟤', bg:'#A16207'},'Yellow+Orange': {name:'Amber', emoji:'🟠', bg:'#F59E0B'},
-    // PINK MIXES
     'Red+Pink': {name:'Hot Pink', emoji:'🩷', bg:'#F472B6'},'White+Pink': {name:'Baby Pink', emoji:'🩷', bg:'#FBCFE8'},
     'Blue+Pink': {name:'Purple', emoji:'🟣', bg:'#A855F7'},'Yellow+Pink': {name:'Coral', emoji:'🟠', bg:'#FB923C'}
   };
-  let selected = []; const synth = window.speechSynthesis;
-  const instruction = document.getElementById('instruction'); const resultBox = document.getElementById('resultBox');
-  const resultEmoji = resultBox.querySelector('.result-emoji'); const resultName = document.getElementById('resultName');
+
+  let selected = []; let mixHistory = []; let historyIndex = -1;
+  const synth = window.speechSynthesis;
+  const instruction = document.getElementById('instruction');
+  const resultBox = document.getElementById('resultBox');
+  const resultEmoji = resultBox.querySelector('.result-emoji');
+  const resultName = document.getElementById('resultName');
   const colorsGrid = document.getElementById('colorsGrid');
-  function speak(text){ if(synth.speaking){ synth.cancel(); } const utter = new SpeechSynthesisUtterance(text); utter.lang = 'en-US'; utter.rate = 0.85; synth.speak(utter); }
+
+  function speak(text){
+    if(synth.speaking){ synth.cancel(); }
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = 0.85;
+    synth.speak(utter);
+  }
+
   function askToMix(){
     const keys = Object.keys(mixRules);
     const key = keys[Math.floor(Math.random()*keys.length)];
     const [c1, c2] = key.split('+');
     instruction.textContent = `Select ${c1} and ${c2}`;
-    speak(`Select ${c1} and ${c2}`);
+    speak(`Select ${c1} and ${c2}`); // 🔥 Start lo matrame voice
   }
+
   colors.forEach((c, i)=>{
     const btn = document.createElement('button');
-    btn.className = 'color-btn'; btn.style.background = c.bg; btn.textContent = c.emoji;
-    btn.onclick = ()=>selectColor(i, btn); colorsGrid.appendChild(btn);
+    btn.className = 'color-btn';
+    btn.style.background = c.bg;
+    btn.textContent = c.emoji;
+    btn.onclick = ()=>selectColor(i, btn);
+    colorsGrid.appendChild(btn);
   });
+
   function selectColor(index, btn){
     if(selected.length >= 2 || btn.classList.contains('selected')) return;
-    selected.push(colors[index]); btn.classList.add('selected'); speak(colors[index].name);
+    selected.push(colors[index]);
+    btn.classList.add('selected');
+    speak(colors[index].name); // 🔥 Tap touch voice
     if(selected.length === 2){ mixColors(); }
   }
 
-  // ===== FIXED: NO SORT() BUG =====
   function mixColors(){
-  const [c1, c2] = selected;
-  const key1 = c1.name+'+c2.name; // Red+Blue
-  const key2 = c2.name+'+c1.name; // Blue+Red
-  const result = mixRules || mixRules; // ✅ 2 sides check
+    const [c1, c2] = selected;
+    const key1 = c1.name + '+' + c2.name; // 🔥 FIXED
+    const key2 = c2.name + '+' + c1.name; // 🔥 FIXED
+    const result = mixRules[key1] || mixRules[key2]; // 🔥 FIXED
 
-  if(!result){ resetGame(); return; }
+    if(!result){
+      instruction.textContent = "Try different colors!";
+      speak("Try different colors");
+      setTimeout(()=>resetGame(), 1500);
+      return;
+    }
 
-  resultBox.style.background = result.bg;
-  resultEmoji.textContent = result.emoji;
-  resultName.textContent = result.name;
-  instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`;
-  speak(`${c1.name} plus ${c2.name} makes ${result.name}`);
-  setTimeout(()=>resetGame(), 2500);
-  }setTimeout(()=>resetGame(), 2500);
+    resultBox.style.background = result.bg;
+    resultEmoji.textContent = result.emoji;
+    resultName.textContent = result.name;
+    instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`;
+    speak(`${c1.name} plus ${c2.name} makes ${result.name}`); // 🔥 Result voice
+
+    mixHistory.push({c1, c2, result});
+    historyIndex = mixHistory.length - 1;
+    setTimeout(()=>resetGame(), 2500);
   }
+
+  function prevMix(){
+    if(historyIndex > 0){
+      historyIndex--;
+      const prev = mixHistory[historyIndex];
+      resultBox.style.background = prev.result.bg;
+      resultEmoji.textContent = prev.result.emoji;
+      resultName.textContent = prev.result.name;
+      instruction.textContent = `${prev.c1.name} + ${prev.c2.name} = ${prev.result.name}!`;
+      // 🔥 Prev ki voice remove chesam
+    }
+  }
+
   function resetGame(){
-    selected = []; document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('selected'));
-    resultBox.style.background = '#F3F4F6'; resultEmoji.textContent = '❓'; resultName.textContent = '?';
+    selected = [];
+    document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('selected'));
+    resultBox.style.background = '#F3F4F6';
+    resultEmoji.textContent = '❓';
+    resultName.textContent = '?';
     askToMix();
   }
+
   askToMix();
 </script>
 </body>
