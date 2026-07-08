@@ -92,6 +92,7 @@
         <!-- ===== SLIDE 5: S V V W ===== -->
         <div class="carousel-page"><div class="grid">
           <div class="card violet" onclick="location.href='./spell-it.html?v=173'"><div class="card-icon">🧩</div><div class="card-title">Spell It!</div></div>
+          <div class="card violet" onclick="location.href='./temple-run.html?v=1'"><div class="card-icon">🏃</div><div class="card-title">Temple Run</div></div>
           <div class="card blue" onclick="location.href='./vehicles.html'"><div class="card-icon">🚗</div><div class="card-title">Vehicles</div></div>
           <div class="card purple" onclick="location.href='./vegetables.html'"><div class="card-icon">🥕</div><div class="card-title">Vegetables</div></div>
           <div class="card orange" onclick="location.href='./wild-animals.html'"><div class="card-icon">🦁</div><div class="card-title">Wild Animals</div></div>
@@ -102,7 +103,7 @@
     <div class="dots" id="dots"></div>
   </div>
 <script>
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12-12');}
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12-13');}
   document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JU';
   document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png';
   function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
