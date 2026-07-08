@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Color Mixing - Juju</title>
-<link rel="manifest" href="./manifest.json?v=149"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=150"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#8B5CF6">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -15,11 +15,11 @@
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
 .back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .back-btn:active{transform:scale(.95)}
-.page-heading{display:none} /* 🔥 Top heading hide */
+.page-heading{display:none}
 
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;justify-content:center;margin-top:10px}
 
-.card-heading{background:#8B5CF6;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px} /* 🔥 Card lopala heading box */
+.card-heading{color:#7C3AED;font-size:20px;font-weight:900;padding:8px 0;margin-bottom:15px;text-align:center} /* 🔥 Plain text, no bg, no emoji */
 
 .instruction{font-size:16px;font-weight:700;color:#6B7280;margin-bottom:15px;min-height:40px;}
 .result-box{width:100%;height:100px;background:#F3F4F6;border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:15px;border:3px dashed #D1D5DB}
@@ -42,7 +42,7 @@
   </div>
 
   <div class="card">
-    <div class="card-heading" id="cardHeading">🎨 Color Mixing</div> <!-- 🔥 Red mark chesina chotla idhe vastundi -->
+    <div class="card-heading" id="cardHeading">Color Mixing</div> <!-- 🔥 Plain text -->
 
     <div class="instruction" id="instruction">Touch 2 colors to mix!</div>
     <div class="result-box" id="resultBox"><div class="result-emoji">❓</div><div class="result-name" id="resultName">?</div></div>
@@ -85,7 +85,7 @@
   const resultEmoji = resultBox.querySelector('.result-emoji');
   const resultName = document.getElementById('resultName');
   const colorsGrid = document.getElementById('colorsGrid');
-  const cardHeading = document.getElementById('cardHeading'); // 🔥 new
+  const cardHeading = document.getElementById('cardHeading');
 
   function speak(text){
     if(synth.speaking){ synth.cancel(); }
@@ -100,7 +100,7 @@
     const key = keys[Math.floor(Math.random()*keys.length)];
     const [c1, c2] = key.split('+');
     instruction.textContent = `Select ${c1} and ${c2}`;
-    cardHeading.innerHTML = `🎨 ${c1} + ${c2}`; // 🔥 Heading lo kuda question kanipisthundi
+    cardHeading.textContent = `Color Mixing`; // 🔥 Fixed: emoji teesesam
     speak(`Select ${c1} and ${c2}`);
   }
 
@@ -129,7 +129,7 @@
 
     if(!result){
       instruction.textContent = "Try different colors!";
-      cardHeading.innerHTML = `🎨 Try Again`; // 🔥 Heading update
+      cardHeading.textContent = `Color Mixing`; // 🔥 Fixed
       speak("Try different colors");
       setTimeout(()=>resetGame(), 1500);
       return;
@@ -139,7 +139,7 @@
     resultEmoji.textContent = result.emoji;
     resultName.textContent = result.name;
     instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`;
-    cardHeading.innerHTML = `🎨 ${result.name}`; // 🔥 Result name heading lo
+    cardHeading.textContent = `Color Mixing`; // 🔥 Fixed
     speak(`${c1.name} plus ${c2.name} makes ${result.name}`);
 
     mixHistory.push({c1, c2, result});
@@ -155,7 +155,7 @@
       resultEmoji.textContent = prev.result.emoji;
       resultName.textContent = prev.result.name;
       instruction.textContent = `${prev.c1.name} + ${prev.c2.name} = ${prev.result.name}!`;
-      cardHeading.innerHTML = `🎨 ${prev.result.name}`; // 🔥 Prev heading update
+      cardHeading.textContent = `Color Mixing`; // 🔥 Fixed
     }
   }
 
