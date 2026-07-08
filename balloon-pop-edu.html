@@ -8,15 +8,15 @@
 :root{--sky:#87ceeb;--grass:#90ee90}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0;background:linear-gradient(var(--sky) 0 70%,var(--grass) 70% 100%);overflow:hidden;font-family:system-ui}
-.hud-top{position:absolute;top:12px;left:12px;z-index:10} /* 🔥 Back only top */
+.hud-top{position:absolute;top:12px;left:12px;z-index:10}
 .back{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
 .score{position:absolute;top:12px;left:50%;transform:translateX(-50%);color:#fff;font-weight:900;font-size:20px;text-shadow:0 2px 6px #000;z-index:10}
 
-.hud-bottom{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:20px;z-index:10} /* 🔥 Bottom Buttons */
+.hud-bottom{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:20px;z-index:10}
 .mode-btn{background:#fff;color:#1e40af;border:0;border-radius:20px;padding:14px 28px;font-weight:900;font-size:18px;box-shadow:0 6px 15px rgba(0,0,0,.3)}
 .mode-btn.active{background:#1e40af;color:#fff}
 
-.balloons{position:absolute;inset:0;padding:80px 20px 120px 20px} /* 🔥 Padding for buttons */
+.balloons{position:absolute;inset:0;padding:100px 20px 140px 20px} /* 🔥 Top 100px, Bottom 140px - kindhaki dhincham */
 .balloon{position:absolute;width:80px;height:100px;cursor:pointer;user-select:none;animation:float 5s ease-in-out infinite;transition:transform .2s}
 @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 .balloon svg{width:100%;height:100%;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))}
@@ -27,19 +27,19 @@ html,body{height:100%;margin:0;background:linear-gradient(var(--sky) 0 70%,var(-
 </head>
 <body>
 <div class="hud-top">
-  <a href="./dashboard.html#balloon" class="back">← Back</a> <!-- 🔥 Goes to card -->
+  <a href="./dashboard.html#balloon" class="back">← Back</a>
 </div>
 <div class="score" id="score">Score: 0</div>
 
 <div class="balloons" id="balloons"></div>
 
-<div class="hud-bottom"> <!-- 🔥 Moved to bottom -->
+<div class="hud-bottom">
   <button class="mode-btn active" id="abcBtn" onclick="setMode('ABC')">ABC</button>
   <button class="mode-btn" id="numBtn" onclick="setMode('123')">123</button>
 </div>
 
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=11.14');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12.04');}
 
 const colors = ['#ef4444','#3b82f6','#10b981','#f59e0b','#a855f7','#ec4899','#06b6d4','#f97316'];
 const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -77,11 +77,11 @@ function spawnBalloons(){
   const container = document.getElementById('balloons');
   container.innerHTML = '';
   
-  // 🔥 Grid Layout = No Overlap + Gap
+  // 🔥 Grid Layout - Gap pencham, kindhaki dhincham
   const cols = 4; 
   const rows = Math.ceil(count / cols);
   const w = window.innerWidth;
-  const h = window.innerHeight - 200; // Top + Bottom space
+  const h = window.innerHeight - 240; // 🔥 200 -> 240. Inka kindhaki space
   const cellW = w / cols;
   const cellH = h / rows;
 
@@ -93,9 +93,9 @@ function spawnBalloons(){
     
     const col = i % cols;
     const row = Math.floor(i / cols);
-    // Random position inside cell for natural look, but no overlap
-    b.style.left = (col * cellW + Math.random()*20 + 10) + 'px';
-    b.style.top = (row * cellH + Math.random()*20 + 10) + 'px';
+    // 🔥 Gap kosam random range taggincham
+    b.style.left = (col * cellW + 20) + 'px';
+    b.style.top = (row * cellH + 20) + 'px';
     b.style.animationDelay = Math.random()*4 + 's';
     
     b.innerHTML = `
@@ -116,14 +116,14 @@ function popBalloon(el, text){
   el.classList.add('pop');
   score += 10;
   updateScore();
-  speak(text);
+  speak(text); // 🔥 Just "A" or "1" matrame
   setTimeout(()=>el.remove(), 250);
 }
 
 function speak(t){
   if('speechSynthesis' in window){
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(t);
+    const u = new SpeechSynthesisUtterance(t); // 🔥 Just the letter/number
     u.lang = 'en-US';
     u.rate = 0.9;
     speechSynthesis.speak(u);
