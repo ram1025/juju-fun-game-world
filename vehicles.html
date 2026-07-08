@@ -9,9 +9,14 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
+  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
 
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
+.back-btn{position:absolute;left:0;background:#fff;color:#1D4ED8;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.back-btn:active{transform:scale(.95)}
+.page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
+
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column;justify-content:center}
 
 .vehicle-box{width:100%;aspect-ratio:1/1;background:#DBEAFE;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
 .vehicle-box:active{transform:scale(.95)}
@@ -20,14 +25,19 @@
 .vehicle-name{font-size:28px;font-weight:900;color:#1D4ED8;margin-bottom:20px;min-height:40px}
 
 .controls{display:flex;gap:12px;justify-content:center}
-.btn{background:#3B82F6;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #1D4ED8;flex:1}
+.btn{flex:1;background:#3B82F6;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #1D4ED8}
+.btn:active{transform:scale(.97)}
 .btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
-.btn.back{background:#6B7280;box-shadow:0 4px 0 #4B5563}
 
-.counter{font-size:14px;font-weight:800;color:#6B7280;margin-top:10px}
+.counter{font-size:14px;font-weight:800;color:#6B7280;margin-top:10px;text-align:center}
 </style>
 </head>
 <body>
+
+  <div class="header">
+    <button class="back-btn" onclick="location.href='./dashboard.html#vehicles'">←</button> <!-- 🔥 Dashboard same card ki -->
+    <div class="page-heading">🚗 Vehicles</div> <!-- 🔥 Top centre heading -->
+  </div>
 
   <div class="card">
     <div class="vehicle-box" id="vehicleBox">
@@ -36,8 +46,8 @@
     <div class="vehicle-name" id="vehicleName">Car</div>
 
     <div class="controls">
-      <button class="btn back" onclick="location.href='./dashboard.html'">← Back</button>
-      <button class="btn" id="nextBtn" onclick="nextVehicle()">Next ></button>
+      <button class="btn" id="prevBtn" onclick="prevVehicle()">← Previous</button> <!-- 🔥 Prev btn added -->
+      <button class="btn" id="nextBtn" onclick="nextVehicle()">Next →</button>
     </div>
     <div class="counter" id="counter">1 / 10</div>
   </div>
@@ -45,17 +55,10 @@
 <script>
   // ===== 10 VEHICLES EMOJI LIST =====
   const vehicles = [
-  {name:'Car', emoji:'🚗'},
-  {name:'Bus', emoji:'🚌'},
-  {name:'Truck', emoji:'🚚'},
-  {name:'Train', emoji:'🚂'}, // 🚂 or 🚆
-  {name:'Airplane', emoji:'✈️'},
-  {name:'Boat', emoji:'⛵'},
-  {name:'Bike', emoji:'🏍️'},
-  {name:'Tractor', emoji:'🚜'},
-  {name:'Ambulance', emoji:'🚑'},
-  {name:'Police Car', emoji:'🚓'}
-];
+    {name:'Car', emoji:'🚗'},{name:'Bus', emoji:'🚌'},{name:'Truck', emoji:'🚚'},
+    {name:'Train', emoji:'🚂'},{name:'Airplane', emoji:'✈️'},{name:'Boat', emoji:'⛵'},
+    {name:'Bike', emoji:'🏍️'},{name:'Tractor', emoji:'🚜'},{name:'Ambulance', emoji:'🚑'},{name:'Police Car', emoji:'🚓'}
+  ];
 
   let currentIndex = 0;
   const synth = window.speechSynthesis;
@@ -64,6 +67,7 @@
   const vehicleEmoji = document.getElementById('vehicleEmoji');
   const vehicleName = document.getElementById('vehicleName');
   const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
 
   function speak(text){
@@ -80,15 +84,17 @@
     vehicleName.textContent = vehicle.name;
     counter.textContent = `${index + 1} / ${vehicles.length}`;
 
-    if(index === vehicles.length - 1){
-      nextBtn.disabled = true;
-      nextBtn.textContent = 'Completed ✓';
-    } else {
-      nextBtn.disabled = false;
-      nextBtn.textContent = 'Next >';
-    }
+    prevBtn.disabled = index === 0; // 🔥 Prev enable/disable
+    nextBtn.disabled = index === vehicles.length - 1;
+    nextBtn.textContent = index === vehicles.length - 1? 'Completed ✓' : 'Next →';
+    // 🔥 Next ki voice remove chesam
+  }
 
-    speak(vehicle.name); // Page open ayinappudu auto chepthundi
+  function prevVehicle(){
+    if(currentIndex > 0){
+      currentIndex--;
+      loadVehicle(currentIndex);
+    }
   }
 
   function nextVehicle(){
@@ -100,7 +106,7 @@
 
   // Vehicle Box Touch -> Voice
   vehicleBox.addEventListener('click', ()=>{
-    speak(vehicles[currentIndex].name);
+    speak(vehicles[currentIndex].name); // 🔥 Tap cheste matrame voice
     vehicleBox.style.transform = 'scale(0.95)';
     setTimeout(()=>vehicleBox.style.transform = 'scale(1)', 100);
   });
