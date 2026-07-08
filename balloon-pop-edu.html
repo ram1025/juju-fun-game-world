@@ -3,139 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Balloon Pop ABC 123</title>
+<title>Rhymes - Juju</title>
+<link rel="manifest" href="./manifest.json?v=137"> <!-- 🔥 version bump -->
+<meta name="theme-color" content="#A855F7">
 <style>
-:root{--sky:#87ceeb;--grass:#90ee90}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0;background:linear-gradient(var(--sky) 0 70%,var(--grass) 70% 100%);overflow:hidden;font-family:system-ui}
-.hud-top{position:absolute;top:12px;left:12px;z-index:10}
-.back{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
-.score{position:absolute;top:12px;left:50%;transform:translateX(-50%);color:#fff;font-weight:900;font-size:20px;text-shadow:0 2px 6px #000;z-index:10}
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
+  body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
+.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
+.back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.page-heading{display:none} /* 🔥 Top heading hide chesam */
 
-.hud-bottom{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:20px;z-index:10}
-.mode-btn{background:#fff;color:#1e40af;border:0;border-radius:20px;padding:14px 28px;font-weight:900;font-size:18px;box-shadow:0 6px 15px rgba(0,0,0,.3)}
-.mode-btn.active{background:#1e40af;color:#fff}
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;margin-top:10px}
+.rhyme-box{width:100%;max-height:280px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s;margin-top:5px}
+.rhyme-box:active{transform:scale(.98)}
 
-.balloons{position:absolute;inset:0;padding:140px 20px 120px 20px} /* 🔥 Top 140px - green deggara nundi start */
-.balloon{position:absolute;width:80px;height:100px;cursor:pointer;user-select:none;animation:float 5s ease-in-out infinite;transition:transform .2s}
-@keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
-.balloon svg{width:100%;height:100%;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))}
-.balloon-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:32px;font-weight:900;color:#fff;text-shadow:0 3px 8px #000;pointer-events:none}
-.pop{animation:pop .25s forwards}
-@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.2);opacity:1}100%{transform:scale(0);opacity:0}}
+.card-heading{background:#A855F7;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px} /* 🔥 Card lopala heading box */
+.rhyme-icon{font-size:60px;margin-bottom:10px}
+.rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
+.rhyme-text{font-size:17px;font-weight:700;color:#4B5563;line-height:1.7;white-space:pre-line}
+.audio-controls{margin-bottom:15px}
+.play-btn{width:100%;background:#A855F7;color:#fff;border:0;border-radius:25px;padding:14px 22px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
+.play-btn:active{transform:scale(.97)}
+.controls{display:flex;gap:12px;justify-content:center;margin-bottom:10px}
+.btn{flex:1;background:#A855F7;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
+.btn:active{transform:scale(.97)}
+.btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
+.counter{font-size:14px;font-weight:800;color:#6B7280;text-align:center}
 </style>
 </head>
 <body>
-<div class="hud-top">
-  <a href="./dashboard.html#balloon" class="back">← Back</a>
-</div>
-<div class="score" id="score">Score: 0</div>
 
-<div class="balloons" id="balloons"></div>
+  <div class="header">
+    <button class="back-btn" onclick="location.href='./dashboard.html#rhymes'">←</button>
+  </div>
 
-<div class="hud-bottom">
-  <button class="mode-btn active" id="abcBtn" onclick="setMode('ABC')">ABC</button>
-  <button class="mode-btn" id="numBtn" onclick="setMode('123')">123</button>
-</div>
+  <div class="card">
+    <div class="card-heading" id="cardHeading">🎵 Kids Rhymes</div> <!-- 🔥 Red mark chesina chotla idhe vastundi -->
+
+    <div class="rhyme-box" id="rhymeBox">
+      <div>
+        <div class="rhyme-icon" id="rhymeIcon">🎵</div>
+        <div class="rhyme-title" id="rhymeTitle">Twinkle Twinkle</div>
+        <div class="rhyme-text" id="rhymeText"></div>
+      </div>
+    </div>
+
+    <div class="audio-controls">
+      <button class="play-btn" id="playBtn" onclick="playAudio()">▶️ Play</button>
+      <audio id="rhymeAudio"></audio>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="prevBtn" onclick="prevRhyme()">← Previous</button>
+      <button class="btn" id="nextBtn" onclick="nextRhyme()">Next →</button>
+    </div>
+    <div class="counter" id="counter">1 / 7</div>
+  </div>
 
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12.05');}
+  const rhymes = [
+    {icon:'⭐', title:'Twinkle Twinkle', audio: './twinkle-twinkle.mp3', text:`Twinkle, twinkle, little star,
+How I wonder what you are!
+Up above the world so high,
+Like a diamond in the sky.
+Twinkle, twinkle, little star,
+How I wonder what you are!`},
 
-const colors = ['#ef4444','#3b82f6','#10b981','#f59e0b','#a855f7','#ec4899','#06b6d4','#f97316'];
-const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const NUM = Array.from({length:20},(_,i)=>i+1);
-let mode = 'ABC';
-let score = 0;
-let used = [];
+    {icon:'🐑', title:'Baa Baa Black Sheep', audio: './baa-baa-black.mp3', text:`Baa, baa, black sheep,
+have you any wool?
+Yes, sir, yes, sir,
+three bags full.
+One for my master,
+One for my dame,
+And one for the little boy,
+who lives down the lane`},
 
-function setMode(m){
-  mode = m;
-  used = [];
-  document.getElementById('balloons').innerHTML = '';
-  score = 0;
-  updateScore();
-  document.getElementById('abcBtn').classList.toggle('active', m==='ABC');
-  document.getElementById('numBtn').classList.toggle('active', m==='123');
-  spawnBalloons();
-}
+    {icon:'🚌', title:'Wheels on the Bus', audio: './wheels-on-bus.mp3', text:`The wheels on the bus go 'round and 'round
+'Round and 'round, 'round and 'round
+The wheels on the bus go 'round and 'round
+All through the town`},
+    {icon:'☀️', title:'You Are My Sunshine', audio: './you-are-my-sunshine.mp3', text:`You are my sunshine
+My only sunshine
+You make me happy`},
+    {icon:'🐰', title:'Johnny Johnny', audio: './johnny-johnny.mp3', text:`Johnny, Johnny
+Yes, Papa?`},
+    {icon:'🥚', title:'Humpty Dumpty', audio: './humpty-dumpty.mp3', text:`Humpty Dumpty sat on a wall`},
+    {icon:'🌹', title:'Ring-a-Ring O Roses', audio: './ring-ring-roses.mp3', text:`Ring a ring o'roses`}
+  ];
 
-function updateScore(){
-  document.getElementById('score').textContent = `Score: ${score}`;
-}
+  let currentIndex = 0;
+  const rhymeBox = document.getElementById('rhymeBox');
+  const rhymeIcon = document.getElementById('rhymeIcon');
+  const rhymeTitle = document.getElementById('rhymeTitle');
+  const rhymeText = document.getElementById('rhymeText');
+  const cardHeading = document.getElementById('cardHeading'); // 🔥 new
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const playBtn = document.getElementById('playBtn');
+  const rhymeAudio = document.getElementById('rhymeAudio');
 
-function getRandomItem(){
-  const pool = mode === 'ABC' ? ABC : NUM;
-  if(used.length >= pool.length) used = [];
-  let item;
-  do{ item = pool[Math.floor(Math.random()*pool.length)]; }while(used.includes(item));
-  used.push(item);
-  return item;
-}
-
-function spawnBalloons(){
-  const count = mode === 'ABC' ? 26 : 20;
-  const container = document.getElementById('balloons');
-  container.innerHTML = '';
-  
-  // 🔥 Green area nundi start avvalante h ni taggincham
-  const cols = 4; 
-  const rows = Math.ceil(count / cols);
-  const w = window.innerWidth;
-  const h = window.innerHeight - 280; // 🔥 240 -> 280. Inka kindhaki vachindi
-  const cellW = w / cols;
-  const cellH = h / rows;
-
-  for(let i=0; i<count; i++){
-    const b = document.createElement('div');
-    b.className = 'balloon';
-    const color = colors[Math.floor(Math.random()*colors.length)];
-    const text = getRandomItem();
-    
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    b.style.left = (col * cellW + 20) + 'px';
-    b.style.top = (row * cellH + 20) + 'px';
-    b.style.animationDelay = Math.random()*4 + 's';
-    
-    b.innerHTML = `
-      <svg viewBox="0 0 80 100">
-        <ellipse cx="40" cy="40" rx="35" ry="40" fill="${color}"/>
-        <path d="M40 80 L34 95 L46 95 Z" fill="${color}"/>
-      </svg>
-      <div class="balloon-text">${text}</div>
-    `;
-    
-    b.onclick = () => popBalloon(b, text);
-    container.appendChild(b);
+  function loadRhyme(index){
+    const rhyme = rhymes[index];
+    rhymeIcon.textContent = rhyme.icon;
+    rhymeTitle.textContent = rhyme.title;
+    rhymeText.textContent = rhyme.text;
+    cardHeading.innerHTML = `${rhyme.icon} ${rhyme.title}`; // 🔥 Heading kuda rhyme name tho update avthundi
+    counter.textContent = `${index + 1} / ${rhymes.length}`;
+    rhymeBox.scrollTop = 0;
+    rhymeAudio.pause();
+    rhymeAudio.src = rhyme.audio;
+    playBtn.textContent = '▶️ Play';
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === rhymes.length - 1;
+    nextBtn.textContent = index === rhymes.length - 1? 'Completed ✓' : 'Next →';
   }
-}
 
-function popBalloon(el, text){
-  if(el.classList.contains('pop')) return;
-  el.classList.add('pop');
-  score += 10;
-  updateScore();
-  speak(text);
-  setTimeout(()=>el.remove(), 250);
-}
+  function prevRhyme(){ if(currentIndex > 0){ currentIndex--; loadRhyme(currentIndex); } }
+  function nextRhyme(){ if(currentIndex < rhymes.length - 1){ currentIndex++; loadRhyme(currentIndex); } }
 
-function speak(t){
-  if('speechSynthesis' in window){
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(t);
-    u.lang = 'en-US';
-    u.rate = 0.9;
-    
-    // 🔥 iOS FIX: "A" -> "a" cheyadam valla "Capital" ane word raadu
-    if(mode === 'ABC' && typeof t === 'string' && t.length === 1){
-      u.text = t.toLowerCase(); 
+  function playAudio(){
+    if(!rhymeAudio.src) return;
+    if(rhymeAudio.paused){
+      rhymeAudio.play().catch(err=>{ alert("Audio Error: " + err.message); });
+      playBtn.textContent = '⏸️ Pause';
+    } else {
+      rhymeAudio.pause();
+      playBtn.textContent = '▶️ Play';
     }
-    
-    speechSynthesis.speak(u);
+    rhymeAudio.onended = () => { playBtn.textContent = '▶️ Play'; }
   }
-}
 
-spawnBalloons();
+  rhymeBox.addEventListener('click', ()=>{ rhymeBox.style.transform = 'scale(0.98)'; setTimeout(()=>rhymeBox.style.transform = 'scale(1)', 100); });
+  loadRhyme(0);
 </script>
 </body>
 </html>
