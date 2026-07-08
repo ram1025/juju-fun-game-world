@@ -9,14 +9,15 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#8B5CF6;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
+
+  body{font-family:'Nunito',sans-serif;background:#8B5CF6;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff;justify-content:flex-start} /* 🔥 flex-start add */
 
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
 .back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .back-btn:active{transform:scale(.95)}
 .page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
 
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column;justify-content:center}
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:0 0 auto;display:flex;flex-direction:column;justify-content:center} /* 🔥 flex:1 -> flex:0 0 auto */
 .instruction{font-size:16px;font-weight:700;color:#6B7280;margin-bottom:15px;min-height:40px;}
 .result-box{width:100%;height:100px;background:#F3F4F6;border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:15px;border:3px dashed #D1D5DB}
 .result-emoji{font-size:60px;transition:all.3s}
@@ -34,8 +35,8 @@
 <body>
 
   <div class="header">
-    <button class="back-btn" onclick="location.href='./dashboard.html#color-mixing'">←</button> <!-- 🔥 Dashboard same card ki -->
-    <div class="page-heading">🎨 Color Mixing</div> <!-- 🔥 Top centre heading -->
+    <button class="back-btn" onclick="location.href='./dashboard.html#color-mixing'">←</button>
+    <div class="page-heading">🎨 Color Mixing</div>
   </div>
 
   <div class="card">
@@ -43,8 +44,8 @@
     <div class="result-box" id="resultBox"><div class="result-emoji">❓</div><div class="result-name" id="resultName">?</div></div>
     <div class="colors-grid" id="colorsGrid"></div>
     <div class="controls">
-      <button class="btn" onclick="prevMix()">← Previous</button> <!-- 🔥 Prev btn -->
-      <button class="btn reset" onclick="resetGame()">Reset</button> <!-- 🔥 Next ki badhulu Reset -->
+      <button class="btn" onclick="prevMix()">← Previous</button>
+      <button class="btn reset" onclick="resetGame()">Reset</button>
     </div>
   </div>
 
@@ -94,7 +95,7 @@
     const key = keys[Math.floor(Math.random()*keys.length)];
     const [c1, c2] = key.split('+');
     instruction.textContent = `Select ${c1} and ${c2}`;
-    speak(`Select ${c1} and ${c2}`); // 🔥 Start lo matrame voice
+    speak(`Select ${c1} and ${c2}`);
   }
 
   colors.forEach((c, i)=>{
@@ -110,15 +111,15 @@
     if(selected.length >= 2 || btn.classList.contains('selected')) return;
     selected.push(colors[index]);
     btn.classList.add('selected');
-    speak(colors[index].name); // 🔥 Tap touch voice
+    speak(colors[index].name);
     if(selected.length === 2){ mixColors(); }
   }
 
   function mixColors(){
     const [c1, c2] = selected;
-    const key1 = c1.name + '+' + c2.name; // 🔥 FIXED
-    const key2 = c2.name + '+' + c1.name; // 🔥 FIXED
-    const result = mixRules[key1] || mixRules[key2]; // 🔥 FIXED
+    const key1 = c1.name + '+' + c2.name;
+    const key2 = c2.name + '+' + c1.name;
+    const result = mixRules[key1] || mixRules[key2];
 
     if(!result){
       instruction.textContent = "Try different colors!";
@@ -131,7 +132,7 @@
     resultEmoji.textContent = result.emoji;
     resultName.textContent = result.name;
     instruction.textContent = `${c1.name} + ${c2.name} = ${result.name}!`;
-    speak(`${c1.name} plus ${c2.name} makes ${result.name}`); // 🔥 Result voice
+    speak(`${c1.name} plus ${c2.name} makes ${result.name}`);
 
     mixHistory.push({c1, c2, result});
     historyIndex = mixHistory.length - 1;
@@ -146,7 +147,6 @@
       resultEmoji.textContent = prev.result.emoji;
       resultName.textContent = prev.result.name;
       instruction.textContent = `${prev.c1.name} + ${prev.c2.name} = ${prev.result.name}!`;
-      // 🔥 Prev ki voice remove chesam
     }
   }
 
