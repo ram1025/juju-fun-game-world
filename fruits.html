@@ -9,25 +9,35 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
+  body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
 
- .card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
+.back-btn{position:absolute;left:0;background:#fff;color:#EA580C;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.back-btn:active{transform:scale(.95)}
+.page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
 
- .fruit-box{width:100%;aspect-ratio:1/1;background:#FEF3C7;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
- .fruit-box:active{transform:scale(.95)}
- .fruit-emoji{font-size:120px;line-height:1;pointer-events:none} /* BIG EMOJI */
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column;justify-content:center}
 
- .fruit-name{font-size:28px;font-weight:900;color:#F97316;margin-bottom:20px;min-height:40px}
+.fruit-box{width:100%;aspect-ratio:1/1;background:#FEF3C7;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
+.fruit-box:active{transform:scale(.95)}
+.fruit-emoji{font-size:120px;line-height:1;pointer-events:none} /* BIG EMOJI */
 
- .controls{display:flex;gap:12px;justify-content:center}
- .btn{background:#F97316;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #EA580C;flex:1}
- .btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
- .btn.back{background:#6B7280;box-shadow:0 4px 0 #4B5563}
+.fruit-name{font-size:28px;font-weight:900;color:#F97316;margin-bottom:20px;min-height:40px}
 
- .counter{font-size:14px;font-weight:800;color:#6B7280;margin-top:10px}
+.controls{display:flex;gap:12px;justify-content:center}
+.btn{flex:1;background:#F97316;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #EA580C}
+.btn:active{transform:scale(.97)}
+.btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
+
+.counter{font-size:14px;font-weight:800;color:#6B7280;margin-top:10px;text-align:center}
 </style>
 </head>
 <body>
+
+  <div class="header">
+    <button class="back-btn" onclick="location.href='./dashboard.html#fruits'">←</button> <!-- 🔥 Dashboard same card ki -->
+    <div class="page-heading">🍊 Fruits</div> <!-- 🔥 Top centre heading -->
+  </div>
 
   <div class="card">
     <div class="fruit-box" id="fruitBox">
@@ -36,8 +46,8 @@
     <div class="fruit-name" id="fruitName">Apple</div>
 
     <div class="controls">
-      <button class="btn back" onclick="location.href='./dashboard.html'">← Back</button>
-      <button class="btn" id="nextBtn" onclick="nextFruit()">Next ></button>
+      <button class="btn" id="prevBtn" onclick="prevFruit()">← Previous</button> <!-- 🔥 Prev btn added -->
+      <button class="btn" id="nextBtn" onclick="nextFruit()">Next →</button>
     </div>
     <div class="counter" id="counter">1 / 10</div>
   </div>
@@ -45,16 +55,9 @@
 <script>
   // ===== 10 FRUITS EMOJI LIST =====
   const fruits = [
-    {name:'Apple', emoji:'🍎'},
-    {name:'Banana', emoji:'🍌'},
-    {name:'Orange', emoji:'🍊'},
-    {name:'Grapes', emoji:'🍇'},
-    {name:'Watermelon', emoji:'🍉'},
-    {name:'Strawberry', emoji:'🍓'},
-    {name:'Pineapple', emoji:'🍍'},
-    {name:'Mango', emoji:'🥭'},
-    {name:'Lemon', emoji:'🍋'},
-    {name:'Cherry', emoji:'🍒'}
+    {name:'Apple', emoji:'🍎'},{name:'Banana', emoji:'🍌'},{name:'Orange', emoji:'🍊'},
+    {name:'Grapes', emoji:'🍇'},{name:'Watermelon', emoji:'🍉'},{name:'Strawberry', emoji:'🍓'},
+    {name:'Pineapple', emoji:'🍍'},{name:'Mango', emoji:'🥭'},{name:'Lemon', emoji:'🍋'},{name:'Cherry', emoji:'🍒'}
   ];
 
   let currentIndex = 0;
@@ -64,6 +67,7 @@
   const fruitEmoji = document.getElementById('fruitEmoji');
   const fruitName = document.getElementById('fruitName');
   const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
 
   function speak(text){
@@ -80,15 +84,17 @@
     fruitName.textContent = fruit.name;
     counter.textContent = `${index + 1} / ${fruits.length}`;
 
-    if(index === fruits.length - 1){
-      nextBtn.disabled = true;
-      nextBtn.textContent = 'Completed ✓';
-    } else {
-      nextBtn.disabled = false;
-      nextBtn.textContent = 'Next >';
-    }
+    prevBtn.disabled = index === 0; // 🔥 Prev enable/disable
+    nextBtn.disabled = index === fruits.length - 1;
+    nextBtn.textContent = index === fruits.length - 1? 'Completed ✓' : 'Next →';
+    // 🔥 Next ki voice remove chesam
+  }
 
-    speak(fruit.name); // Page open ayinappudu auto chepthundi
+  function prevFruit(){
+    if(currentIndex > 0){
+      currentIndex--;
+      loadFruit(currentIndex);
+    }
   }
 
   function nextFruit(){
@@ -100,7 +106,7 @@
 
   // Fruit Box Touch -> Voice
   fruitBox.addEventListener('click', ()=>{
-    speak(fruits[currentIndex].name);
+    speak(fruits[currentIndex].name); // 🔥 Tap cheste matrame voice
     fruitBox.style.transform = 'scale(0.95)';
     setTimeout(()=>fruitBox.style.transform = 'scale(1)', 100);
   });
