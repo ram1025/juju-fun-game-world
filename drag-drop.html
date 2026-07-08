@@ -4,18 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Drag & Drop - Juju</title>
-<link rel="manifest" href="./manifest.json?v=136"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=152"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#F97316">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:none}
   body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;padding:15px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.header{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px} /* 🔥 margin 15->10 */
+.header{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .back-btn{background:#fff;color:#F97316;border:0;border-radius:12px;padding:10px 15px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer}
-.title{display:none} /* 🔥 Top title hide */
+.title{display:none}
 .score-box{background:rgba(0,0,0,.2);padding:8px 15px;border-radius:12px;font-size:16px;font-weight:900}
 .container{background:#fff;padding:20px;border-radius:25px;width:100%;max-width:400px;margin:0 auto;box-shadow:0 8px 0 rgba(0,0,0,.2)}
-.container-heading{background:#F97316;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px} /* 🔥 Card lopala heading box */
+.container-heading{color:#F97316;font-size:20px;font-weight:900;padding:8px 0;margin-bottom:15px;text-align:center} /* 🔥 Plain text, no bg, no emoji */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 .dropzone{background:#F3F4F6;border:3px dashed #D1D5DB;border-radius:20px;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;transition:all.2s}
 .dropzone.hover{border-color:#10B981;background:#D1FAE5;transform:scale(1.05)}
@@ -42,7 +42,7 @@
   </div>
 
   <div class="container">
-    <div class="container-heading" id="containerHeading">🖐️ Match Objects!</div> <!-- 🔥 Red mark chesina chotla idhe vastundi -->
+    <div class="container-heading" id="containerHeading">Match Objects!</div> <!-- 🔥 Plain text -->
 
     <div class="grid" id="dropGrid"></div>
     <div class="draggables" id="dragGrid"></div>
@@ -54,7 +54,6 @@
   </div>
 
 <script>
-  // ===== 5 ROUNDS - 3 ITEMS EACH = 15 TOTAL =====
   const gameData = [
     [{id:'dog', name:'Dog', img:'🐶'},{id:'cat', name:'Cat', img:'🐱'},{id:'ball', name:'Ball', img:'⚽'}],
     [{id:'apple', name:'Apple', img:'🍎'},{id:'car', name:'Car', img:'🚗'},{id:'fish', name:'Fish', img:'🐠'}],
@@ -74,7 +73,7 @@
   const scoreEl = document.getElementById('score');
   const nextBtn = document.getElementById('nextBtn');
   const winText = document.getElementById('winText');
-  const containerHeading = document.getElementById('containerHeading'); // 🔥 new
+  const containerHeading = document.getElementById('containerHeading');
 
   function speak(text){
     if(synth.speaking){ synth.cancel(); }
@@ -92,7 +91,7 @@
     nextBtn.disabled = true;
     winText.style.display = 'none';
 
-    containerHeading.innerHTML = `🖐️ Round ${roundIndex + 1} / ${gameData.length}`; // 🔥 Heading update
+    containerHeading.textContent = `Match Objects!`; // 🔥 Fixed: emoji teesesam, static text
 
     items.forEach(item=>{
       const dz = document.createElement('div');
@@ -160,7 +159,7 @@
       speak('Next Round');
       startRound(currentIndex);
     } else {
-      containerHeading.innerHTML = `🎉 Completed!`; // 🔥 Final heading
+      containerHeading.textContent = `Completed!`; // 🔥 Fixed
       winText.textContent = '🎉 15/15 Completed! Well Done!';
       speak('Game Complete. Well Done!');
       nextBtn.style.display = 'none';
