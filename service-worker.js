@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v11-19'; // 🔥 V11-18 nunchi V11-19 ki marcham. All Rhymes MP3 Added
+const CACHE_NAME = 'juju-fun-world-v11-21'; // 🔥 V11-19 nunchi V11-21 ki marcham. File names fix
 
 const urlsToCache = [
     './',
@@ -29,14 +29,14 @@ const urlsToCache = [
     './icon-192.png',
     './icon-512.png',
 
-    // ===== NEW: ALL RHYME MP3s ===== 🔥
+    // ===== ALL 7 RHYME MP3s ===== 🔥 Names Fixed
     './twinkle-twinkle.mp3',
     './baa-baa-black.mp3',
     './wheels-on-bus.mp3',
     './you-are-my-sunshine.mp3',
     './johnny-johnny.mp3',
     './humpty-dumpty.mp3',
-    './ring-ring-Roses.mp3',
+    './ring-ring-roses.mp3', // 🔥 R capital ni r small ki marcham
 
     // Assets
     './assets/img/a.png',
@@ -62,7 +62,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v11-18 anni delete
+                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v11-19 anni delete
                    .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
