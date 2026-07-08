@@ -10,28 +10,22 @@
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
   body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
-
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
 .back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
-
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column}
-
 .rhyme-box{flex:1;width:100%;min-height:250px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s}
 .rhyme-box:active{transform:scale(.98)}
 .rhyme-icon{font-size:60px;margin-bottom:10px}
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
 .rhyme-text{font-size:17px;font-weight:700;color:#4B5563;line-height:1.7;white-space:pre-line}
-
 .audio-controls{margin-bottom:15px}
 .play-btn{width:100%;background:#A855F7;color:#fff;border:0;border-radius:25px;padding:14px 22px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
 .play-btn:active{transform:scale(.97)}
-
 .controls{display:flex;gap:12px;justify-content:center;margin-bottom:10px}
 .btn{flex:1;background:#A855F7;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
 .btn:active{transform:scale(.97)}
 .btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
-
 .counter{font-size:14px;font-weight:800;color:#6B7280;text-align:center}
 </style>
 </head>
@@ -66,123 +60,36 @@
 <script>
   const rhymes = [
     {
-      icon:'⭐',
-      title:'Twinkle Twinkle',
-      audio: './twinkle-twinkle.mp3',
-      text:`Twinkle, twinkle, little star,
-How I wonder what you are!
-Up above the world so high,
-Like a diamond in the sky.
-Twinkle, twinkle, little star,
-How I wonder what you are!`
+      icon:'⭐', title:'Twinkle Twinkle', audio: './twinkle-twinkle.mp3',
+      text:`Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.\nTwinkle, twinkle, little star,\nHow I wonder what you are!`
     },
     {
-      icon:'🐑',
-      title:'Baa Baa Black Sheep',
-      audio: './baa-baa-black.mp3',
-      text:`Baa, baa, black sheep,
-Have you any wool?
-Yes sir, yes sir,
-Three bags full.`
+      icon:'🐑', title:'Baa Baa Black Sheep', audio: './baa-baa-black.mp3',
+      text:`Baa, baa, black sheep,\nHave you any wool?\nYes sir, yes sir,\nThree bags full.`
     },
     {
-      icon:'🚌',
-      title:'Wheels on the Bus',
-      audio: './wheels-on-bus.mp3',
-      text:`The wheels on the bus go 'round and 'round
-'Round and 'round, 'round and 'round
-The wheels on the bus go 'round and 'round
-All through the town
-The doors on the bus go open and shut
-Open and shut, open and shut
-The doors on the bus go open and shut
-All through the town
-The wipers on the bus go swish, swish, swish
-Swish, swish, swish, swish, swish, swish
-The wipers on the bus go swish, swish, swish
-All through the town
-The signals on the bus go blink, blink, blink
-Blink, blink, blink, blink, blink, blink
-The signals on the bus go blink, blink, blink
-All through the town
-The horn on the bus goes beep, beep, beep
-Beep, beep, beep, beep, beep, beep
-The horn on the bus goes beep, beep, beep
-All through the town
-The motor on the bus goes vroom, vroom, vroom
-Vroom, vroom, vroom, vroom, vroom, vroom
-The motor on the bus goes vroom, vroom, vroom
-All through the town
-The people on the bus go up and down
-Up and down, up and down
-The people on the bus go up and down
-All through the town
-The babies on the bus go, "Wah, wah, wah"
-"Wah, wah, wah, wah, wah, wah"
-The babies on the bus go, "Wah, wah, wah"
-All through the town
-The mommies on the bus go, "Shh, shh, shh"
-"Shh, shh, shh, shh, shh, shh"
-The mommies on the bus go, "Shh, shh, shh"
-All through the town
-The daddies on the bus go, "I love you"
-"I love you, I love you"
-The daddies on the bus go, "I love you"
-All through the town
-The wheels on the bus go 'round and 'round
-'Round and 'round, 'round and 'round
-The wheels on the bus go 'round and 'round
-All through the town`
+      icon:'🚌', title:'Wheels on the Bus', audio: './wheels-on-bus.mp3',
+      text:`The wheels on the bus go 'round and 'round...All through the town`
     },
     {
-      icon:'☀️',
-      title:'You Are My Sunshine',
-      audio: './you-are-my-sunshine.mp3',
-      text:`You are my sunshine
-My only sunshine
-You make me happy
-When skies are gray
-You'll never know, dear
-How much I love you
-Please don't take my sunshine away
-I'll always love you
-And make you happy`
+      icon:'☀️', title:'You Are My Sunshine', audio: './you-are-my- sunshine.mp3', // 🔥 space fix
+      text:`You are my sunshine\nMy only sunshine\nYou make me happy\nWhen skies are gray\nYou'll never know, dear\nHow much I love you\nPlease don't take my sunshine away\nI'll always love you\nAnd make you happy`
     },
     {
-      icon:'🐰',
-      title:'Johnny Johnny',
-      audio: './johnny-johnny.mp3',
-      text:`Johnny, Johnny
-Yes, Papa?
-Eating sugar?
-No, Papa.
-Telling lies?
-No, Papa.
-Open your mouth.
-Ha ha.`
+      icon:'🐰', title:'Johnny Johnny', audio: './johny-johny.mp3', // 🔥 n okkate
+      text:`Johnny, Johnny\nYes, Papa?\nEating sugar?\nNo, Papa.\nTelling lies?\nNo, Papa.\nOpen your mouth.\nHa ha.`
     },
     {
-      icon:'🥚',
-      title:'Humpty Dumpty',
-      audio: './humpty-dumpty.mp3',
-      text:`Humpty Dumpty sat on a wall,
-Humpty Dumpty had a great fall,
-All the king's horses and all the king's men,
-Couldn't put Humpty together again.`
+      icon:'🥚', title:'Humpty Dumpty', audio: './humpty-dumpty.mp3',
+      text:`Humpty Dumpty sat on a wall,\nHumpty Dumpty had a great fall,\nAll the king's horses and all the king's men,\nCouldn't put Humpty together again.`
     },
     {
-      icon:'🌹',
-      title:'Ring-a-Ring O Roses',
-      audio: './ring-ring-Roses.mp3',
-      text:`Ring a ring o'roses
-A pocketful of posies
-Atishoo, atishoo
-We all fall down.`
+      icon:'🌹', title:'Ring-a-Ring O Roses', audio: './ringa-ringa-roses.mp3', // 🔥 name fix
+      text:`Ring a ring o'roses\nA pocketful of posies\nAtishoo, atishoo\nWe all fall down.`
     }
   ];
 
   let currentIndex = 0;
-
   const rhymeBox = document.getElementById('rhymeBox');
   const rhymeIcon = document.getElementById('rhymeIcon');
   const rhymeTitle = document.getElementById('rhymeTitle');
@@ -200,51 +107,30 @@ We all fall down.`
     rhymeText.textContent = rhyme.text;
     counter.textContent = `${index + 1} / ${rhymes.length}`;
     rhymeBox.scrollTop = 0;
-
     rhymeAudio.pause();
     rhymeAudio.src = rhyme.audio;
     playBtn.textContent = '▶️ Play';
-
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === rhymes.length - 1;
     nextBtn.textContent = index === rhymes.length - 1? 'Completed ✓' : 'Next →';
   }
 
-  function prevRhyme(){
-    if(currentIndex > 0){
-      currentIndex--;
-      loadRhyme(currentIndex);
-    }
-  }
-
-  function nextRhyme(){
-    if(currentIndex < rhymes.length - 1){
-      currentIndex++;
-      loadRhyme(currentIndex);
-    }
-  }
+  function prevRhyme(){ if(currentIndex > 0){ currentIndex--; loadRhyme(currentIndex); } }
+  function nextRhyme(){ if(currentIndex < rhymes.length - 1){ currentIndex++; loadRhyme(currentIndex); } }
 
   function playAudio(){
     if(!rhymeAudio.src) return;
-
     if(rhymeAudio.paused){
-      rhymeAudio.play().catch(err=>{
-        alert("Audio Error: " + err.message);
-      });
+      rhymeAudio.play().catch(err=>{ alert("Audio Error: " + err.message); });
       playBtn.textContent = '⏸️ Pause';
     } else {
       rhymeAudio.pause();
       playBtn.textContent = '▶️ Play';
     }
-
     rhymeAudio.onended = () => { playBtn.textContent = '▶️ Play'; }
   }
 
-  rhymeBox.addEventListener('click', ()=>{
-    rhymeBox.style.transform = 'scale(0.98)';
-    setTimeout(()=>rhymeBox.style.transform = 'scale(1)', 100);
-  });
-
+  rhymeBox.addEventListener('click', ()=>{ rhymeBox.style.transform = 'scale(0.98)'; setTimeout(()=>rhymeBox.style.transform = 'scale(1)', 100); });
   loadRhyme(0);
 </script>
 </body>
