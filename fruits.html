@@ -9,18 +9,19 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
+
+  body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff;justify-content:flex-start} /* 🔥 flex-start add */
 
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
 .back-btn{position:absolute;left:0;background:#fff;color:#EA580C;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .back-btn:active{transform:scale(.95)}
 .page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
 
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column;justify-content:center}
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:0 0 auto;display:flex;flex-direction:column;justify-content:center} /* 🔥 flex:1 -> flex:0 0 auto */
 
 .fruit-box{width:100%;aspect-ratio:1/1;background:#FEF3C7;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
 .fruit-box:active{transform:scale(.95)}
-.fruit-emoji{font-size:120px;line-height:1;pointer-events:none} /* BIG EMOJI */
+.fruit-emoji{font-size:120px;line-height:1;pointer-events:none}
 
 .fruit-name{font-size:28px;font-weight:900;color:#F97316;margin-bottom:20px;min-height:40px}
 
@@ -35,8 +36,8 @@
 <body>
 
   <div class="header">
-    <button class="back-btn" onclick="location.href='./dashboard.html#fruits'">←</button> <!-- 🔥 Dashboard same card ki -->
-    <div class="page-heading">🍊 Fruits</div> <!-- 🔥 Top centre heading -->
+    <button class="back-btn" onclick="location.href='./dashboard.html#fruits'">←</button>
+    <div class="page-heading">🍊 Fruits</div>
   </div>
 
   <div class="card">
@@ -46,14 +47,13 @@
     <div class="fruit-name" id="fruitName">Apple</div>
 
     <div class="controls">
-      <button class="btn" id="prevBtn" onclick="prevFruit()">← Previous</button> <!-- 🔥 Prev btn added -->
+      <button class="btn" id="prevBtn" onclick="prevFruit()">← Previous</button>
       <button class="btn" id="nextBtn" onclick="nextFruit()">Next →</button>
     </div>
     <div class="counter" id="counter">1 / 10</div>
   </div>
 
 <script>
-  // ===== 10 FRUITS EMOJI LIST =====
   const fruits = [
     {name:'Apple', emoji:'🍎'},{name:'Banana', emoji:'🍌'},{name:'Orange', emoji:'🍊'},
     {name:'Grapes', emoji:'🍇'},{name:'Watermelon', emoji:'🍉'},{name:'Strawberry', emoji:'🍓'},
@@ -84,10 +84,9 @@
     fruitName.textContent = fruit.name;
     counter.textContent = `${index + 1} / ${fruits.length}`;
 
-    prevBtn.disabled = index === 0; // 🔥 Prev enable/disable
+    prevBtn.disabled = index === 0;
     nextBtn.disabled = index === fruits.length - 1;
     nextBtn.textContent = index === fruits.length - 1? 'Completed ✓' : 'Next →';
-    // 🔥 Next ki voice remove chesam
   }
 
   function prevFruit(){
@@ -104,14 +103,12 @@
     }
   }
 
-  // Fruit Box Touch -> Voice
   fruitBox.addEventListener('click', ()=>{
-    speak(fruits[currentIndex].name); // 🔥 Tap cheste matrame voice
+    speak(fruits[currentIndex].name);
     fruitBox.style.transform = 'scale(0.95)';
     setTimeout(()=>fruitBox.style.transform = 'scale(1)', 100);
   });
 
-  // First Load
   loadFruit(0);
 </script>
 </body>
