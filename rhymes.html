@@ -63,7 +63,7 @@
     {
       icon:'⭐',
       title:'Twinkle Twinkle',
-      audio: './twinkle-twinkle.mp3', // 🔥 PATH FIX CHESAM
+      audio: './twinkle-twinkle.mp3', // 🔥 Upload chesina MP3
       text:`Twinkle, twinkle, little star,
 How I wonder what you are!
 Up above the world so high,
@@ -130,7 +130,7 @@ We all fall down.`
   ];
 
   let currentIndex = 0;
-  const synth = window.speechSynthesis;
+  // const synth = window.speechSynthesis; // 🔥 Voice OFF
 
   const rhymeBox = document.getElementById('rhymeBox');
   const rhymeIcon = document.getElementById('rhymeIcon');
@@ -140,15 +140,6 @@ We all fall down.`
   const nextBtn = document.getElementById('nextBtn');
   const playBtn = document.getElementById('playBtn');
   const rhymeAudio = document.getElementById('rhymeAudio');
-
-  function speak(text){
-    if(synth.speaking){ synth.cancel(); }
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    utter.rate = 0.75;
-    utter.pitch = 1.1;
-    synth.speak(utter);
-  }
 
   function loadRhyme(index){
     const rhyme = rhymes[index];
@@ -170,7 +161,7 @@ We all fall down.`
       nextBtn.textContent = 'Next >';
     }
 
-    speak(rhyme.title);
+    // speak(rhyme.title); // 🔥 Voice OFF
   }
 
   function nextRhyme(){
@@ -183,19 +174,21 @@ We all fall down.`
   function playAudio(){
     if(!rhymeAudio.src) return;
 
-    rhymeAudio.play().then(()=>{
+    if(rhymeAudio.paused){
+      rhymeAudio.play().catch(err=>{
+        alert("Audio Error: " + err.message + "\nFile path: " + rhymeAudio.src);
+      });
       playBtn.textContent = '⏸️ Pause';
-      speak("Playing " + rhymes[currentIndex].title);
-    }).catch(err=>{
-      alert("Audio Error: " + err.message);
-    });
+    } else {
+      rhymeAudio.pause();
+      playBtn.textContent = '▶️ Play';
+    }
 
-    rhymeAudio.onpause = () => { playBtn.textContent = '▶️ Play'; }
     rhymeAudio.onended = () => { playBtn.textContent = '▶️ Play'; }
   }
 
   rhymeBox.addEventListener('click', ()=>{
-    speak(rhymes[currentIndex].text);
+    // speak(rhymes[currentIndex].text); // 🔥 Voice OFF
     rhymeBox.style.transform = 'scale(0.98)';
     setTimeout(()=>rhymeBox.style.transform = 'scale(1)', 100);
   });
