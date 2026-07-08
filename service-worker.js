@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v11-21'; // 🔥 V11-19 nunchi V11-21 ki marcham. File names fix
+const CACHE_NAME = 'juju-fun-world-v12-01'; // 🔥 V11-21 nunchi V12-01 ki marcham. All UI updates
 
 const urlsToCache = [
     './',
@@ -8,11 +8,11 @@ const urlsToCache = [
     './spell-it.html', 
     './juju-car-race.html', 
     './balloon-pop-edu.html',
-    './fruits.html',
-    './pet-animals.html',
-    './wild-animals.html',
-    './vegetables.html',
-    './vehicles.html',
+    './fruits.html',           // 🔥 Updated
+    './pet-animals.html',      // 🔥 Updated
+    './wild-animals.html',     // 🔥 Updated
+    './vegetables.html',       // 🔥 Updated
+    './vehicles.html',         // 🔥 Updated
     './matching.html',
     './drag-drop.html', 
     './addition.html',
@@ -21,22 +21,22 @@ const urlsToCache = [
     './painting.html',
     './free-draw.html',
     './rhymes.html',
-    './body-parts.html', 
-    './colors.html',
-    './color-mixing.html',
+    './body-parts.html',       // 🔥 Updated
+    './colors.html',           // 🔥 Updated
+    './color-mixing.html',     // 🔥 Updated
     './shapes.html',
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
 
-    // ===== ALL 7 RHYME MP3s ===== 🔥 Names Fixed
+    // ===== ALL 7 RHYME MP3s =====
     './twinkle-twinkle.mp3',
     './baa-baa-black.mp3',
     './wheels-on-bus.mp3',
     './you-are-my-sunshine.mp3',
     './johnny-johnny.mp3',
     './humpty-dumpty.mp3',
-    './ring-ring-roses.mp3', // 🔥 R capital ni r small ki marcham
+    './ring-ring-roses.mp3',
 
     // Assets
     './assets/img/a.png',
@@ -62,7 +62,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v11-19 anni delete
+                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v11-21 anni delete
                    .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
