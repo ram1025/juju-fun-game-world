@@ -9,9 +9,14 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#22C55E;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
+  body{font-family:'Nunito',sans-serif;background:#22C55E;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
 
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
+.back-btn{position:absolute;left:0;background:#fff;color:#15803D;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.back-btn:active{transform:scale(.95)}
+.page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
+
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column;justify-content:center}
 
 .veg-box{width:100%;aspect-ratio:1/1;background:#DCFCE7;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
 .veg-box:active{transform:scale(.95)}
@@ -20,14 +25,19 @@
 .veg-name{font-size:28px;font-weight:900;color:#15803D;margin-bottom:20px;min-height:40px}
 
 .controls{display:flex;gap:12px;justify-content:center}
-.btn{background:#22C55E;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #15803D;flex:1}
+.btn{flex:1;background:#22C55E;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #15803D}
+.btn:active{transform:scale(.97)}
 .btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
-.btn.back{background:#6B7280;box-shadow:0 4px 0 #4B5563}
 
-.counter{font-size:14px;font-weight:800;color:#6B7280;margin-top:10px}
+.counter{font-size:14px;font-weight:800;color:#6B7280;margin-top:10px;text-align:center}
 </style>
 </head>
 <body>
+
+  <div class="header">
+    <button class="back-btn" onclick="location.href='./dashboard.html#vegetables'">←</button> <!-- 🔥 Dashboard same card ki -->
+    <div class="page-heading">🥦 Vegetables</div> <!-- 🔥 Top centre heading -->
+  </div>
 
   <div class="card">
     <div class="veg-box" id="vegBox">
@@ -36,8 +46,8 @@
     <div class="veg-name" id="vegName">Carrot</div>
 
     <div class="controls">
-      <button class="btn back" onclick="location.href='./dashboard.html'">← Back</button>
-      <button class="btn" id="nextBtn" onclick="nextVeg()">Next ></button>
+      <button class="btn" id="prevBtn" onclick="prevVeg()">← Previous</button> <!-- 🔥 Prev btn added -->
+      <button class="btn" id="nextBtn" onclick="nextVeg()">Next →</button>
     </div>
     <div class="counter" id="counter">1 / 10</div>
   </div>
@@ -45,16 +55,9 @@
 <script>
   // ===== 10 VEGETABLES EMOJI LIST =====
   const vegetables = [
-    {name:'Carrot', emoji:'🥕'},
-    {name:'Broccoli', emoji:'🥦'},
-    {name:'Tomato', emoji:'🍅'},
-    {name:'Corn', emoji:'🌽'},
-    {name:'Potato', emoji:'🥔'},
-    {name:'Eggplant', emoji:'🍆'},
-    {name:'Cucumber', emoji:'🥒'},
-    {name:'Pepper', emoji:'🫑'},
-    {name:'Mushroom', emoji:'🍄'},
-    {name:'Onion', emoji:'🧅'}
+    {name:'Carrot', emoji:'🥕'},{name:'Broccoli', emoji:'🥦'},{name:'Tomato', emoji:'🍅'},
+    {name:'Corn', emoji:'🌽'},{name:'Potato', emoji:'🥔'},{name:'Eggplant', emoji:'🍆'},
+    {name:'Cucumber', emoji:'🥒'},{name:'Pepper', emoji:'🫑'},{name:'Mushroom', emoji:'🍄'},{name:'Onion', emoji:'🧅'}
   ];
 
   let currentIndex = 0;
@@ -64,6 +67,7 @@
   const vegEmoji = document.getElementById('vegEmoji');
   const vegName = document.getElementById('vegName');
   const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
 
   function speak(text){
@@ -80,15 +84,17 @@
     vegName.textContent = veg.name;
     counter.textContent = `${index + 1} / ${vegetables.length}`;
 
-    if(index === vegetables.length - 1){
-      nextBtn.disabled = true;
-      nextBtn.textContent = 'Completed ✓';
-    } else {
-      nextBtn.disabled = false;
-      nextBtn.textContent = 'Next >';
-    }
+    prevBtn.disabled = index === 0; // 🔥 Prev enable/disable
+    nextBtn.disabled = index === vegetables.length - 1;
+    nextBtn.textContent = index === vegetables.length - 1? 'Completed ✓' : 'Next →';
+    // 🔥 Next ki voice remove chesam
+  }
 
-    speak(veg.name); // Page open ayinappudu auto chepthundi
+  function prevVeg(){
+    if(currentIndex > 0){
+      currentIndex--;
+      loadVeg(currentIndex);
+    }
   }
 
   function nextVeg(){
@@ -100,7 +106,7 @@
 
   // Veg Box Touch -> Voice
   vegBox.addEventListener('click', ()=>{
-    speak(vegetables[currentIndex].name);
+    speak(vegetables[currentIndex].name); // 🔥 Tap cheste matrame voice
     vegBox.style.transform = 'scale(0.95)';
     setTimeout(()=>vegBox.style.transform = 'scale(1)', 100);
   });
