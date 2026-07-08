@@ -3,148 +3,144 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Dashboard - Juju Fun World</title>
-<link rel="manifest" href="./manifest.json?v=145"> <!-- 🔥 version bump -->
-<meta name="theme-color" content="#3B82F6">
+<title>Balloon Pop ABC 123</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;padding:20px;overflow-x:hidden}
-.hamburger{position:fixed;top:20px;left:20px;background:#fff;border:0;border-radius:12px;padding:12px;box-shadow:0 4px 10px rgba(0,0,0,.2);cursor:pointer;z-index:100}
-.hamburger span{display:block;width:25px;height:3px;background:#1F2937;margin:5px 0;border-radius:2px}
-.sidebar{position:fixed;top:0;left:0;width:280px;height:100%;background:#fff;box-shadow:4px 0 20px rgba(0,0,0,.3);transform:translateX(-100%);transition:transform.3s;z-index:99;padding:80px 20px 20px}
-.sidebar.active{transform:translateX(0)}
-.sidebar-btn{width:100%;text-align:left;padding:15px;border:0;background:#F3F4F6;border-radius:12px;font-size:18px;font-weight:800;margin-bottom:10px;cursor:pointer;font-family:Nunito}
-.profile-section{text-align:center;padding:40px 20px 20px}
-.avatar{width:80px;height:80px;border-radius:50%;border:3px solid #fff;margin:0 auto 15px;object-fit:cover}
-.name{font-size:24px;font-weight:900;color:#fff;margin-bottom:5px}
-.sub{font-size:18px;font-weight:700;color:#FEF3C7;margin-bottom:15px}
+:root{--sky:#87ceeb;--grass:#90ee90}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:linear-gradient(var(--sky) 0 70%,var(--grass) 70% 100%);overflow:hidden;font-family:system-ui}
+.hud-top{position:absolute;top:12px;left:12px;z-index:20}
+.back{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.score{position:absolute;top:12px;left:50%;transform:translateX(-50%);color:#fff;font-weight:900;font-size:20px;text-shadow:0 2px 6px #000;z-index:20}
 
-.carousel-wrapper{max-width:450px;margin:0 auto;overflow:hidden}
-.carousel-track{display:flex}
-.carousel-page{width:100%;flex-shrink:0;padding:0 5px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.hud-bottom{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:20px;z-index:20}
+.mode-btn{background:#fff;color:#1e40af;border:0;border-radius:20px;padding:14px 28px;font-weight:900;font-size:18px;box-shadow:0 6px 15px rgba(0,0,0,.3)}
+.mode-btn.active{background:#1e40af;color:#fff}
 
-.card{border-radius:25px;padding:25px 15px;text-align:center;cursor:pointer;box-shadow:0 6px 15px rgba(0,0,0,.2);min-height:140px;display:flex;flex-direction:column;justify-content:center;user-select:none}
-.card:active{transform:scale(.95)}
-.card-icon{width:60px;height:60px;background:rgba(255,255,255,.3);border-radius:15px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:32px;pointer-events:none}
-.card-title{font-size:18px;font-weight:900;color:#fff;pointer-events:none}
-.pink{background:linear-gradient(135deg,#EC4899,#F472B6)}
-.blue{background:linear-gradient(135deg,#3B82F6,#60A5FA)}
-.orange{background:linear-gradient(135deg,#F97316,#FB923C)}
-.purple{background:linear-gradient(135deg,#A855F7,#C084FC)}
-.green{background:linear-gradient(135deg,#10B981,#34D399)}
-.yellow{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
-.violet{background:linear-gradient(135deg,#8B5CF6,#A78BFA)}
-.grey{background:linear-gradient(135deg,#6B7280,#9CA3AF)}
-
-.dots{display:flex;gap:8px;justify-content:center;margin-top:20px}
-.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);transition:all.3s}
-.dot.active{background:#fff;transform:scale(1.2)}
+.balloons{position:absolute;inset:0;padding:160px 10px 140px 10px} /* 🔥 sides lo padding taggincham */
+.balloon{position:absolute;width:70px;height:90px;cursor:pointer;user-select:none;transition:transform .15s;pointer-events:auto;z-index:1} /* 🔥 80x100 -> 70x90, float animation remove */
+.balloon:active{transform:scale(.9)}
+.balloon svg{width:100%;height:100%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3));pointer-events:none}
+.balloon-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-size:28px;font-weight:900;color:#fff;text-shadow:0 2px 6px #000;pointer-events:none}
+.pop{animation:pop .2s forwards}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15);opacity:1}100%{transform:scale(0);opacity:0}}
 </style>
 </head>
 <body>
-  <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span></button>
-  <div class="sidebar" id="sidebar">
-    <button class="sidebar-btn" onclick="location.href='./profile.html'">👤 Profile</button>
-    <button class="sidebar-btn" id="logoutBtn" style="color:#EF4444;">🚪 Logout</button>
-  </div>
-  <div class="profile-section">
-    <img src="./icon-192.png?v=145" class="avatar" id="avatar">
-    <div class="name" id="name">JUJU</div>
-    <div class="sub">Swipe Left/Right 👉</div>
+<div class="hud-top">
+  <a href="./dashboard.html#balloon" class="back">← Back</a>
+</div>
+<div class="score" id="score">Score: 0</div>
 
-    <div class="carousel-wrapper" id="carousel">
-      <div class="carousel-track" id="track">
+<div class="balloons" id="balloons"></div>
 
-        <!-- ===== SLIDE 1: A B C ===== -->
-        <div class="carousel-page"><div class="grid">
-          <div class="card blue" onclick="location.href='./addition.html'"><div class="card-icon">➕</div><div class="card-title">Addition</div></div>
-          <div class="card blue" onclick="location.href='./alphabets.html'"><div class="card-icon">abc</div><div class="card-title">Alphabets</div></div>
-          <div class="card yellow" onclick="location.href='./balloon-pop-edu.html?v=11-3'"><div class="card-icon">🎈</div><div class="card-title">Balloon Pop Edu</div></div>
-          <div class="card yellow" onclick="location.href='./body-parts.html'"><div class="card-icon">👂</div><div class="card-title">Body Parts</div></div>
-        </div></div>
+<div class="hud-bottom">
+  <button class="mode-btn active" id="abcBtn" onclick="setMode('ABC')">ABC</button>
+  <button class="mode-btn" id="numBtn" onclick="setMode('123')">123</button>
+</div>
 
-        <!-- ===== SLIDE 2: C D F F ===== -->
-        <div class="carousel-page"><div class="grid">
-          <div class="card green" onclick="location.href='./colors.html'"><div class="card-icon">🎨</div><div class="card-title">Colors</div></div>
-          <div class="card purple" onclick="location.href='./color-mixing.html'"><div class="card-icon">🧪</div><div class="card-title">Color Mix</div></div>
-          <div class="card pink" onclick="location.href='./drag-drop.html'"><div class="card-icon">🖐️</div><div class="card-title">Drag & Drop</div></div>
-          <div class="card pink" onclick="location.href='./free-draw.html?v=172'"><div class="card-icon">🎨</div><div class="card-title">Free Draw</div></div>
-        </div></div>
-
-        <!-- ===== SLIDE 3: F J M N ===== -->
-        <div class="carousel-page"><div class="grid">
-          <div class="card orange" onclick="location.href='./fruits.html'"><div class="card-icon">🍎</div><div class="card-title">Fruits</div></div>
-          <div class="card violet" onclick="location.href='./juju-car-race.html?v=11-4'"><div class="card-icon">🚗</div><div class="card-title">Juju Car Race</div></div>
-          <div class="card green" onclick="location.href='./matching.html'"><div class="card-icon">🧩</div><div class="card-title">Matching</div></div>
-          <div class="card green" onclick="location.href='./numbers.html'"><div class="card-icon">🔢</div><div class="card-title">Numbers</div></div>
-        </div></div>
-
-        <!-- ===== SLIDE 4: P P R S ===== -->
-        <div class="carousel-page"><div class="grid">
-          <div class="card pink" onclick="location.href='./painting.html'"><div class="card-icon">🎨</div><div class="card-title">Paint Letter</div></div>
-          <div class="card purple" onclick="location.href='./pet-animals.html'"><div class="card-icon">🐶</div><div class="card-title">Pet Animals</div></div>
-          <div class="card purple" onclick="location.href='./rhymes.html'"><div class="card-icon">🎵</div><div class="card-title">Rhymes</div></div>
-          <div class="card yellow" onclick="location.href='./shapes.html'"><div class="card-icon">⭐</div><div class="card-title">Shapes</div></div>
-        </div></div>
-
-        <!-- ===== SLIDE 5: S V V W ===== -->
-        <div class="carousel-page"><div class="grid">
-          <div class="card violet" onclick="location.href='./spell-it.html?v=173'"><div class="card-icon">🧩</div><div class="card-title">Spell It!</div></div>
-          <div class="card blue" onclick="location.href='./vehicles.html'"><div class="card-icon">🚗</div><div class="card-title">Vehicles</div></div>
-          <div class="card purple" onclick="location.href='./vegetables.html'"><div class="card-icon">🥕</div><div class="card-title">Vegetables</div></div>
-          <div class="card orange" onclick="location.href='./wild-animals.html'"><div class="card-icon">🦁</div><div class="card-title">Wild Animals</div></div>
-        </div></div>
-
-      </div>
-    </div>
-    <div class="dots" id="dots"></div>
-  </div>
 <script>
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12-09');}
-  document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JU';
-  document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png';
-  function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
-  document.addEventListener('click',(e)=>{const s=document.getElementById('sidebar');const h=document.querySelector('.hamburger');if(!s.contains(e.target)&&!h.contains(e.target)){s.classList.remove('active')}})
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12.08');}
 
-  document.getElementById('logoutBtn').onclick=()=>{ location.href='./index.html'; }
+const colors = ['#ef4444','#3b82f6','#10b981','#f59e0b','#a855f7','#ec4899','#06b6d4','#f97316'];
+const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const NUM = Array.from({length:20},(_,i)=>i+1);
+let mode = 'ABC';
+let score = 0;
+let used = [];
 
-  const track=document.getElementById('track');
-  const pages=document.querySelectorAll('.carousel-page');
-  const wrapper=document.getElementById('carousel');
-  const dotsWrap=document.getElementById('dots');
-  let currentPage=0,startX=0,isDragging=false;
+function setMode(m){
+  mode = m;
+  used = [];
+  document.getElementById('balloons').innerHTML = '';
+  score = 0;
+  updateScore();
+  document.getElementById('abcBtn').classList.toggle('active', m==='ABC');
+  document.getElementById('numBtn').classList.toggle('active', m==='123');
+  spawnBalloons();
+}
 
-  pages.forEach((_,i)=>{const dot=document.createElement('div');dot.className='dot';dot.onclick=()=>goToPage(i);dotsWrap.appendChild(dot);});
-  const dots=document.querySelectorAll('.dot');
+function updateScore(){
+  document.getElementById('score').textContent = `Score: ${score}`;
+}
 
-  function goToPage(i){
-    currentPage=i;
-    localStorage.setItem('jujuLastPage',i);
-    track.style.transition='transform 0.3s ease-out';
-    track.style.transform=`translateX(-${i*100}%)`;
-    dots.forEach((d,j)=>d.classList.toggle('active',i===j));
+function getRandomItem(){
+  const pool = mode === 'ABC' ? ABC : NUM;
+  if(used.length >= pool.length) used = [];
+  let item;
+  do{ item = pool[Math.floor(Math.random()*pool.length)]; }while(used.includes(item));
+  used.push(item);
+  return item;
+}
+
+function spawnBalloons(){
+  const count = mode === 'ABC' ? 26 : 20;
+  const container = document.getElementById('balloons');
+  container.innerHTML = '';
+  
+  const balloonW = 70; // 🔥 balloon width
+  const balloonH = 90; // 🔥 balloon height
+  const cols = 4; 
+  const rows = Math.ceil(count / cols);
+  
+  const w = window.innerWidth;
+  const h = window.innerHeight - 340; // Top 160 + Bottom 140 + 40
+  
+  // 🔥 Center align kosam gap calculate
+  const gapX = (w - (cols * balloonW)) / (cols + 1);
+  const gapY = (h - (rows * balloonH)) / (rows + 1);
+
+  for(let i=0; i<count; i++){
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    const text = getRandomItem();
+    
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    
+    // 🔥 Clean grid positioning
+    const left = gapX + col * (balloonW + gapX);
+    const top = gapY + row * (balloonH + gapY);
+    
+    b.style.left = left + 'px';
+    b.style.top = top + 'px';
+    
+    b.innerHTML = `
+      <svg viewBox="0 0 80 100">
+        <ellipse cx="40" cy="40" rx="35" ry="40" fill="${color}"/>
+        <path d="M40 80 L34 95 L46 95 Z" fill="${color}"/>
+      </svg>
+      <div class="balloon-text">${text}</div>
+    `;
+    
+    b.onclick = () => popBalloon(b, text);
+    container.appendChild(b);
   }
+}
 
-  window.addEventListener('load',()=>{
-    const goToSlide = parseInt(localStorage.getItem('jujuGoToSlide'));
-    const lastPage = isNaN(goToSlide)? (parseInt(localStorage.getItem('jujuLastPage'))||0) : goToSlide;
-    goToPage(lastPage);
-    localStorage.removeItem('jujuGoToSlide');
-  });
+function popBalloon(el, text){
+  if(el.classList.contains('pop')) return;
+  el.classList.add('pop');
+  score += 10;
+  updateScore();
+  speak(text);
+  setTimeout(()=>el.remove(), 200);
+}
 
-  const getX=e=>e.touches?e.touches[0].clientX:e.clientX;
-  wrapper.addEventListener('touchstart',e=>{startX=getX(e);isDragging=true;track.style.transition='none';},{passive:true});
-  wrapper.addEventListener('touchmove',e=>{if(!isDragging)return;const x=getX(e)-startX;track.style.transform=`translateX(calc(-${currentPage*100}% + ${x}px))`;},{passive:true});
-  wrapper.addEventListener('touchend',e=>{if(!isDragging)return;isDragging=false;const x=e.changedTouches[0].clientX-startX;if(x<-50&&currentPage<pages.length-1)goToPage(currentPage+1);else if(x>50&&currentPage>0)goToPage(currentPage-1);else goToPage(currentPage);});
-// ===== DESKTOP MOUSE + KEYBOARD =====
-wrapper.addEventListener('mousedown',e=>{startX=getX(e);isDragging=true;track.style.transition='none';e.preventDefault()});
-wrapper.addEventListener('mousemove',e=>{if(!isDragging)return;const x=getX(e)-startX;track.style.transform=`translateX(calc(-${currentPage*100}% + ${x}px))`});
-wrapper.addEventListener('mouseup',e=>{if(!isDragging)return;isDragging=false;track.style.transition='transform 0.3s ease';const x=getX(e)-startX;if(x<-50&&currentPage<pages.length-1)goToPage(currentPage+1);else if(x>50&&currentPage>0)goToPage(currentPage-1);else goToPage(currentPage)});
-wrapper.addEventListener('mouseleave',()=>{if(isDragging){isDragging=false;goToPage(currentPage)}});
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&currentPage<pages.length-1)goToPage(currentPage+1);if(e.key==='ArrowLeft'&&currentPage>0)goToPage(currentPage-1)});
+function speak(t){
+  if('speechSynthesis' in window){
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t);
+    u.lang = 'en-US';
+    u.rate = 0.9;
+    if(mode === 'ABC' && typeof t === 'string' && t.length === 1){
+      u.text = t.toLowerCase(); 
+    }
+    speechSynthesis.speak(u);
+  }
+}
 
+spawnBalloons();
 </script>
 </body>
-  </html>
+</html>
