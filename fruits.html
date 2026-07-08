@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Fruits - Juju</title>
-<link rel="manifest" href="./manifest.json?v=117"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=153"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#F97316">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -12,14 +12,14 @@
 
   body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff;justify-content:center}
 
-.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px} /* 🔥 margin 15->10 */
+.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
 .back-btn{position:absolute;left:0;background:#fff;color:#EA580C;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .back-btn:active{transform:scale(.95)}
-.page-heading{display:none} /* 🔥 Top heading hide */
+.page-heading{display:none}
 
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;justify-content:center;margin-top:10px}
 
-.card-heading{background:#F97316;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px} /* 🔥 Card lopala heading box */
+.card-heading{color:#F97316;font-size:20px;font-weight:900;padding:8px 0;margin-bottom:15px;text-align:center} /* 🔥 Plain text, no bg, no emoji */
 
 .fruit-box{width:100%;aspect-ratio:1/1;background:#FEF3C7;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
 .fruit-box:active{transform:scale(.95)}
@@ -42,7 +42,7 @@
   </div>
 
   <div class="card">
-    <div class="card-heading" id="cardHeading">🍊 Fruits</div> <!-- 🔥 Red mark chesina chotla idhe vastundi -->
+    <div class="card-heading" id="cardHeading">Fruits</div> <!-- 🔥 Plain text -->
 
     <div class="fruit-box" id="fruitBox">
       <div class="fruit-emoji" id="fruitEmoji">🍎</div>
@@ -69,7 +69,7 @@
   const fruitBox = document.getElementById('fruitBox');
   const fruitEmoji = document.getElementById('fruitEmoji');
   const fruitName = document.getElementById('fruitName');
-  const cardHeading = document.getElementById('cardHeading'); // 🔥 new
+  const cardHeading = document.getElementById('cardHeading');
   const counter = document.getElementById('counter');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
@@ -86,7 +86,7 @@
     const fruit = fruits[index];
     fruitEmoji.textContent = fruit.emoji;
     fruitName.textContent = fruit.name;
-    cardHeading.innerHTML = `${fruit.emoji} ${fruit.name}`; // 🔥 Heading kuda fruit name tho update avthundi
+    cardHeading.textContent = `Fruits`; // 🔥 Fixed: emoji + name teesesam, static ga "Fruits"
     counter.textContent = `${index + 1} / ${fruits.length}`;
 
     prevBtn.disabled = index === 0;
