@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="./manifest.json?v=133">
+<link rel="manifest" href="./manifest.json?v=134"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#A855F7">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -13,8 +13,8 @@
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
 .back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column}
-.rhyme-box{flex:1;width:100%;min-height:250px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s}
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:0 0 auto;display:flex;flex-direction:column} /* 🔥 flex:1 -> flex:0 0 auto */
+.rhyme-box{width:100%;max-height:300px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s} /* 🔥 max-height for center layout */
 .rhyme-box:active{transform:scale(.98)}
 .rhyme-icon{font-size:60px;margin-bottom:10px}
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
@@ -65,10 +65,16 @@ Up above the world so high,
 Like a diamond in the sky.
 Twinkle, twinkle, little star,
 How I wonder what you are!`},
+
     {icon:'🐑', title:'Baa Baa Black Sheep', audio: './baa-baa-black.mp3', text:`Baa, baa, black sheep,
-Have you any wool?
-Yes sir, yes sir,
-Three bags full.`},
+have you any wool?
+Yes, sir, yes, sir,
+three bags full.
+One for my master,
+One for my dame,
+And one for the little boy,
+who lives down the lane`}, // 🔥 FULL LYRICS UPDATED
+
     {icon:'🚌', title:'Wheels on the Bus', audio: './wheels-on-bus.mp3', text:`The wheels on the bus go 'round and 'round
 'Round and 'round, 'round and 'round
 The wheels on the bus go 'round and 'round
