@@ -123,12 +123,18 @@ function popBalloon(el, text){
 function speak(t){
   if('speechSynthesis' in window){
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(t); // 🔥 Just the letter/number
+    const u = new SpeechSynthesisUtterance(t);
     u.lang = 'en-US';
     u.rate = 0.9;
+    
+    // 🔥 iOS FIX: "A" -> "a" cheyadam valla "Capital" ane word raadu
+    if(mode === 'ABC' && typeof t === 'string' && t.length === 1){
+      u.text = t.toLowerCase(); 
+    }
+    
     speechSynthesis.speak(u);
   }
-}
+  }
 
 spawnBalloons();
 </script>
