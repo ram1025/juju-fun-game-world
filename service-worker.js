@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v11-16'; // 🔥 V11-15 nunchi V11-16 ki marcham. Twinkle MP3 Add
+const CACHE_NAME = 'juju-fun-world-v11-17'; // 🔥 V11-16 nunchi V11-17 ki marcham. Path Fix
 
 const urlsToCache = [
     './',
@@ -28,6 +28,7 @@ const urlsToCache = [
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
+    './twinkle-twinkle.mp3', // 🔥 PATH FIX: assets/rhymes remove chesam
     // Assets
     './assets/img/a.png',
     './assets/img/b.png',
@@ -40,10 +41,7 @@ const urlsToCache = [
     './assets/audio/number-1.mp3','./assets/audio/number-2.mp3','./assets/audio/number-3.mp3','./assets/audio/number-4.mp3','./assets/audio/number-5.mp3',
     './assets/audio/number-6.mp3','./assets/audio/number-7.mp3','./assets/audio/number-8.mp3','./assets/audio/number-9.mp3','./assets/audio/number-10.mp3',
     './assets/audio/number-11.mp3','./assets/audio/number-12.mp3','./assets/audio/number-13.mp3','./assets/audio/number-14.mp3','./assets/audio/number-15.mp3',
-    './assets/audio/number-16.mp3','./assets/audio/number-17.mp3','./assets/audio/number-18.mp3','./assets/audio/number-19.mp3','./assets/audio/number-20.mp3',
-
-    // ===== NEW: TWINKLE RHYME MP3 =====
-    './assets/rhymes/twinkle-twinkle.mp3' // 🔥 Idhi add chesam
+    './assets/audio/number-16.mp3','./assets/audio/number-17.mp3','./assets/audio/number-18.mp3','./assets/audio/number-19.mp3','./assets/audio/number-20.mp3'
 ];
 
 self.addEventListener('install', (event) => {
@@ -55,7 +53,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v11-15 anni delete
+                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v11-16 anni delete
                    .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
