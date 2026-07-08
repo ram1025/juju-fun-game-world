@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v12-12'; // 🔥 V12-01 nunchi V12-03 ki marcham. All 9 screens center UI
+const CACHE_NAME = 'juju-fun-world-v12-13'; // 🔥 V12-01 nunchi V12-03 ki marcham. All 9 screens center UI
 
 const urlsToCache = [
     './',
@@ -8,6 +8,7 @@ const urlsToCache = [
     './spell-it.html', 
     './juju-car-race.html', 
     './balloon-pop-edu.html',
+    './temple-run.html',
     './fruits.html',           // 🔥 V12-03 Updated - center
     './pet-animals.html',      // 🔥 V12-03 Updated - center
     './wild-animals.html',     // 🔥 V12-03 Updated - center
