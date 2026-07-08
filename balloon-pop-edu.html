@@ -16,7 +16,7 @@ html,body{height:100%;margin:0;background:linear-gradient(var(--sky) 0 70%,var(-
 .mode-btn{background:#fff;color:#1e40af;border:0;border-radius:20px;padding:14px 28px;font-weight:900;font-size:18px;box-shadow:0 6px 15px rgba(0,0,0,.3)}
 .mode-btn.active{background:#1e40af;color:#fff}
 
-.balloons{position:absolute;inset:0;padding:100px 20px 140px 20px} /* 🔥 Top 100px, Bottom 140px - kindhaki dhincham */
+.balloons{position:absolute;inset:0;padding:140px 20px 120px 20px} /* 🔥 Top 140px - green deggara nundi start */
 .balloon{position:absolute;width:80px;height:100px;cursor:pointer;user-select:none;animation:float 5s ease-in-out infinite;transition:transform .2s}
 @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 .balloon svg{width:100%;height:100%;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))}
@@ -39,7 +39,7 @@ html,body{height:100%;margin:0;background:linear-gradient(var(--sky) 0 70%,var(-
 </div>
 
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12.04');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12.05');}
 
 const colors = ['#ef4444','#3b82f6','#10b981','#f59e0b','#a855f7','#ec4899','#06b6d4','#f97316'];
 const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -77,11 +77,11 @@ function spawnBalloons(){
   const container = document.getElementById('balloons');
   container.innerHTML = '';
   
-  // 🔥 Grid Layout - Gap pencham, kindhaki dhincham
+  // 🔥 Green area nundi start avvalante h ni taggincham
   const cols = 4; 
   const rows = Math.ceil(count / cols);
   const w = window.innerWidth;
-  const h = window.innerHeight - 240; // 🔥 200 -> 240. Inka kindhaki space
+  const h = window.innerHeight - 280; // 🔥 240 -> 280. Inka kindhaki vachindi
   const cellW = w / cols;
   const cellH = h / rows;
 
@@ -93,7 +93,6 @@ function spawnBalloons(){
     
     const col = i % cols;
     const row = Math.floor(i / cols);
-    // 🔥 Gap kosam random range taggincham
     b.style.left = (col * cellW + 20) + 'px';
     b.style.top = (row * cellH + 20) + 'px';
     b.style.animationDelay = Math.random()*4 + 's';
@@ -116,7 +115,7 @@ function popBalloon(el, text){
   el.classList.add('pop');
   score += 10;
   updateScore();
-  speak(text); // 🔥 Just "A" or "1" matrame
+  speak(text);
   setTimeout(()=>el.remove(), 250);
 }
 
@@ -134,7 +133,7 @@ function speak(t){
     
     speechSynthesis.speak(u);
   }
-  }
+}
 
 spawnBalloons();
 </script>
