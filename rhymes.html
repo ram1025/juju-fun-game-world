@@ -4,17 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="./manifest.json?v=134"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=136"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#A855F7">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
-.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
+  body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff} /* 🔥 justify-content:center */
+
+.header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px} /* 🔥 margin 15->10 */
 .back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
-.page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:0 0 auto;display:flex;flex-direction:column} /* 🔥 flex:1 -> flex:0 0 auto */
-.rhyme-box{width:100%;max-height:300px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s} /* 🔥 max-height for center layout */
+
+.page-heading{font-size:22px;font-weight:900;color:#fff;background:rgba(0,0,0,.15);padding:10px 20px;border-radius:15px;text-align:center} /* 🔥 Box lo pettam */
+
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;margin-top:10px} /* 🔥 padding 25->20, margin-top add */
+.rhyme-box{width:100%;max-height:280px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s;margin-top:5px} /* 🔥 max-height 300->280, margin-top add */
 .rhyme-box:active{transform:scale(.98)}
 .rhyme-icon{font-size:60px;margin-bottom:10px}
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
@@ -33,7 +36,7 @@
 
   <div class="header">
     <button class="back-btn" onclick="location.href='./dashboard.html#rhymes'">←</button>
-    <div class="page-heading">🎵 Kids Rhymes</div>
+    <div class="page-heading">🎵 Kids Rhymes</div> <!-- 🔥 Ippudu box lo undi -->
   </div>
 
   <div class="card">
@@ -73,7 +76,7 @@ three bags full.
 One for my master,
 One for my dame,
 And one for the little boy,
-who lives down the lane`}, // 🔥 FULL LYRICS UPDATED
+who lives down the lane`},
 
     {icon:'🚌', title:'Wheels on the Bus', audio: './wheels-on-bus.mp3', text:`The wheels on the bus go 'round and 'round
 'Round and 'round, 'round and 'round
