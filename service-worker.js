@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v12-01'; // 🔥 V11-21 nunchi V12-01 ki marcham. All UI updates
+const CACHE_NAME = 'juju-fun-world-v12-03'; // 🔥 V12-01 nunchi V12-03 ki marcham. All 9 screens center UI
 
 const urlsToCache = [
     './',
@@ -8,11 +8,11 @@ const urlsToCache = [
     './spell-it.html', 
     './juju-car-race.html', 
     './balloon-pop-edu.html',
-    './fruits.html',           // 🔥 Updated
-    './pet-animals.html',      // 🔥 Updated
-    './wild-animals.html',     // 🔥 Updated
-    './vegetables.html',       // 🔥 Updated
-    './vehicles.html',         // 🔥 Updated
+    './fruits.html',           // 🔥 V12-03 Updated - center
+    './pet-animals.html',      // 🔥 V12-03 Updated - center
+    './wild-animals.html',     // 🔥 V12-03 Updated - center
+    './vegetables.html',       // 🔥 V12-03 Updated - center
+    './vehicles.html',         // 🔥 V12-03 Updated - center
     './matching.html',
     './drag-drop.html', 
     './addition.html',
@@ -21,9 +21,9 @@ const urlsToCache = [
     './painting.html',
     './free-draw.html',
     './rhymes.html',
-    './body-parts.html',       // 🔥 Updated
-    './colors.html',           // 🔥 Updated
-    './color-mixing.html',     // 🔥 Updated
+    './body-parts.html',       // 🔥 V12-03 Updated - center
+    './colors.html',           // 🔥 V12-03 Updated - center
+    './color-mixing.html',     // 🔥 V12-03 Updated - center
     './shapes.html',
     './manifest.json',
     './icon-192.png',
@@ -62,7 +62,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v11-21 anni delete
+                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v12-01 anni delete
                    .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
