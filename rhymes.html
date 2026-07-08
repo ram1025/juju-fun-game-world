@@ -14,11 +14,16 @@
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2)}
 .page-heading{font-size:22px;font-weight:900;color:#7C3AED;margin-bottom:15px;}
 
-.rhyme-box{width:100%;min-height:220px;max-height:300px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s}
+.rhyme-box{width:100%;min-height:220px;max-height:300px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:12px;padding:20px;transition:transform.1s}
 .rhyme-box:active{transform:scale(.98)}
 .rhyme-icon{font-size:60px;margin-bottom:10px}
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
 .rhyme-text{font-size:17px;font-weight:700;color:#4B5563;line-height:1.6;white-space:pre-line}
+
+.audio-controls{margin-bottom:15px}
+.play-btn{background:#A855F7;color:#fff;border:0;border-radius:25px;padding:10px 22px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
+.play-btn:active{transform:scale(.95)}
+.play-btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
 
 .controls{display:flex;gap:12px;justify-content:center}
 .btn{background:#A855F7;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED;flex:1}
@@ -41,6 +46,12 @@
       </div>
     </div>
 
+    <!-- 🔥 NEW: PLAY BUTTON + AUDIO -->
+    <div class="audio-controls">
+      <button class="play-btn" id="playBtn" onclick="playAudio()">▶️ Play</button>
+      <audio id="rhymeAudio"></audio>
+    </div>
+
     <div class="controls">
       <button class="btn back" onclick="location.href='./dashboard.html'">← Back</button>
       <button class="btn" id="nextBtn" onclick="nextRhyme()">Next ></button>
@@ -54,6 +65,7 @@
     {
       icon:'⭐',
       title:'Twinkle Twinkle',
+      audio: './assets/rhymes/twinkle-twinkle.mp3', // 🔥 MP3 ADD CHESAM
       text:`Twinkle, twinkle, little star,
 How I wonder what you are!
 Up above the world so high,
@@ -64,6 +76,7 @@ How I wonder what you are!`
     {
       icon:'🐑',
       title:'Baa Baa Black Sheep',
+      audio: '', // MP3 ledu
       text:`Baa, baa, black sheep,
 Have you any wool?
 Yes sir, yes sir,
@@ -72,6 +85,7 @@ Three bags full.`
     {
       icon:'🚌',
       title:'Wheels on the Bus',
+      audio: '',
       text:`The wheels on the bus go 'round and 'round
 'Round and 'round, 'round and 'round
 The wheels on the bus go 'round and 'round
@@ -80,62 +94,19 @@ All through the town
 The doors on the bus go open and shut
 Open and shut, open and shut
 The doors on the bus go open and shut
-All through the town
-
-The wipers on the bus go swish, swish, swish
-Swish, swish, swish, swish, swish, swish
-The wipers on the bus go swish, swish, swish
-All through the town
-
-The signals on the bus go blink, blink, blink
-Blink, blink, blink, blink, blink, blink
-The signals on the bus go blink, blink, blink
-All through the town
-
-The horn on the bus goes beep, beep, beep
-Beep, beep, beep, beep, beep, beep
-The horn on the bus goes beep, beep, beep
-All through the town
-
-The motor on the bus goes vroom, vroom, vroom
-Vroom, vroom, vroom, vroom, vroom, vroom
-The motor on the bus goes vroom, vroom, vroom
-All through the town
-
-The people on the bus go up and down
-Up and down, up and down
-The people on the bus go up and down
-All through the town
-
-The babies on the bus go, "Wah, wah, wah"
-"Wah, wah, wah, wah, wah, wah"
-The babies on the bus go, "Wah, wah, wah"
-All through the town
-
-The mommies on the bus go, "Shh, shh, shh"
-"Shh, shh, shh, shh, shh, shh"
-The mommies on the bus go, "Shh, shh, shh"
-All through the town
-
-The daddies on the bus go, "I love you"
-"I love you, I love you"
-The daddies on the bus go, "I love you"
-All through the town
-
-The wheels on the bus go 'round and 'round
-'Round and 'round, 'round and 'round
-The wheels on the bus go 'round and 'round
 All through the town`
     },
     {
       icon:'☀️',
       title:'You Are My Sunshine',
+      audio: '',
       text:`You are my sunshine, my only sunshine,
 You make me happy when skies are grey.`
     },
     {
       icon:'🐰',
       title:'Johnny Johnny',
+      audio: '',
       text:`Johnny, Johnny
 Yes, Papa?
 Eating sugar?
@@ -148,6 +119,7 @@ Ha ha.`
     {
       icon:'🥚',
       title:'Humpty Dumpty',
+      audio: '',
       text:`Humpty Dumpty sat on a wall,
 Humpty Dumpty had a great fall,
 All the king's horses and all the king's men,
@@ -156,6 +128,7 @@ Couldn't put Humpty together again.`
     {
       icon:'🌹',
       title:'Ring-a-Ring O Roses',
+      audio: '',
       text:`Ring-a-ring o'roses
 A pocketful of posies
 Atishoo, atishoo
@@ -172,12 +145,14 @@ We all fall down.`
   const rhymeText = document.getElementById('rhymeText');
   const counter = document.getElementById('counter');
   const nextBtn = document.getElementById('nextBtn');
+  const playBtn = document.getElementById('playBtn');
+  const rhymeAudio = document.getElementById('rhymeAudio');
 
   function speak(text){
     if(synth.speaking){ synth.cancel(); }
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'en-US';
-    utter.rate = 0.75; // Singing speed
+    utter.rate = 0.75;
     utter.pitch = 1.1;
     synth.speak(utter);
   }
@@ -188,7 +163,12 @@ We all fall down.`
     rhymeTitle.textContent = rhyme.title;
     rhymeText.textContent = rhyme.text;
     counter.textContent = `${index + 1} / ${rhymes.length}`;
-    rhymeBox.scrollTop = 0; // Top ki vellipothundi
+    rhymeBox.scrollTop = 0;
+
+    // 🔥 Audio set cheyadam
+    rhymeAudio.src = rhyme.audio;
+    playBtn.style.display = rhyme.audio? 'inline-block' : 'none'; // Audio untey matrame button kanipistundi
+    playBtn.textContent = '▶️ Play';
 
     if(index === rhymes.length - 1){
       nextBtn.disabled = true;
@@ -198,7 +178,7 @@ We all fall down.`
       nextBtn.textContent = 'Next >';
     }
 
-    speak(rhyme.text);
+    speak(rhyme.title); // Title matrame cheptundi. Full text untey bore kottdi
   }
 
   function nextRhyme(){
@@ -206,6 +186,22 @@ We all fall down.`
       currentIndex++;
       loadRhyme(currentIndex);
     }
+  }
+
+  // 🔥 NEW: PLAY AUDIO FUNCTION
+  function playAudio(){
+    if(!rhymeAudio.src) return;
+
+    if(rhymeAudio.paused){
+      rhymeAudio.play();
+      playBtn.textContent = '⏸️ Pause';
+      speak("Playing " + rhymes[currentIndex].title);
+    } else {
+      rhymeAudio.pause();
+      playBtn.textContent = '▶️ Play';
+    }
+
+    rhymeAudio.onended = () => { playBtn.textContent = '▶️ Play'; }
   }
 
   rhymeBox.addEventListener('click', ()=>{
