@@ -4,18 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Drag & Drop - Juju</title>
-<link rel="manifest" href="./manifest.json?v=135"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=136"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#F97316">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:none}
-  body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;padding:15px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center} /* 🔥 center */
-.header{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+  body{font-family:'Nunito',sans-serif;background:#F97316;min-height:100vh;padding:15px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.header{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px} /* 🔥 margin 15->10 */
 .back-btn{background:#fff;color:#F97316;border:0;border-radius:12px;padding:10px 15px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer}
-.title{font-size:20px;font-weight:900;text-shadow:2px 2px 0 rgba(0,0,0,.2)}
+.title{display:none} /* 🔥 Top title hide */
 .score-box{background:rgba(0,0,0,.2);padding:8px 15px;border-radius:12px;font-size:16px;font-weight:900}
-.container{background:#fff;padding:20px;border-radius:25px;width:100%;max-width:400px;margin:0 auto;box-shadow:0 8px 0 rgba(0,0,0,.2)} /* 🔥 max-width 400 */
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px} /* 🔥 2 -> 3 columns */
+.container{background:#fff;padding:20px;border-radius:25px;width:100%;max-width:400px;margin:0 auto;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.container-heading{background:#F97316;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px} /* 🔥 Card lopala heading box */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 .dropzone{background:#F3F4F6;border:3px dashed #D1D5DB;border-radius:20px;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;transition:all.2s}
 .dropzone.hover{border-color:#10B981;background:#D1FAE5;transform:scale(1.05)}
 .dropzone.emoji{font-size:35px;line-height:1;margin-bottom:5px;pointer-events:none}
@@ -37,11 +38,12 @@
 <body>
   <div class="header">
     <button class="back-btn" onclick="location.href='./dashboard.html'">← Back</button>
-    <div class="title">Match Objects!</div>
-    <div class="score-box">Score: <span id="score">0/15</span></div> <!-- 🔥 10 -> 15 -->
+    <div class="score-box">Score: <span id="score">0/15</span></div>
   </div>
 
   <div class="container">
+    <div class="container-heading" id="containerHeading">🖐️ Match Objects!</div> <!-- 🔥 Red mark chesina chotla idhe vastundi -->
+
     <div class="grid" id="dropGrid"></div>
     <div class="draggables" id="dragGrid"></div>
     <div class="win-text" id="winText">🎉 Super! Next Round 👉</div>
@@ -61,7 +63,7 @@
     [{id:'duck', name:'Duck', img:'🦆'},{id:'flower', name:'Flower', img:'🌸'},{id:'book', name:'Book', img:'📚'}]
   ];
 
-  let currentRound = 0;
+  let currentIndex = 0;
   let score = 0;
   let matchedCount = 0;
   let draggedItem = null;
@@ -72,6 +74,7 @@
   const scoreEl = document.getElementById('score');
   const nextBtn = document.getElementById('nextBtn');
   const winText = document.getElementById('winText');
+  const containerHeading = document.getElementById('containerHeading'); // 🔥 new
 
   function speak(text){
     if(synth.speaking){ synth.cancel(); }
@@ -88,6 +91,8 @@
     matchedCount = 0;
     nextBtn.disabled = true;
     winText.style.display = 'none';
+
+    containerHeading.innerHTML = `🖐️ Round ${roundIndex + 1} / ${gameData.length}`; // 🔥 Heading update
 
     items.forEach(item=>{
       const dz = document.createElement('div');
@@ -126,21 +131,21 @@
     e.target.classList.remove('hover');
     const id = e.dataTransfer.getData('text/plain');
     const matchId = e.target.dataset.match;
-    const name = gameData[currentRound].find(x=>x.id===id).name;
+    const name = gameData[currentIndex].find(x=>x.id===id).name;
 
     if(id === matchId &&!e.target.classList.contains('matched')){
       e.target.classList.add('matched');
       document.querySelector(`.draggable[data-id="${id}"]`).classList.add('hidden');
       matchedCount++;
       score++;
-      scoreEl.textContent = `${score}/15`; // 🔥 10 -> 15
+      scoreEl.textContent = `${score}/15`;
 
       speak('Correct! ' + name);
 
-      if(matchedCount === 3){ // 🔥 5 -> 3
+      if(matchedCount === 3){
         winText.style.display = 'block';
         speak('Round Complete!');
-        if(currentRound < gameData.length-1){
+        if(currentIndex < gameData.length-1){
           nextBtn.disabled = false;
         }
       }
@@ -150,11 +155,12 @@
   }
 
   function nextRound(){
-    currentRound++;
-    if(currentRound < gameData.length){
+    currentIndex++;
+    if(currentIndex < gameData.length){
       speak('Next Round');
-      startRound(currentRound);
+      startRound(currentIndex);
     } else {
+      containerHeading.innerHTML = `🎉 Completed!`; // 🔥 Final heading
       winText.textContent = '🎉 15/15 Completed! Well Done!';
       speak('Game Complete. Well Done!');
       nextBtn.style.display = 'none';
@@ -162,7 +168,7 @@
   }
 
   function resetGame(){
-    currentRound = 0;
+    currentIndex = 0;
     score = 0;
     scoreEl.textContent = `0/15`;
     nextBtn.style.display = 'inline-block';
@@ -175,7 +181,7 @@
     if(e.target.closest('.draggable')){
       touchItem = e.target.closest('.draggable');
       touchItem.classList.add('dragging');
-      speak(gameData[currentRound].find(x=>x.id===touchItem.dataset.id).name);
+      speak(gameData[currentIndex].find(x=>x.id===touchItem.dataset.id).name);
     }
   },{passive:true});
   document.addEventListener('touchend', e=>{
