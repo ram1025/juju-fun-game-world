@@ -9,14 +9,15 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#F59E0B;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
+
+  body{font-family:'Nunito',sans-serif;background:#F59E0B;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff;justify-content:flex-start} /* 🔥 flex-start add chesam */
 
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
 .back-btn{position:absolute;left:0;background:#fff;color:#B45309;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .back-btn:active{transform:scale(.95)}
 .page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
 
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column;justify-content:center}
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:0 0 auto;display:flex;flex-direction:column;justify-content:center} /* 🔥 flex:1 -> flex:0 0 auto */
 .animal-box{width:100%;aspect-ratio:1/1;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s;border:4px solid #fff}
 .animal-box:active{transform:scale(.95)}
 .animal-emoji{font-size:120px;line-height:1;pointer-events:none;filter: drop-shadow(0 2px 4px rgba(0,0,0,.3));}
@@ -31,15 +32,15 @@
 <body>
 
   <div class="header">
-    <button class="back-btn" onclick="location.href='./dashboard.html#colors'">←</button> <!-- 🔥 Dashboard same card ki -->
-    <div class="page-heading">🌈 Colors</div> <!-- 🔥 Top centre heading -->
+    <button class="back-btn" onclick="location.href='./dashboard.html#colors'">←</button>
+    <div class="page-heading">🌈 Colors</div>
   </div>
 
   <div class="card">
     <div class="animal-box" id="animalBox"><div class="animal-emoji" id="animalEmoji">🔴</div></div>
     <div class="animal-name" id="animalName">Red</div>
     <div class="controls">
-      <button class="btn" id="prevBtn" onclick="prevAnimal()">← Previous</button> <!-- 🔥 Prev btn added -->
+      <button class="btn" id="prevBtn" onclick="prevAnimal()">← Previous</button>
       <button class="btn" id="nextBtn" onclick="nextAnimal()">Next →</button>
     </div>
     <div class="counter" id="counter">1 / 10</div>
@@ -80,12 +81,11 @@
     const animal = animals[index];
     animalEmoji.textContent = animal.emoji;
     animalName.textContent = animal.name;
-    animalBox.style.background = animal.bg; // Full Box Color
+    animalBox.style.background = animal.bg;
     counter.textContent = `${index + 1} / ${animals.length}`;
-    prevBtn.disabled = index === 0; // 🔥 Prev enable/disable
+    prevBtn.disabled = index === 0;
     nextBtn.disabled = index === animals.length - 1;
     nextBtn.textContent = index === animals.length - 1? 'Completed ✓' : 'Next →';
-    // 🔥 Next ki voice remove chesam
   }
 
   function prevAnimal(){
@@ -103,7 +103,7 @@
   }
 
   animalBox.addEventListener('click', ()=>{
-    speak(animals[currentIndex].name); // 🔥 Tap cheste matrame voice
+    speak(animals[currentIndex].name);
     animalBox.style.transform = 'scale(0.95)';
     setTimeout(()=>animalBox.style.transform = 'scale(1)', 100);
   });
