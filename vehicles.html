@@ -4,23 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Vehicles - Juju</title>
-<link rel="manifest" href="./manifest.json?v=120">
+<link rel="manifest" href="./manifest.json?v=121"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#3B82F6">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff}
+  body{font-family:'Nunito',sans-serif;background:#3B82F6;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:15px;color:#fff;justify-content:center} /* 🔥 center add chesam */
 
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:15px}
 .back-btn{position:absolute;left:0;background:#fff;color:#1D4ED8;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .back-btn:active{transform:scale(.95)}
-.page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center}
+.page-heading{font-size:22px;font-weight:900;color:#fff;text-align:center} /* 🔥 Top centre heading */
 
-.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:1;display:flex;flex-direction:column;justify-content:center}
+.card{background:#fff;color:#1F2937;border-radius:25px;padding:25px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);flex:0 0 auto;display:flex;flex-direction:column;justify-content:center} /* 🔥 flex:1 -> flex:0 0 auto */
 
 .vehicle-box{width:100%;aspect-ratio:1/1;background:#DBEAFE;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;transition:transform.1s}
 .vehicle-box:active{transform:scale(.95)}
-.vehicle-emoji{font-size:120px;line-height:1;pointer-events:none} /* BIG EMOJI */
+.vehicle-emoji{font-size:120px;line-height:1;pointer-events:none}
 
 .vehicle-name{font-size:28px;font-weight:900;color:#1D4ED8;margin-bottom:20px;min-height:40px}
 
@@ -35,8 +35,8 @@
 <body>
 
   <div class="header">
-    <button class="back-btn" onclick="location.href='./dashboard.html#vehicles'">←</button> <!-- 🔥 Dashboard same card ki -->
-    <div class="page-heading">🚗 Vehicles</div> <!-- 🔥 Top centre heading -->
+    <button class="back-btn" onclick="location.href='./dashboard.html#vehicles'">←</button>
+    <div class="page-heading">🚗 Vehicles</div>
   </div>
 
   <div class="card">
@@ -46,14 +46,13 @@
     <div class="vehicle-name" id="vehicleName">Car</div>
 
     <div class="controls">
-      <button class="btn" id="prevBtn" onclick="prevVehicle()">← Previous</button> <!-- 🔥 Prev btn added -->
+      <button class="btn" id="prevBtn" onclick="prevVehicle()">← Previous</button>
       <button class="btn" id="nextBtn" onclick="nextVehicle()">Next →</button>
     </div>
     <div class="counter" id="counter">1 / 10</div>
   </div>
 
 <script>
-  // ===== 10 VEHICLES EMOJI LIST =====
   const vehicles = [
     {name:'Car', emoji:'🚗'},{name:'Bus', emoji:'🚌'},{name:'Truck', emoji:'🚚'},
     {name:'Train', emoji:'🚂'},{name:'Airplane', emoji:'✈️'},{name:'Boat', emoji:'⛵'},
@@ -84,10 +83,9 @@
     vehicleName.textContent = vehicle.name;
     counter.textContent = `${index + 1} / ${vehicles.length}`;
 
-    prevBtn.disabled = index === 0; // 🔥 Prev enable/disable
+    prevBtn.disabled = index === 0;
     nextBtn.disabled = index === vehicles.length - 1;
     nextBtn.textContent = index === vehicles.length - 1? 'Completed ✓' : 'Next →';
-    // 🔥 Next ki voice remove chesam
   }
 
   function prevVehicle(){
@@ -104,14 +102,12 @@
     }
   }
 
-  // Vehicle Box Touch -> Voice
   vehicleBox.addEventListener('click', ()=>{
-    speak(vehicles[currentIndex].name); // 🔥 Tap cheste matrame voice
+    speak(vehicles[currentIndex].name);
     vehicleBox.style.transform = 'scale(0.95)';
     setTimeout(()=>vehicleBox.style.transform = 'scale(1)', 100);
   });
 
-  // First Load
   loadVehicle(0);
 </script>
 </body>
