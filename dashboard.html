@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Dashboard - Juju Fun World</title>
-<link rel="manifest" href="./manifest.json?v=144">
+<link rel="manifest" href="./manifest.json?v=145"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#3B82F6">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
@@ -50,30 +50,38 @@
     <button class="sidebar-btn" id="logoutBtn" style="color:#EF4444;">🚪 Logout</button>
   </div>
   <div class="profile-section">
-    <img src="./icon-192.png?v=144" class="avatar" id="avatar">
-    <div class="name" id="name">JUJU</div>
+    <img src="./icon-192.png?v=145" class="avatar" id="avatar">
+    <div class="name" id="name">JU</div>
     <div class="sub">Swipe Left/Right 👉</div>
 
     <div class="carousel-wrapper" id="carousel">
       <div class="carousel-track" id="track">
 
-        <!-- ===== SLIDE 1: A B C D ===== -->
+        <!-- ===== SLIDE 1: A B C ===== -->
         <div class="carousel-page"><div class="grid">
+          <div class="card blue" onclick="location.href='./addition.html'"><div class="card-icon">➕</div><div class="card-title">Addition</div></div>
           <div class="card blue" onclick="location.href='./alphabets.html'"><div class="card-icon">abc</div><div class="card-title">Alphabets</div></div>
+          <div class="card yellow" onclick="location.href='./balloon-pop-edu.html?v=11-3'"><div class="card-icon">🎈</div><div class="card-title">Balloon Pop Edu</div></div>
           <div class="card yellow" onclick="location.href='./body-parts.html'"><div class="card-icon">👂</div><div class="card-title">Body Parts</div></div>
-          <div class="card green" onclick="location.href='./colors.html'"><div class="card-icon">🎨</div><div class="card-title">Colors</div></div>
-          <div class="card purple" onclick="location.href='./color-mixing.html'"><div class="card-icon">🧪</div><div class="card-title">Color Mix</div></div>
         </div></div>
 
-        <!-- ===== SLIDE 2: D F M N ===== -->
+        <!-- ===== SLIDE 2: C D F F ===== -->
         <div class="carousel-page"><div class="grid">
+          <div class="card green" onclick="location.href='./colors.html'"><div class="card-icon">🎨</div><div class="card-title">Colors</div></div>
+          <div class="card purple" onclick="location.href='./color-mixing.html'"><div class="card-icon">🧪</div><div class="card-title">Color Mix</div></div>
           <div class="card pink" onclick="location.href='./drag-drop.html'"><div class="card-icon">🖐️</div><div class="card-title">Drag & Drop</div></div>
+          <div class="card pink" onclick="location.href='./free-draw.html?v=172'"><div class="card-icon">🎨</div><div class="card-title">Free Draw</div></div>
+        </div></div>
+
+        <!-- ===== SLIDE 3: F J M N ===== -->
+        <div class="carousel-page"><div class="grid">
           <div class="card orange" onclick="location.href='./fruits.html'"><div class="card-icon">🍎</div><div class="card-title">Fruits</div></div>
+          <div class="card violet" onclick="location.href='./juju-car-race.html?v=11-4'"><div class="card-icon">🚗</div><div class="card-title">Juju Car Race</div></div>
           <div class="card green" onclick="location.href='./matching.html'"><div class="card-icon">🧩</div><div class="card-title">Matching</div></div>
           <div class="card green" onclick="location.href='./numbers.html'"><div class="card-icon">🔢</div><div class="card-title">Numbers</div></div>
         </div></div>
 
-        <!-- ===== SLIDE 3: P R S V ===== -->
+        <!-- ===== SLIDE 4: P P R S ===== -->
         <div class="carousel-page"><div class="grid">
           <div class="card pink" onclick="location.href='./painting.html'"><div class="card-icon">🎨</div><div class="card-title">Paint Letter</div></div>
           <div class="card purple" onclick="location.href='./pet-animals.html'"><div class="card-icon">🐶</div><div class="card-title">Pet Animals</div></div>
@@ -81,29 +89,21 @@
           <div class="card yellow" onclick="location.href='./shapes.html'"><div class="card-icon">⭐</div><div class="card-title">Shapes</div></div>
         </div></div>
 
-        <!-- ===== SLIDE 4: V W A ===== -->
+        <!-- ===== SLIDE 5: S V V W ===== -->
         <div class="carousel-page"><div class="grid">
+          <div class="card violet" onclick="location.href='./spell-it.html?v=173'"><div class="card-icon">🧩</div><div class="card-title">Spell It!</div></div>
           <div class="card blue" onclick="location.href='./vehicles.html'"><div class="card-icon">🚗</div><div class="card-title">Vehicles</div></div>
           <div class="card purple" onclick="location.href='./vegetables.html'"><div class="card-icon">🥕</div><div class="card-title">Vegetables</div></div>
           <div class="card orange" onclick="location.href='./wild-animals.html'"><div class="card-icon">🦁</div><div class="card-title">Wild Animals</div></div>
-          <div class="card pink" onclick="location.href='./addition.html'"><div class="card-icon">➕</div><div class="card-title">Addition</div></div>
         </div></div>
-
-        <!-- ===== SLIDE 5: F C ===== -->
-<div class="carousel-page"><div class="grid">
-  <div class="card pink" onclick="location.href='./free-draw.html?v=172'"><div class="card-icon">🎨</div><div class="card-title">Free Draw</div></div>
-  <div class="card violet" onclick="location.href='./spell-it.html?v=173'"><div class="card-icon">🧩</div><div class="card-title">Spell It!</div></div>
- <div class="card violet" onclick="location.href='./juju-car-race.html?v=11-4'"><div class="card-icon">🚗</div><div class="card-title">Juju Car Race</div></div>
-  <div class="card pink" onclick="location.href='./balloon-pop-edu.html?v=11-3'"><div class="card-icon">🎈</div><div class="card-title">Balloon Pop Edu</div></div>
-</div></div>
 
       </div>
     </div>
     <div class="dots" id="dots"></div>
   </div>
 <script>
-  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12-01');}
-  document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JUJU';
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js?v=12-06');}
+  document.getElementById('name').textContent=localStorage.getItem('jujuName')||'JU';
   document.getElementById('avatar').src=localStorage.getItem('jujuAvatar')||'./icon-192.png';
   function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
   document.addEventListener('click',(e)=>{const s=document.getElementById('sidebar');const h=document.querySelector('.hamburger');if(!s.contains(e.target)&&!h.contains(e.target)){s.classList.remove('active')}})
@@ -147,4 +147,4 @@ document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&currentPage<pag
 
 </script>
 </body>
-</html>
+  </html>
