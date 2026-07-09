@@ -8,8 +8,8 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 #game{width:100%;height:100vh;display:block}
-.hud{position:fixed;top:0;left:0;right:0;height:60px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:5;background:rgba(0,0,0,.6)}
-.btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;text-decoration:none}
+.hud{position:fixed;top:0;left:0;right:0;height:60px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:10;background:rgba(0,0,0,.7)} /* z-index:10 chesam */
+.btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;text-decoration:none;z-index:11;pointer-events:auto} /* pointer-events add */
 .score{color:#fff;font-weight:900;font-size:28px}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:999}
 .start-btn{background:#10b981;color:#fff;border:0;padding:18px 50px;border-radius:15px;font-weight:900;font-size:22px}
@@ -18,7 +18,7 @@ body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 </head>
 <body>
 <div class="hud">
-  <a href="./dashboard.html" class="btn">← Back</a>
+  <a href="./dashboard.html" class="btn" onclick="event.stopPropagation()">← Back</a> <!-- 🔥 IDHI KEY FIX -->
   <div class="score" id="score">0</div>
 </div>
 
@@ -27,7 +27,7 @@ body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 
 <div class="overlay" id="startScreen">
   <h1>🏎️ JUJU CAR RACE</h1>
-  <p style="margin:20px 0">Tap START to play</p>
+  <p style="margin:20px 0">Tap to Start</p>
   <button class="start-btn" onclick="startGame()">START</button>
 </div>
 
@@ -43,21 +43,23 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight - 60;
 
-// SOUNDS
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioCtx;
 function playSound(type){
-  if(audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.connect(gain); gain.connect(audioCtx.destination);
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
 
-  if(type === 'start'){ osc.frequency.value = 600; gain.gain.setValueAtTime(0.3, audioCtx.currentTime); }
-  if(type === 'coin'){ osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); }
-  if(type === 'crash'){ osc.frequency.setValueAtTime(150, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(0.5, audioCtx.currentTime); }
+    if(type === 'start'){ osc.frequency.value = 600; gain.gain.setValueAtTime(0.3, audioCtx.currentTime); }
+    if(type === 'coin'){ osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); }
+    if(type === 'crash'){ osc.frequency.setValueAtTime(150, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(0.5, audioCtx.currentTime); }
 
-  osc.start();
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
-  osc.stop(audioCtx.currentTime + 0.6);
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+    osc.stop(audioCtx.currentTime + 0.6);
+  }catch(e){}
 }
 
 let gameRunning = false;
@@ -101,25 +103,25 @@ function drawCoin(x,y){
 }
 
 function spawnEnemy(){
-  const types = ['car','truck','bus','bike']; // 🔥 ALL VEHICLES
+  const types = ['car','truck','bus','bike'];
   const colors = ['#3b82f6','#10b981','#a855f7','#f59e0b','#ef4444'];
-  let count = Math.random()<0.5?1:2, used=[]; // Gap ekkuva
+  let count = Math.random()<0.5?1:2, used=[];
   for(let i=0;i<count;i++){
     let lane; do{lane=Math.floor(Math.random()*3);}while(used.includes(lane)); used.push(lane);
-    enemies.push({lane:lane, x:lanes, y:-100-i*300, color:colors[Math.floor(Math.random()*5)], type:types[Math.floor(Math.random()*4)]});
+    enemies.push({x:lanes[lane], y:-100-i*300, color:colors[Math.floor(Math.random()*5)], type:types[Math.floor(Math.random()*4)]}); // 🔥 lanes[lane] fix
   }
 }
 
 function spawnCoin(){
   let lane = Math.floor(Math.random()*3);
-  coins.push({lane:lane, x:lanes, y:-50});
+  coins.push({x:lanes[lane], y:-50}); // 🔥 lanes[lane] fix
 }
 
 function update(){
   if(!gameRunning) return;
   speed = 8 + Math.floor(score/500);
 
-  if(Date.now()-lastSpawn>1500){lastSpawn=Date.now();spawnEnemy();} // 1.5 sec gap
+  if(Date.now()-lastSpawn>1500){lastSpawn=Date.now();spawnEnemy();}
   if(Date.now()-lastCoin>2200){lastCoin=Date.now();spawnCoin();}
 
   enemies.forEach((e,i)=>{
@@ -146,16 +148,13 @@ function render(){
   drawRoad();
   enemies.forEach(e=>drawVehicle(e.x,e.y,e.color,e.type));
   coins.forEach(c=>drawCoin(c.x,c.y));
-  if(gameRunning){
-    player.x = lanes[player.lane];
-    drawVehicle(player.x,canvas.height-120,'#ef4444','car');
-  }
+  player.x = lanes[player.lane];
+  drawVehicle(player.x,canvas.height-120,'#ef4444','car');
 }
 
 function gameLoop(){ update(); render(); requestAnimationFrame(gameLoop); }
 
 function startGame(){
-  if(audioCtx.state === 'suspended') audioCtx.resume();
   gameRunning=true; score=0; enemies=[]; coins=[];
   speed=8; document.getElementById('startScreen').style.display='none';
   document.getElementById('score').textContent=0; setLanes(); playSound('start');
@@ -182,7 +181,8 @@ canvas.addEventListener('touchstart',e=>{
   else if(x>canvas.width*2/3){if(player.lane<2)player.lane++;}
 },{passive:false});
 
-setLanes(); gameLoop();
+setLanes();
+gameLoop();
 </script>
 </body>
 </html>
