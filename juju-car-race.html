@@ -6,22 +6,22 @@
 <title>Juju Car Race</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#0f172a;overflow:hidden;font-family:system-ui}
+body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none} /* FIX 1: touch-action none */
 canvas{display:block;width:100%;height:100vh;background:linear-gradient(#1e40af 0%, #0f172a 40%)}
-.hud{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;z-index:10}
+.hud{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;z-index:10;pointer-events:none} /* FIX 2 */
+.hud.btn{pointer-events:auto} /* Only back button clickable */
 .btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;text-decoration:none}
 .score{color:#fff;font-weight:900;font-size:24px;text-shadow:0 2px 6px #000}
 .overlay{position:absolute;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:30;text-align:center;padding:20px}
-.overlay h1{font-size:28px;margin-bottom:15px}
 .vehicle-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px}
-.vehicle-btn{background:#1f2937;border:3px solid #374151;border-radius:20px;padding:15px;cursor:pointer;transition:.2s}
+.vehicle-btn{background:#1f2937;border:3px solid #374151;border-radius:20px;padding:15px;cursor:pointer}
 .vehicle-btn.active{border-color:#10b981;background:#064e3b;transform:scale(1.05)}
 .vehicle-btn div{font-size:45px;margin-bottom:8px}
 .vehicle-btn p{font-weight:900;font-size:16px}
 .overlay button{background:#10b981;color:#fff;border:0;padding:15px 40px;border-radius:15px;font-weight:900;font-size:20px}
 .score-popup{position:absolute;color:#fbbf24;font-weight:900;font-size:20px;animation:floatUp 1s forwards;pointer-events:none;z-index:5}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px)}}
-.instructions{position:absolute;bottom:20px;width:100%;text-align:center;color:#fff;font-weight:900;font-size:14px;text-shadow:0 2px 4px #000;z-index:10}
+.instructions{position:absolute;bottom:20px;width:100%;text-align:center;color:#fff;font-weight:900;font-size:14px;text-shadow:0 2px 4px #000;z-index:10;pointer-events:none}
 </style>
 </head>
 <body>
@@ -148,7 +148,6 @@ function drawRoad(){
 function drawVehicle(x, y, type, color='#ef4444'){
   ctx.save();
   ctx.translate(x, y);
-
   if(type === 'car'){
     ctx.fillStyle = color; ctx.fillRect(-25, -45, 50, 90);
     ctx.fillStyle = '#1e3a8a'; ctx.fillRect(-20, -35, 40, 25); ctx.fillRect(-20, 10, 40, 25);
@@ -187,24 +186,19 @@ function drawCoin(coin){
   ctx.restore();
 }
 
-// 🔥 MULTI VEHICLE SPAWN LOGIC
 function spawnTrafficWave(){
   const types = ['car', 'bike', 'truck', 'bus'];
   const colors = ['#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ef4444'];
-
-  // 30% chance: 1 vehicle, 50% chance: 2 vehicles, 20% chance: 3 vehicles
   let vehicleCount = Math.random() < 0.3? 1 : Math.random() < 0.8? 2 : 3;
   let usedLanes = [];
-
   for(let i = 0; i < vehicleCount; i++){
     let lane;
     do{ lane = Math.floor(Math.random() * 3); } while(usedLanes.includes(lane));
     usedLanes.push(lane);
-
     enemies.push({
       lane: lane,
       x: lanes,
-      y: -120 - i * 100, // gap between vehicles
+      y: -120 - i * 100,
       type: types[Math.floor(Math.random() * 4)],
       color: colors[Math.floor(Math.random() * 5)]
     });
@@ -221,10 +215,9 @@ function update(){
   speed = baseSpeed;
   if(engineOsc) engineOsc.frequency.setValueAtTime(100 + speed * 5, audioCtx.currentTime);
 
-  // Spawn logic - Traffic wave
   if(Date.now() - lastSpawn > 1200){
     lastSpawn = Date.now();
-    if(Math.random() < 0.7) spawnTrafficWave(); // Multi vehicles
+    if(Math.random() < 0.7) spawnTrafficWave();
     if(Math.random() < 0.4) spawnCoin();
   }
 
@@ -286,14 +279,22 @@ function restartGame(){
   gameRunning = true; initAudio(); gameLoop();
 }
 
-// Touch Controls
-canvas.addEventListener('touchstart', e => {
+// 🔥 FIX 3: Better Touch Handler
+function handleTouch(e){
+  e.preventDefault(); // Important
   if(!gameRunning) return;
   let x = e.touches[0].clientX;
-  if(x < canvas.width / 3){ if(player.lane > 0) player.lane--; }
-  else if(x > canvas.width * 2 / 3){ if(player.lane < 2) player.lane++; }
-  else{ playHorn(); }
-});
+  if(x < canvas.width / 3){
+    if(player.lane > 0) player.lane--; // Left
+  } else if(x > canvas.width * 2 / 3){
+    if(player.lane < 2) player.lane++; // Right
+  } else {
+    playHorn(); // Middle
+  }
+}
+
+canvas.addEventListener('touchstart', handleTouch, {passive: false});
+canvas.addEventListener('click', handleTouch); // PC testing kosam
 </script>
 </body>
 </html>
