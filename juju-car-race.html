@@ -6,19 +6,24 @@
 <title>Juju Car Race</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none} /* FIX 1: touch-action none */
+body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 canvas{display:block;width:100%;height:100vh;background:linear-gradient(#1e40af 0%, #0f172a 40%)}
-.hud{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;z-index:10;pointer-events:none} /* FIX 2 */
-.hud.btn{pointer-events:auto} /* Only back button clickable */
+
+/* FIX 1: HUD and Road gap */
+.hud{position:absolute;top:0;left:0;right:0;height:60px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:10;background:rgba(0,0,0,.4);backdrop-filter:blur(10px)}
 .btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;text-decoration:none}
 .score{color:#fff;font-weight:900;font-size:24px;text-shadow:0 2px 6px #000}
-.overlay{position:absolute;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:30;text-align:center;padding:20px}
+
+.game-area{position:absolute;top:60px;bottom:0;left:0;right:0;overflow:hidden} /* FIX 2: Road starts below HUD */
+
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:30;text-align:center;padding:20px}
+.overlay h1{font-size:28px;margin-bottom:15px}
 .vehicle-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px}
 .vehicle-btn{background:#1f2937;border:3px solid #374151;border-radius:20px;padding:15px;cursor:pointer}
 .vehicle-btn.active{border-color:#10b981;background:#064e3b;transform:scale(1.05)}
 .vehicle-btn div{font-size:45px;margin-bottom:8px}
 .vehicle-btn p{font-weight:900;font-size:16px}
-.overlay button{background:#10b981;color:#fff;border:0;padding:15px 40px;border-radius:15px;font-weight:900;font-size:20px}
+.start-btn{background:#10b981;color:#fff;border:0;padding:18px 50px;border-radius:15px;font-weight:900;font-size:22px;box-shadow:0 0 20px #10b981}
 .score-popup{position:absolute;color:#fbbf24;font-weight:900;font-size:20px;animation:floatUp 1s forwards;pointer-events:none;z-index:5}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-50px)}}
 .instructions{position:absolute;bottom:20px;width:100%;text-align:center;color:#fff;font-weight:900;font-size:14px;text-shadow:0 2px 4px #000;z-index:10;pointer-events:none}
@@ -30,33 +35,37 @@ canvas{display:block;width:100%;height:100vh;background:linear-gradient(#1e40af 
   <div class="score" id="score">0</div>
 </div>
 
-<canvas id="game"></canvas>
-<div class="instructions">Tap Left = Left Lane | Tap Right = Right Lane | Tap Middle = Horn</div>
+<div class="game-area">
+  <canvas id="game"></canvas>
+  <div class="instructions">Tap Left = Left Lane | Tap Right = Right Lane | Tap Middle = Horn</div>
+</div>
 
 <div class="overlay" id="startScreen">
-  <h1>🏎️ CHOOSE YOUR VEHICLE</h1>
+  <h1>🏎️ JUJU CAR RACE</h1>
   <div class="vehicle-grid">
     <div class="vehicle-btn active" id="carBtn" onclick="selectVehicle('car')"><div>🚗</div><p>CAR</p></div>
     <div class="vehicle-btn" id="bikeBtn" onclick="selectVehicle('bike')"><div>🏍️</div><p>BIKE</p></div>
     <div class="vehicle-btn" id="truckBtn" onclick="selectVehicle('truck')"><div>🚚</div><p>TRUCK</p></div>
     <div class="vehicle-btn" id="busBtn" onclick="selectVehicle('bus')"><div>🚌</div><p>BUS</p></div>
   </div>
-  <button onclick="startGame()">START GAME</button>
+  <button class="start-btn" onclick="startGame()">START</button> <!-- 🔥 BIG START BUTTON -->
 </div>
 
 <div class="overlay" id="gameOver" style="display:none">
   <h1>💥 CRASHED!</h1>
   <p id="finalScore" style="font-size:24px;font-weight:900">Score: 0</p>
-  <button onclick="restartGame()">PLAY AGAIN</button>
+  <button class="start-btn" onclick="restartGame()">PLAY AGAIN</button>
 </div>
 
 <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const gameArea = document.querySelector('.game-area');
+canvas.width = gameArea.clientWidth; // FIX: Canvas size = game-area
+canvas.height = gameArea.clientHeight;
 
 let gameRunning = false;
+let gameStarted = false; // 🔥 NEW: Game started flag
 let audioCtx, engineOsc, coinSound;
 let selectedVehicle = 'car';
 
@@ -85,6 +94,7 @@ function selectVehicle(type){
 }
 
 function initAudio(){
+  if(audioCtx) return;
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   engineOsc = audioCtx.createOscillator();
   const engineGain = audioCtx.createGain();
@@ -122,7 +132,7 @@ function showScorePopup(x, y, text){
   popup.className = 'score-popup';
   popup.textContent = text;
   popup.style.left = x + 'px';
-  popup.style.top = y + 'px';
+  popup.style.top = y + 60 + 'px'; // +60 for HUD offset
   document.body.appendChild(popup);
   setTimeout(() => popup.remove(), 1000);
 }
@@ -187,6 +197,7 @@ function drawCoin(coin){
 }
 
 function spawnTrafficWave(){
+  if(!gameStarted) return; // 🔥 FIX: Don't spawn before start
   const types = ['car', 'bike', 'truck', 'bus'];
   const colors = ['#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ef4444'];
   let vehicleCount = Math.random() < 0.3? 1 : Math.random() < 0.8? 2 : 3;
@@ -206,12 +217,13 @@ function spawnTrafficWave(){
 }
 
 function spawnCoin(){
+  if(!gameStarted) return; // 🔥 FIX
   const lane = Math.floor(Math.random() * 3);
   coins.push({x: lanes, y: -100});
 }
 
 function update(){
-  if(!gameRunning) return;
+  if(!gameRunning ||!gameStarted) return; // 🔥 FIX
   speed = baseSpeed;
   if(engineOsc) engineOsc.frequency.setValueAtTime(100 + speed * 5, audioCtx.currentTime);
 
@@ -249,25 +261,26 @@ function render(){
   drawRoad();
   coins.forEach(drawCoin);
   enemies.forEach(e => drawVehicle(e.x, e.y, e.type, e.color));
-  drawVehicle(player.x, player.y, selectedVehicle, '#ef4444');
+  if(gameStarted) drawVehicle(player.x, player.y, selectedVehicle, '#ef4444'); // 🔥 Only draw player after start
 }
 
 function gameLoop(){
   update();
   render();
-  if(gameRunning) requestAnimationFrame(gameLoop);
+  requestAnimationFrame(gameLoop); // Always run loop
 }
 
 function startGame(){
-  if(!audioCtx) initAudio();
-  document.getElementById('startScreen').style.display = 'none';
+  initAudio();
+  gameStarted = true; // 🔥 Start the game
   gameRunning = true;
+  document.getElementById('startScreen').style.display = 'none';
   initLanes();
-  gameLoop();
 }
 
 function endGame(){
   gameRunning = false;
+  gameStarted = false;
   document.getElementById('finalScore').textContent = `Score: ${score}`;
   document.getElementById('gameOver').style.display = 'flex';
 }
@@ -276,25 +289,28 @@ function restartGame(){
   enemies = []; coins = []; score = 0; speed = 8; baseSpeed = 8;
   player.lane = 1; player.x = lanes[1];
   document.getElementById('gameOver').style.display = 'none';
-  gameRunning = true; initAudio(); gameLoop();
+  gameStarted = true;
+  gameRunning = true;
+  initAudio();
 }
 
-// 🔥 FIX 3: Better Touch Handler
 function handleTouch(e){
-  e.preventDefault(); // Important
-  if(!gameRunning) return;
+  e.preventDefault();
+  if(!gameRunning ||!gameStarted) return; // 🔥 FIX
   let x = e.touches[0].clientX;
   if(x < canvas.width / 3){
-    if(player.lane > 0) player.lane--; // Left
+    if(player.lane > 0) player.lane--;
   } else if(x > canvas.width * 2 / 3){
-    if(player.lane < 2) player.lane++; // Right
+    if(player.lane < 2) player.lane++;
   } else {
-    playHorn(); // Middle
+    playHorn();
   }
 }
 
 canvas.addEventListener('touchstart', handleTouch, {passive: false});
-canvas.addEventListener('click', handleTouch); // PC testing kosam
+canvas.addEventListener('click', handleTouch);
+
+gameLoop(); // Start loop but paused
 </script>
 </body>
 </html>
