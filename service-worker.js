@@ -6,7 +6,7 @@ const urlsToCache = [
     './dashboard.html', 
     './profile.html',
     './spell-it.html', 
-    './juju-car-race-v16-2.html', // 🔥 v15 nunchi v16 ki marcham
+    './juju-car-race.html', // 🔥 v15 nunchi v16 ki marcham
     './balloon-pop-edu.html',
     './temple-run.html',
     './fruits.html',           
