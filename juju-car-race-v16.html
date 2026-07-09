@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Juju Car Race v16.1</title>
+<title>Juju Car Race v16.2</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
@@ -13,9 +13,9 @@ body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 .score{color:#fff;font-weight:900;font-size:28px}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:999}
 .vehicle-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0}
-.vehicle-btn{background:#1f2937;border:3px solid #374151;border-radius:20px;padding:15px;text-align:center;cursor:pointer}
+.vehicle-btn{background:#1f2937;border:3px solid #374151;border-radius:20px;padding:15px;text-align:center}
 .vehicle-btn.active{border-color:#10b981;background:#064e3b}
-.start-btn{background:#10b981;color:#fff;border:0;padding:18px 50px;border-radius:15px;font-weight:900;font-size:22px;cursor:pointer}
+.start-btn{background:#10b981;color:#fff;border:0;padding:18px 50px;border-radius:15px;font-weight:900;font-size:22px}
 .instructions{position:fixed;bottom:20px;width:100%;text-align:center;color:#fff;font-weight:900;font-size:14px}
 </style>
 </head>
@@ -26,10 +26,10 @@ body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 </div>
 
 <canvas id="game"></canvas>
-<div class="instructions">Tap Left = Left | Tap Right = Right | Tap Middle = Horn</div>
+<div class="instructions">Tap Left | Tap Right</div>
 
 <div class="overlay" id="startScreen">
-  <h1>🏎️ JUJU CAR RACE v16.1</h1>
+  <h1>🏎️ JUJU CAR RACE v16.2</h1>
   <div class="vehicle-grid">
     <div class="vehicle-btn active" id="carBtn" onclick="selectVehicle('car')"><div style="font-size:40px">🚗</div><p>CAR</p></div>
     <div class="vehicle-btn" id="bikeBtn" onclick="selectVehicle('bike')"><div style="font-size:40px">🏍️</div><p>BIKE</p></div>
@@ -51,11 +51,11 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight - 60;
 
-let gameRunning = false, gameStarted = false;
+let gameRunning = false;
 let selectedVehicle = 'car';
 let player = {lane: 1, x: 0};
 let lanes = [], enemies = [];
-let score = 0, speed = 8, baseSpeed = 8, lastSpawn = 0;
+let score = 0, speed = 8, lastSpawn = 0;
 const roadWidth = 300;
 
 function setLanes(){
@@ -71,88 +71,43 @@ function selectVehicle(type){
 }
 
 function drawRoad(){
-  // Grass
-  ctx.fillStyle = '#166534';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
+  ctx.fillStyle = '#166534'; ctx.fillRect(0,0,canvas.width,canvas.height);
   const roadX = (canvas.width - roadWidth)/2;
-  // Yellow borders
-  ctx.fillStyle = '#fbbf24';
-  ctx.fillRect(roadX-10,0,10,canvas.height);
-  ctx.fillRect(roadX+roadWidth,0,10,canvas.height);
-
-  // Road
-  ctx.fillStyle = '#1f2937';
-  ctx.fillRect(roadX,0,roadWidth,canvas.height);
-
-  // Dashed lines
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 4;
-  ctx.setLineDash([30,30]);
-  ctx.lineDashOffset = -Date.now()/20*speed;
-
-  ctx.beginPath();
-  ctx.moveTo(roadX + roadWidth/3,0);
-  ctx.lineTo(roadX + roadWidth/3,canvas.height);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(roadX + roadWidth*2/3,0);
-  ctx.lineTo(roadX + roadWidth*2/3,canvas.height);
-  ctx.stroke();
+  ctx.fillStyle = '#fbbf24'; ctx.fillRect(roadX-10,0,10,canvas.height); ctx.fillRect(roadX+roadWidth,0,10,canvas.height);
+  ctx.fillStyle = '#1f2937'; ctx.fillRect(roadX,0,roadWidth,canvas.height);
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.setLineDash([30,30]); ctx.lineDashOffset = -Date.now()/20*speed;
+  ctx.beginPath();ctx.moveTo(roadX + roadWidth/3,0);ctx.lineTo(roadX + roadWidth/3,canvas.height);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(roadX + roadWidth*2/3,0);ctx.lineTo(roadX + roadWidth*2/3,canvas.height);ctx.stroke();
   ctx.setLineDash([]);
 }
 
-function drawVehicle(x,y,type,color){
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.fillStyle=color;
-  ctx.fillRect(-25,-45,50,90); // body
-  ctx.fillStyle='#1e3a8a';
-  ctx.fillRect(-20,-35,40,20); // window1
-  ctx.fillRect(-20,15,40,20); // window2
-  ctx.fillStyle='black';
-  ctx.fillRect(-28,-30,8,15); // wheel
-  ctx.fillRect(20,-30,8,15);
-  ctx.fillRect(-28,30,8,15);
-  ctx.fillRect(20,30,8,15);
+function drawVehicle(x,y,color){
+  ctx.save(); ctx.translate(x,y);
+  ctx.fillStyle=color; ctx.fillRect(-25,-45,50,90);
+  ctx.fillStyle='#1e3a8a'; ctx.fillRect(-20,-35,40,20); ctx.fillRect(-20,15,40,20);
+  ctx.fillStyle='black'; ctx.fillRect(-28,-30,8,15); ctx.fillRect(20,-30,8,15); ctx.fillRect(-28,30,8,15); ctx.fillRect(20,30,8,15);
   ctx.restore();
 }
 
 function spawnEnemy(){
-  if(!gameStarted) return;
-  const types = ['car','bike','truck','bus'];
   const colors = ['#3b82f6','#10b981','#a855f7','#f59e0b'];
-  let count = Math.random()<0.3?1:Math.random()<0.8?2:3;
-  let used=[];
+  let count = Math.random()<0.5?1:2, used=[];
   for(let i=0;i<count;i++){
-    let lane;
-    do{lane=Math.floor(Math.random()*3);}while(used.includes(lane));
-    used.push(lane);
-    enemies.push({
-      lane:lane,
-      x:lanes[lane], // 🔥 Exact lane lo spawn
-      y:-100-i*120,
-      type:types[Math.floor(Math.random()*4)],
-      color:colors[Math.floor(Math.random()*4)]
-    });
+    let lane; do{lane=Math.floor(Math.random()*3);}while(used.includes(lane)); used.push(lane);
+    enemies.push({lane:lane, x:lanes[lane], y:-100-i*150, color:colors[Math.floor(Math.random()*4)]});
   }
 }
 
 function update(){
-  if(!gameRunning||!gameStarted) return;
+  if(!gameRunning) return; // 🔥 FIX: gameRunning unte matrame run
 
-  speed = baseSpeed + Math.floor(score/500); // Speed increases
-  if(Date.now()-lastSpawn>1000){lastSpawn=Date.now();if(Math.random()<0.7)spawnEnemy();}
+  speed = 8 + Math.floor(score/500);
+  if(Date.now()-lastSpawn>900){lastSpawn=Date.now();spawnEnemy();}
 
   enemies.forEach((e,i)=>{
     e.y+=speed;
     if(e.y>canvas.height+120)enemies.splice(i,1);
-
-    // 🔥 FIXED COLLISION - No ghost hit
-    if(Math.abs(e.x-player.x)<45 && Math.abs(e.y-(canvas.height-120))<80){
-      endGame();
-    }
+    if(Math.abs(e.x-player.x)<45 && Math.abs(e.y-(canvas.height-120))<80)endGame();
   });
 
   score++;
@@ -162,11 +117,10 @@ function update(){
 function render(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   drawRoad();
-  enemies.forEach(e=>drawVehicle(e.x,e.y,e.type,e.color));
-
-  if(gameStarted){
-    player.x = lanes[player.lane]; // 🔥 NO MORE GHOST CAR - Instant jump
-    drawVehicle(player.x,canvas.height-120,selectedVehicle,'#ef4444');
+  enemies.forEach(e=>drawVehicle(e.x,e.y,e.color));
+  if(gameRunning){
+    player.x = lanes[player.lane];
+    drawVehicle(player.x,canvas.height-120,'#ef4444');
   }
 }
 
@@ -176,12 +130,11 @@ function gameLoop(){
   requestAnimationFrame(gameLoop);
 }
 
-function startGame(){
-  gameStarted=true;
+function startGame(){ // 🔥 MAIN FIX
   gameRunning=true;
   score=0;
   enemies=[];
-  baseSpeed=8;
+  speed=8;
   document.getElementById('startScreen').style.display='none';
   document.getElementById('score').textContent=0;
   setLanes();
@@ -189,7 +142,6 @@ function startGame(){
 
 function endGame(){
   gameRunning=false;
-  gameStarted=false;
   document.getElementById('finalScore').textContent=`Score: ${score}`;
   document.getElementById('gameOver').style.display='flex';
 }
@@ -197,26 +149,21 @@ function endGame(){
 function restartGame(){
   enemies=[];
   score=0;
-  baseSpeed=8;
+  speed=8;
   player.lane=1;
-  player.x=lanes[1];
   document.getElementById('gameOver').style.display='none';
-  gameStarted=true;
   gameRunning=true;
 }
 
-// Controls
 canvas.addEventListener('touchstart',e=>{
   e.preventDefault();
-  if(!gameRunning||!gameStarted)return;
+  if(!gameRunning)return;
   let x=e.touches[0].clientX;
-  if(x<canvas.width/3){
-    if(player.lane>0)player.lane--;
-  }else if(x>canvas.width*2/3){
-    if(player.lane<2)player.lane++;
-  }
+  if(x<canvas.width/3){if(player.lane>0)player.lane--;}
+  else if(x>canvas.width*2/3){if(player.lane<2)player.lane++;}
 },{passive:false});
 
+setLanes();
 gameLoop();
 </script>
 </body>
