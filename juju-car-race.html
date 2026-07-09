@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Juju Car Race v17-2</title>
+<title>Juju Car Race</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
@@ -26,8 +26,8 @@ body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 <div class="instructions">Tap Left | Tap Right</div>
 
 <div class="overlay" id="startScreen">
-  <h1>🏎️ JUJU CAR RACE v17.2</h1>
-  <p style="margin:20px 0">Tap START to enable sound</p>
+  <h1>🏎️ JUJU CAR RACE</h1>
+  <p style="margin:20px 0">Tap START to play</p>
   <button class="start-btn" onclick="startGame()">START</button>
 </div>
 
@@ -43,7 +43,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight - 60;
 
-// SOUNDS - LOUDER
+// SOUNDS
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function playSound(type){
   if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -51,23 +51,12 @@ function playSound(type){
   const gain = audioCtx.createGain();
   osc.connect(gain); gain.connect(audioCtx.destination);
 
-  if(type === 'start'){
-    osc.frequency.value = 600;
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-  }
-  if(type === 'coin'){
-    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-  }
-  if(type === 'crash'){
-    osc.frequency.setValueAtTime(150, audioCtx.currentTime); // 🔥 LOW BOOM
-    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5);
-    gain.gain.setValueAtTime(0.5, audioCtx.currentTime); // LOUDER
-  }
+  if(type === 'start'){ osc.frequency.value = 600; gain.gain.setValueAtTime(0.3, audioCtx.currentTime); }
+  if(type === 'coin'){ osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); }
+  if(type === 'crash'){ osc.frequency.setValueAtTime(150, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(0.5, audioCtx.currentTime); }
 
   osc.start();
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6); // LONGER
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
   osc.stop(audioCtx.currentTime + 0.6);
 }
 
@@ -112,12 +101,12 @@ function drawCoin(x,y){
 }
 
 function spawnEnemy(){
-  const types = ['car','truck','bus','bike'];
+  const types = ['car','truck','bus','bike']; // 🔥 ALL VEHICLES
   const colors = ['#3b82f6','#10b981','#a855f7','#f59e0b','#ef4444'];
-  let count = Math.random()<0.6?1:2, used=[];
+  let count = Math.random()<0.5?1:2, used=[]; // Gap ekkuva
   for(let i=0;i<count;i++){
     let lane; do{lane=Math.floor(Math.random()*3);}while(used.includes(lane)); used.push(lane);
-    enemies.push({lane:lane, x:lanes, y:-100-i*250, color:colors[Math.floor(Math.random()*5)], type:types[Math.floor(Math.random()*4)]});
+    enemies.push({lane:lane, x:lanes, y:-100-i*300, color:colors[Math.floor(Math.random()*5)], type:types[Math.floor(Math.random()*4)]});
   }
 }
 
@@ -130,8 +119,8 @@ function update(){
   if(!gameRunning) return;
   speed = 8 + Math.floor(score/500);
 
-  if(Date.now()-lastSpawn>1400){lastSpawn=Date.now();spawnEnemy();}
-  if(Date.now()-lastCoin>2000){lastCoin=Date.now();spawnCoin();}
+  if(Date.now()-lastSpawn>1500){lastSpawn=Date.now();spawnEnemy();} // 1.5 sec gap
+  if(Date.now()-lastCoin>2200){lastCoin=Date.now();spawnCoin();}
 
   enemies.forEach((e,i)=>{
     e.y+=speed;
@@ -173,13 +162,11 @@ function startGame(){
 }
 
 function endGame(){
-  if(!gameRunning) return; // double crash avoid
+  if(!gameRunning) return;
   gameRunning=false;
-  playSound('crash'); // 🔥 IDHI IKKADA KACHITAMGA CALL AVTUNDI
+  playSound('crash');
   document.getElementById('finalScore').textContent=`Score: ${score}`;
-  setTimeout(()=>{ // 100ms delay ichi screen chupistam
-    document.getElementById('gameOver').style.display='flex';
-  }, 100);
+  setTimeout(()=>{ document.getElementById('gameOver').style.display='flex'; }, 100);
 }
 
 function restartGame(){
