@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Drag & Drop - Juju</title>
-<link rel="manifest" href="./manifest.json?v=152"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=153"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#F97316">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -15,7 +15,7 @@
 .title{display:none}
 .score-box{background:rgba(0,0,0,.2);padding:8px 15px;border-radius:12px;font-size:16px;font-weight:900}
 .container{background:#fff;padding:20px;border-radius:25px;width:100%;max-width:400px;margin:0 auto;box-shadow:0 8px 0 rgba(0,0,0,.2)}
-.container-heading{color:#F97316;font-size:20px;font-weight:900;padding:8px 0;margin-bottom:15px;text-align:center} /* 🔥 Plain text, no bg, no emoji */
+.container-heading{color:#F97316;font-size:20px;font-weight:900;padding:8px 0;margin-bottom:15px;text-align:center}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 .dropzone{background:#F3F4F6;border:3px dashed #D1D5DB;border-radius:20px;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;transition:all.2s}
 .dropzone.hover{border-color:#10B981;background:#D1FAE5;transform:scale(1.05)}
@@ -29,7 +29,7 @@
 .draggable span{font-size:12px;font-weight:800;color:#F97316;pointer-events:none}
 .draggable.dragging{opacity:0.4}
 .draggable.hidden{display:none}
-.controls{display:flex;gap:10px;justify-content:center;margin-top:15px}
+.controls{display:flex;gap:10px;justify-content:center;margin-top:15px;flex-wrap:wrap} /* 🔥 flex-wrap added */
 .btn{background:#F97316;color:#fff;border:0;border-radius:12px;padding:12px 20px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #EA580C}
 .btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
 .win-text{text-align:center;font-size:22px;font-weight:900;color:#10B981;margin-top:10px;display:none}
@@ -42,12 +42,13 @@
   </div>
 
   <div class="container">
-    <div class="container-heading" id="containerHeading">Match Objects!</div> <!-- 🔥 Plain text -->
+    <div class="container-heading" id="containerHeading">Match Objects!</div>
 
     <div class="grid" id="dropGrid"></div>
     <div class="draggables" id="dragGrid"></div>
     <div class="win-text" id="winText">🎉 Super! Next Round 👉</div>
     <div class="controls">
+      <button class="btn" id="prevBtn" onclick="prevRound()">⬅️ Previous</button> <!-- 🔥 NEW -->
       <button class="btn" id="resetBtn" onclick="resetGame()">🔄 Reset</button>
       <button class="btn" id="nextBtn" onclick="nextRound()" disabled>Next ></button>
     </div>
@@ -72,6 +73,7 @@
   const dragGrid = document.getElementById('dragGrid');
   const scoreEl = document.getElementById('score');
   const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn'); // 🔥 NEW
   const winText = document.getElementById('winText');
   const containerHeading = document.getElementById('containerHeading');
 
@@ -91,7 +93,9 @@
     nextBtn.disabled = true;
     winText.style.display = 'none';
 
-    containerHeading.textContent = `Match Objects!`; // 🔥 Fixed: emoji teesesam, static text
+    prevBtn.disabled = (roundIndex === 0); // 🔥 1st round lo Previous disable
+
+    containerHeading.textContent = `Match Objects! Round ${roundIndex + 1}/${gameData.length}`; // 🔥 Round number added
 
     items.forEach(item=>{
       const dz = document.createElement('div');
@@ -159,10 +163,19 @@
       speak('Next Round');
       startRound(currentIndex);
     } else {
-      containerHeading.textContent = `Completed!`; // 🔥 Fixed
+      containerHeading.textContent = `Completed!`;
       winText.textContent = '🎉 15/15 Completed! Well Done!';
       speak('Game Complete. Well Done!');
       nextBtn.style.display = 'none';
+      prevBtn.style.display = 'none'; // 🔥 Game ayipogane hide
+    }
+  }
+
+  function prevRound(){ // 🔥 NEW FUNCTION
+    if(currentIndex > 0){
+      currentIndex--;
+      speak('Previous Round');
+      startRound(currentIndex);
     }
   }
 
@@ -171,6 +184,7 @@
     score = 0;
     scoreEl.textContent = `0/15`;
     nextBtn.style.display = 'inline-block';
+    prevBtn.style.display = 'inline-block'; // 🔥 Show again
     speak('Game Reset');
     startRound(0);
   }
