@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v18-3'; // 🔥 v12-15 nunchi v16 ki marcham
+const CACHE_NAME = 'juju-fun-world-v18-4'; // 🔥 Version bump
 
 const urlsToCache = [
     './',
@@ -6,8 +6,8 @@ const urlsToCache = [
     './dashboard.html', 
     './profile.html',
     './spell-it.html', 
-    './juju-car-race.html', // 🔥 v15 nunchi v16 ki marcham
-    './balloon-pop-edu.html',
+    './juju-car-race.html',
+    './balloon-pop-edu.html?v=154', // 🔥 Balloon game updated
     './temple-run.html',
     './fruits.html',           
     './pet-animals.html',      
@@ -15,7 +15,7 @@ const urlsToCache = [
     './vegetables.html',       
     './vehicles.html',         
     './matching.html',
-    './drag-drop.html', 
+    './drag-drop.html?v=154', // 🔥 Previous btn add chesam kada
     './addition.html',
     './alphabets.html',
     './numbers.html',
@@ -26,7 +26,7 @@ const urlsToCache = [
     './colors.html',           
     './color-mixing.html',     
     './shapes.html',
-    './manifest.json',
+    './manifest.json?v=154',
     './icon-192.png',
     './icon-512.png',
 
@@ -63,7 +63,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v12-15 anni delete
+                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v18-3 anni delete
                    .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
