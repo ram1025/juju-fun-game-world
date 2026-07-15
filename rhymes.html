@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="./manifest.json?v=137"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=138"> <!-- 🔥 version bump -->
 <meta name="theme-color" content="#A855F7">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -12,13 +12,13 @@
   body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
 .back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
-.page-heading{display:none} /* 🔥 Top heading hide chesam */
+.page-heading{display:none}
 
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;margin-top:10px}
 .rhyme-box{width:100%;max-height:280px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s;margin-top:5px}
 .rhyme-box:active{transform:scale(.98)}
 
-.card-heading{background:#A855F7;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px} /* 🔥 Card lopala heading box */
+.card-heading{background:#A855F7;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px}
 .rhyme-icon{font-size:60px;margin-bottom:10px}
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
 .rhyme-text{font-size:17px;font-weight:700;color:#4B5563;line-height:1.7;white-space:pre-line}
@@ -39,7 +39,7 @@
   </div>
 
   <div class="card">
-    <div class="card-heading" id="cardHeading">🎵 Kids Rhymes</div> <!-- 🔥 Red mark chesina chotla idhe vastundi -->
+    <div class="card-heading" id="cardHeading">🎵 Kids Rhymes</div>
 
     <div class="rhyme-box" id="rhymeBox">
       <div>
@@ -58,7 +58,7 @@
       <button class="btn" id="prevBtn" onclick="prevRhyme()">← Previous</button>
       <button class="btn" id="nextBtn" onclick="nextRhyme()">Next →</button>
     </div>
-    <div class="counter" id="counter">1 / 7</div>
+    <div class="counter" id="counter">1 / 8</div> <!-- 🔥 7 nunchi 8 ki marcham -->
   </div>
 
 <script>
@@ -89,7 +89,24 @@ You make me happy`},
     {icon:'🐰', title:'Johnny Johnny', audio: './johnny-johnny.mp3', text:`Johnny, Johnny
 Yes, Papa?`},
     {icon:'🥚', title:'Humpty Dumpty', audio: './humpty-dumpty.mp3', text:`Humpty Dumpty sat on a wall`},
-    {icon:'🌹', title:'Ring-a-Ring O Roses', audio: './ring-ring-roses.mp3', text:`Ring a ring o'roses`}
+    {icon:'🌹', title:'Ring-a-Ring O Roses', audio: './ring-ring-roses.mp3', text:`Ring a ring o'roses`},
+
+    // 🔥 NEW: ABC Song Added
+    {icon:'🔤', title:'ABC Song', audio: './abc-rhyme.mp3', text:`A for Apple, B for Ball,
+C for Cat, D for Doll,
+E for Elephant, F for Fish,
+G for Goat, H for Hen,
+I for Ice-cream, J for Jug,
+K for Kite, L for Lion,
+M for Monkey, N for Nest,
+O for Orange, P for Pen,
+Q for Queen, R for Rat,
+S for Sun, T for Tiger,
+U for Umbrella, V for Van,
+W for Water, X for Xylophone,
+Y for Yak, Z for Zebra.
+Now I know my ABC,
+Next time won't you sing with me?`}
   ];
 
   let currentIndex = 0;
@@ -97,7 +114,7 @@ Yes, Papa?`},
   const rhymeIcon = document.getElementById('rhymeIcon');
   const rhymeTitle = document.getElementById('rhymeTitle');
   const rhymeText = document.getElementById('rhymeText');
-  const cardHeading = document.getElementById('cardHeading'); // 🔥 new
+  const cardHeading = document.getElementById('cardHeading');
   const counter = document.getElementById('counter');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
@@ -109,7 +126,7 @@ Yes, Papa?`},
     rhymeIcon.textContent = rhyme.icon;
     rhymeTitle.textContent = rhyme.title;
     rhymeText.textContent = rhyme.text;
-    cardHeading.innerHTML = `${rhyme.icon} ${rhyme.title}`; // 🔥 Heading kuda rhyme name tho update avthundi
+    cardHeading.innerHTML = `${rhyme.icon} ${rhyme.title}`;
     counter.textContent = `${index + 1} / ${rhymes.length}`;
     rhymeBox.scrollTop = 0;
     rhymeAudio.pause();
