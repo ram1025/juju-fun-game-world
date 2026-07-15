@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v18-4'; // 🔥 Version bump
+const CACHE_NAME = 'juju-fun-world-v18-5'; // 🔥 Version bump for ABC song
 
 const urlsToCache = [
     './',
@@ -7,7 +7,7 @@ const urlsToCache = [
     './profile.html',
     './spell-it.html', 
     './juju-car-race.html',
-    './balloon-pop-edu.html?v=154', // 🔥 Balloon game updated
+    './balloon-pop-edu.html?v=155', // 🔥 bump
     './temple-run.html',
     './fruits.html',           
     './pet-animals.html',      
@@ -15,22 +15,22 @@ const urlsToCache = [
     './vegetables.html',       
     './vehicles.html',         
     './matching.html',
-    './drag-drop.html?v=154', // 🔥 Previous btn add chesam kada
+    './drag-drop.html?v=155', // 🔥 bump
     './addition.html',
     './alphabets.html',
     './numbers.html',
     './painting.html',
     './free-draw.html',
-    './rhymes.html',
+    './rhymes.html?v=138', // 🔥 rhymes updated with ABC
     './body-parts.html',       
     './colors.html',           
     './color-mixing.html',     
     './shapes.html',
-    './manifest.json?v=154',
+    './manifest.json?v=138', // 🔥 purple theme
     './icon-192.png',
     './icon-512.png',
 
-    // ===== ALL 7 RHYME MP3s =====
+    // ===== ALL 8 RHYME MP3s ===== 🔥 ABC added
     './twinkle-twinkle.mp3',
     './baa-baa-black.mp3',
     './wheels-on-bus.mp3',
@@ -38,6 +38,7 @@ const urlsToCache = [
     './johnny-johnny.mp3',
     './humpty-dumpty.mp3',
     './ring-ring-roses.mp3',
+    './abc-rhyme.mp3', // 🔥 NEW - ABC Song
 
     // Assets
     './assets/img/a.png',
@@ -63,7 +64,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v18-3 anni delete
+                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v18-4 anni delete
                    .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
