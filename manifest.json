@@ -1,12 +1,13 @@
 {
   "name": "Juju Fun World",
   "short_name": "Juju",
-  "description": "Fun learning app for kids",
-  "start_url": "./",
+  "description": "Fun learning app for kids with rhymes, alphabets, games",
+  "start_url": "./dashboard.html",
   "display": "standalone",
-  "background_color": "#3B82F6",
-  "theme_color": "#3B82F6",
+  "background_color": "#A855F7",
+  "theme_color": "#A855F7",
   "orientation": "portrait",
+  "scope": "./",
   "icons": [
     {
       "src": "./icon-192.png",
