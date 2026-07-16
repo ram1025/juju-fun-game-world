@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="./manifest.json?v=138"> <!-- 🔥 version bump -->
+<link rel="manifest" href="./manifest.json?v=139">
 <meta name="theme-color" content="#A855F7">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -22,9 +22,12 @@
 .rhyme-icon{font-size:60px;margin-bottom:10px}
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
 .rhyme-text{font-size:17px;font-weight:700;color:#4B5563;line-height:1.7;white-space:pre-line}
-.audio-controls{margin-bottom:15px}
-.play-btn{width:100%;background:#A855F7;color:#fff;border:0;border-radius:25px;padding:14px 22px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
-.play-btn:active{transform:scale(.97)}
+.audio-controls{display:flex;gap:10px;margin-bottom:15px}
+.play-btn{flex:2;background:#A855F7;color:#fff;border:0;border-radius:25px;padding:14px 22px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
+.repeat-btn{flex:1;background:#F59E0B;color:#fff;border:0;border-radius:25px;padding:14px 10px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #D97706}
+.play-btn:active,.repeat-btn:active{transform:scale(.97)}
+.repeat-btn.active{background:#10B981;box-shadow:0 4px 0 #059669} /* green when repeat on */
+
 .controls{display:flex;gap:12px;justify-content:center;margin-bottom:10px}
 .btn{flex:1;background:#A855F7;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
 .btn:active{transform:scale(.97)}
@@ -51,14 +54,15 @@
 
     <div class="audio-controls">
       <button class="play-btn" id="playBtn" onclick="playAudio()">▶️ Play</button>
-      <audio id="rhymeAudio"></audio>
+      <button class="repeat-btn" id="repeatBtn" onclick="toggleRepeat()">🔁 Repeat</button>
+      <audio id="rhymeAudio" playsinline webkit-playsinline preload="auto"></audio>
     </div>
 
     <div class="controls">
       <button class="btn" id="prevBtn" onclick="prevRhyme()">← Previous</button>
       <button class="btn" id="nextBtn" onclick="nextRhyme()">Next →</button>
     </div>
-    <div class="counter" id="counter">1 / 8</div> <!-- 🔥 7 nunchi 8 ki marcham -->
+    <div class="counter" id="counter">1 / 8</div>
   </div>
 
 <script>
@@ -71,45 +75,17 @@ Twinkle, twinkle, little star,
 How I wonder what you are!`},
 
     {icon:'🐑', title:'Baa Baa Black Sheep', audio: './baa-baa-black.mp3', text:`Baa, baa, black sheep,
-have you any wool?
-Yes, sir, yes, sir,
-three bags full.
-One for my master,
-One for my dame,
-And one for the little boy,
-who lives down the lane`},
-
-    {icon:'🚌', title:'Wheels on the Bus', audio: './wheels-on-bus.mp3', text:`The wheels on the bus go 'round and 'round
-'Round and 'round, 'round and 'round
-The wheels on the bus go 'round and 'round
-All through the town`},
-    {icon:'☀️', title:'You Are My Sunshine', audio: './you-are-my-sunshine.mp3', text:`You are my sunshine
-My only sunshine
-You make me happy`},
-    {icon:'🐰', title:'Johnny Johnny', audio: './johnny-johnny.mp3', text:`Johnny, Johnny
-Yes, Papa?`},
+have you any wool?`},
+    {icon:'🚌', title:'Wheels on the Bus', audio: './wheels-on-bus.mp3', text:`The wheels on the bus go 'round and 'round`},
+    {icon:'☀️', title:'You Are My Sunshine', audio: './you-are-my-sunshine.mp3', text:`You are my sunshine`},
+    {icon:'🐰', title:'Johnny Johnny', audio: './johnny-johnny.mp3', text:`Johnny, Johnny`},
     {icon:'🥚', title:'Humpty Dumpty', audio: './humpty-dumpty.mp3', text:`Humpty Dumpty sat on a wall`},
     {icon:'🌹', title:'Ring-a-Ring O Roses', audio: './ring-ring-roses.mp3', text:`Ring a ring o'roses`},
-
-    // 🔥 NEW: ABC Song Added
-    {icon:'🔤', title:'ABC Song', audio: './abc-rhyme.mp3', text:`A for Apple, B for Ball,
-C for Cat, D for Doll,
-E for Elephant, F for Fish,
-G for Goat, H for Hen,
-I for Ice-cream, J for Jug,
-K for Kite, L for Lion,
-M for Monkey, N for Nest,
-O for Orange, P for Pen,
-Q for Queen, R for Rat,
-S for Sun, T for Tiger,
-U for Umbrella, V for Van,
-W for Water, X for Xylophone,
-Y for Yak, Z for Zebra.
-Now I know my ABC,
-Next time won't you sing with me?`}
+    {icon:'🔤', title:'ABC Song', audio: './abc-rhyme.mp3', text:`A for Apple, B for Ball...`}
   ];
 
   let currentIndex = 0;
+  let isRepeat = false;
   const rhymeBox = document.getElementById('rhymeBox');
   const rhymeIcon = document.getElementById('rhymeIcon');
   const rhymeTitle = document.getElementById('rhymeTitle');
@@ -119,6 +95,7 @@ Next time won't you sing with me?`}
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
   const playBtn = document.getElementById('playBtn');
+  const repeatBtn = document.getElementById('repeatBtn');
   const rhymeAudio = document.getElementById('rhymeAudio');
 
   function loadRhyme(index){
@@ -131,6 +108,7 @@ Next time won't you sing with me?`}
     rhymeBox.scrollTop = 0;
     rhymeAudio.pause();
     rhymeAudio.src = rhyme.audio;
+    rhymeAudio.loop = isRepeat; // repeat logic
     playBtn.textContent = '▶️ Play';
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === rhymes.length - 1;
@@ -139,6 +117,13 @@ Next time won't you sing with me?`}
 
   function prevRhyme(){ if(currentIndex > 0){ currentIndex--; loadRhyme(currentIndex); } }
   function nextRhyme(){ if(currentIndex < rhymes.length - 1){ currentIndex++; loadRhyme(currentIndex); } }
+
+  function toggleRepeat(){
+    isRepeat =!isRepeat;
+    rhymeAudio.loop = isRepeat;
+    repeatBtn.classList.toggle('active');
+    repeatBtn.textContent = isRepeat? '🔁 On' : '🔁 Repeat';
+  }
 
   function playAudio(){
     if(!rhymeAudio.src) return;
@@ -149,8 +134,17 @@ Next time won't you sing with me?`}
       rhymeAudio.pause();
       playBtn.textContent = '▶️ Play';
     }
-    rhymeAudio.onended = () => { playBtn.textContent = '▶️ Play'; }
+    rhymeAudio.onended = () => {
+      if(!isRepeat) playBtn.textContent = '▶️ Play';
+    }
   }
+
+  // 🔥 LOCK SCREEN AUDIO FIX for iOS + Android
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'visible' &&!rhymeAudio.paused){
+      rhymeAudio.play().catch(()=>{});
+    }
+  });
 
   rhymeBox.addEventListener('click', ()=>{ rhymeBox.style.transform = 'scale(0.98)'; setTimeout(()=>rhymeBox.style.transform = 'scale(1)', 100); });
   loadRhyme(0);
