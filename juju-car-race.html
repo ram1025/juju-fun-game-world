@@ -8,32 +8,44 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 #game{width:100%;height:100vh;display:block}
-.hud{position:fixed;top:0;left:0;right:0;height:60px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:10;background:rgba(0,0,0,.7)} /* z-index:10 chesam */
-.btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;text-decoration:none;z-index:11;pointer-events:auto} /* pointer-events add */
-.score{color:#fff;font-weight:900;font-size:28px}
+.hud{position:fixed;top:0;left:0;right:0;height:70px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:10;background:rgba(0,0,0,.7)}
+.btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;text-decoration:none;z-index:11}
+.score{color:#fff;font-weight:900;font-size:20px;text-align:center}
+.score span{display:block;font-size:12px;color:#a3e635}
+.level{color:#fbbf24;font-weight:900;font-size:22px}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:999}
-.start-btn{background:#10b981;color:#fff;border:0;padding:18px 50px;border-radius:15px;font-weight:900;font-size:22px}
+.start-btn{background:#10b981;color:#fff;border:0;padding:18px 50px;border-radius:15px;font-weight:900;font-size:22px;margin:10px}
 .instructions{position:fixed;bottom:20px;width:100%;text-align:center;color:#fff;font-weight:900;font-size:14px}
+.levelUp{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(16,185,129,.95);padding:30px 50px;border-radius:20px;font-size:40px;font-weight:900;z-index:1000;display:none}
 </style>
 </head>
 <body>
 <div class="hud">
-  <a href="./dashboard.html" class="btn" onclick="event.stopPropagation()">← Back</a> <!-- 🔥 IDHI KEY FIX -->
-  <div class="score" id="score">0</div>
+  <a href="./dashboard.html" class="btn">← Back</a>
+  <div class="score">
+    <span>LEVEL</span>
+    <div class="level" id="level">1</div>
+  </div>
+  <div class="score">
+    <span>SCORE</span>
+    <div id="score">0</div>
+  </div>
 </div>
 
 <canvas id="game"></canvas>
-<div class="instructions">Tap Left | Tap Right</div>
+<div class="instructions">👈 TAP LEFT | TAP RIGHT 👉</div>
+<div class="levelUp" id="levelUp">LEVEL UP!</div>
 
 <div class="overlay" id="startScreen">
-  <h1>🏎️ JUJU CAR RACE</h1>
-  <p style="margin:20px 0">Tap to Start</p>
+  <h1>🏎️ JUJU COIN COLLECTOR</h1>
+  <p style="margin:20px 0;text-align:center">Collect Coins! 10 Coins = Next Level</p>
   <button class="start-btn" onclick="startGame()">START</button>
 </div>
 
-<div class="overlay" id="gameOver" style="display:none">
-  <h1>💥 CRASHED!</h1>
+<div class="overlay" id="gameWin" style="display:none">
+  <h1>🎉 YOU WIN! 🎉</h1>
   <p id="finalScore" style="font-size:28px;font-weight:900;margin:10px 0">Score: 0</p>
+  <p style="margin-bottom:20px">All 10 Levels Complete!</p>
   <button class="start-btn" onclick="restartGame()">PLAY AGAIN</button>
 </div>
 
@@ -41,7 +53,7 @@ body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
-canvas.height = window.innerHeight - 60;
+canvas.height = window.innerHeight - 70;
 
 let audioCtx;
 function playSound(type){
@@ -54,7 +66,8 @@ function playSound(type){
 
     if(type === 'start'){ osc.frequency.value = 600; gain.gain.setValueAtTime(0.3, audioCtx.currentTime); }
     if(type === 'coin'){ osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); }
-    if(type === 'crash'){ osc.frequency.setValueAtTime(150, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(0.5, audioCtx.currentTime); }
+    if(type === 'level'){ osc.frequency.setValueAtTime(400, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3); gain.gain.setValueAtTime(0.4, audioCtx.currentTime); }
+    if(type === 'win'){ osc.frequency.setValueAtTime(500, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.5); gain.gain.setValueAtTime(0.4, audioCtx.currentTime); }
 
     osc.start();
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
@@ -64,9 +77,12 @@ function playSound(type){
 
 let gameRunning = false;
 let player = {lane: 1, x: 0};
-let lanes = [], enemies = [], coins = [];
-let score = 0, speed = 8, lastSpawn = 0, lastCoin = 0;
-const roadWidth = 300;
+let lanes = [], coins = [];
+let score = 0, level = 1, coinsCollected = 0;
+let speed = 6, lastCoin = 0, coinSpawnRate = 1200;
+const roadWidth = 400;
+const coinsPerLevel = 10;
+const maxLevels = 10;
 
 function setLanes(){
   const startX = (canvas.width - roadWidth)/2 + roadWidth/6;
@@ -77,100 +93,110 @@ function setLanes(){
 function drawRoad(){
   ctx.fillStyle = '#166534'; ctx.fillRect(0,0,canvas.width,canvas.height);
   const roadX = (canvas.width - roadWidth)/2;
-  ctx.fillStyle = '#fbbf24'; ctx.fillRect(roadX-10,0,10,canvas.height); ctx.fillRect(roadX+roadWidth,0,10,canvas.height);
+  ctx.fillStyle = '#fbbf24'; ctx.fillRect(roadX-15,0,15,canvas.height); ctx.fillRect(roadX+roadWidth,0,15,canvas.height);
   ctx.fillStyle = '#1f2937'; ctx.fillRect(roadX,0,roadWidth,canvas.height);
-  ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.setLineDash([30,30]); ctx.lineDashOffset = -Date.now()/20*speed;
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; ctx.setLineDash([40,40]); ctx.lineDashOffset = -Date.now()/30*speed;
   ctx.beginPath();ctx.moveTo(roadX + roadWidth/3,0);ctx.lineTo(roadX + roadWidth/3,canvas.height);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(roadX + roadWidth*2/3,0);ctx.lineTo(roadX + roadWidth*2/3,canvas.height);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(roadX + roadWidth*2/3,0);ctx.lineTo(roadX + roadWidth/2/3,canvas.height);ctx.stroke();
   ctx.setLineDash([]);
 }
 
-function drawVehicle(x,y,color,type){
+function drawCar(x,y,color){
   ctx.save(); ctx.translate(x,y);
-  if(type === 'car'){ ctx.fillStyle=color; ctx.fillRect(-25,-45,50,90); ctx.fillStyle='#1e3a8a'; ctx.fillRect(-20,-35,40,20); ctx.fillRect(-20,15,40,20); }
-  if(type === 'truck'){ ctx.fillStyle=color; ctx.fillRect(-30,-60,60,120); ctx.fillStyle='#555'; ctx.fillRect(-25,-50,50,40); }
-  if(type === 'bus'){ ctx.fillStyle=color; ctx.fillRect(-28,-55,56,110); ctx.fillStyle='#ddd'; for(let i=0;i<3;i++) ctx.fillRect(-25,-45+i*25,50,15); }
-  if(type === 'bike'){ ctx.fillStyle=color; ctx.fillRect(-10,-30,20,60); ctx.fillStyle='black'; ctx.fillRect(-15,-25,5,10); ctx.fillRect(10,-25,5,10); }
-  ctx.fillStyle='black'; ctx.fillRect(-28,-30,8,15); ctx.fillRect(20,-30,8,15); ctx.fillRect(-28,30,8,15); ctx.fillRect(20,30,8,15);
+  ctx.fillStyle=color; ctx.fillRect(-35,-50,70,100);
+  ctx.fillStyle='#1e3a8a'; ctx.fillRect(-25,-40,50,25); ctx.fillRect(-25,15,50,25);
+  ctx.fillStyle='black'; ctx.fillRect(-38,-35,10,20); ctx.fillRect(28,-35,10,20);
+  ctx.fillRect(-38,35,10,20); ctx.fillRect(28,35,10,20);
   ctx.restore();
 }
 
-function drawCoin(x,y){
+function drawCoin(x,y,rotate){
   ctx.save(); ctx.translate(x,y);
-  ctx.fillStyle = 'gold'; ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(0,0,8,0,Math.PI*2); ctx.fill();
+  ctx.rotate(rotate);
+  ctx.fillStyle = 'gold'; ctx.beginPath(); ctx.arc(0,0,18,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('$',0,6);
   ctx.restore();
-}
-
-function spawnEnemy(){
-  const types = ['car','truck','bus','bike'];
-  const colors = ['#3b82f6','#10b981','#a855f7','#f59e0b','#ef4444'];
-  let count = Math.random()<0.5?1:2, used=[];
-  for(let i=0;i<count;i++){
-    let lane; do{lane=Math.floor(Math.random()*3);}while(used.includes(lane)); used.push(lane);
-    enemies.push({x:lanes[lane], y:-100-i*300, color:colors[Math.floor(Math.random()*5)], type:types[Math.floor(Math.random()*4)]}); // 🔥 lanes[lane] fix
-  }
 }
 
 function spawnCoin(){
   let lane = Math.floor(Math.random()*3);
-  coins.push({x:lanes[lane], y:-50}); // 🔥 lanes[lane] fix
+  coins.push({x:lanes[lane], y:-80, rotate:0}); // 🔥 BUG FIX: lanes[lane]
+}
+
+function showLevelUp(){
+  const el = document.getElementById('levelUp');
+  el.style.display = 'block';
+  playSound('level');
+  setTimeout(()=>{el.style.display='none';}, 1000);
 }
 
 function update(){
   if(!gameRunning) return;
-  speed = 8 + Math.floor(score/500);
 
-  if(Date.now()-lastSpawn>1500){lastSpawn=Date.now();spawnEnemy();}
-  if(Date.now()-lastCoin>2200){lastCoin=Date.now();spawnCoin();}
+  speed = 6 + level;
+  coinSpawnRate = Math.max(600, 1400 - level*80);
 
-  enemies.forEach((e,i)=>{
-    e.y+=speed;
-    if(e.y>canvas.height+120){ enemies.splice(i,1); }
-    if(Math.abs(e.x-player.x)<45 && Math.abs(e.y-(canvas.height-120))<80) endGame();
-  });
+  if(Date.now()-lastCoin > coinSpawnRate){lastCoin=Date.now();spawnCoin();}
 
   coins.forEach((c,i)=>{
     c.y+=speed;
+    c.rotate += 0.1;
     if(c.y>canvas.height+50) coins.splice(i,1);
-    if(Math.abs(c.x-player.x)<40 && Math.abs(c.y-(canvas.height-120))<60){
+
+    if(Math.abs(c.x-player.x)<60 && Math.abs(c.y-(canvas.height-130))<80){
       coins.splice(i,1);
-      score+=50;
+      score+=10*level;
+      coinsCollected++;
       playSound('coin');
+
+      if(coinsCollected >= coinsPerLevel){
+        coinsCollected = 0;
+        level++;
+        showLevelUp();
+
+        if(level > maxLevels){
+          winGame();
+        }
+      }
     }
   });
 
   document.getElementById('score').textContent=score;
+  document.getElementById('level').textContent=level;
 }
 
 function render(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   drawRoad();
-  enemies.forEach(e=>drawVehicle(e.x,e.y,e.color,e.type));
-  coins.forEach(c=>drawCoin(c.x,c.y));
+  coins.forEach(c=>drawCoin(c.x,c.y,c.rotate));
   player.x = lanes[player.lane];
-  drawVehicle(player.x,canvas.height-120,'#ef4444','car');
+  drawCar(player.x,canvas.height-130,'#ef4444');
+
+  ctx.fillStyle='#fff'; ctx.font='bold 18px Arial'; ctx.textAlign='center';
+  ctx.fillText(`Coins: ${coinsCollected}/${coinsPerLevel}`, canvas.width/2, 30);
 }
 
 function gameLoop(){ update(); render(); requestAnimationFrame(gameLoop); }
 
 function startGame(){
-  gameRunning=true; score=0; enemies=[]; coins=[];
-  speed=8; document.getElementById('startScreen').style.display='none';
-  document.getElementById('score').textContent=0; setLanes(); playSound('start');
+  gameRunning=true; score=0; level=1; coinsCollected=0; coins=[];
+  speed=6; document.getElementById('startScreen').style.display='none';
+  document.getElementById('score').textContent=0;
+  document.getElementById('level').textContent=1;
+  setLanes(); playSound('start');
 }
 
-function endGame(){
-  if(!gameRunning) return;
+function winGame(){
   gameRunning=false;
-  playSound('crash');
+  playSound('win');
   document.getElementById('finalScore').textContent=`Score: ${score}`;
-  setTimeout(()=>{ document.getElementById('gameOver').style.display='flex'; }, 100);
+  setTimeout(()=>{ document.getElementById('gameWin').style.display='flex'; }, 500);
 }
 
 function restartGame(){
-  enemies=[]; coins=[]; score=0; speed=8; player.lane=1;
-  document.getElementById('gameOver').style.display='none'; gameRunning=true;
+  coins=[]; score=0; level=1; coinsCollected=0; speed=6; player.lane=1;
+  document.getElementById('gameWin').style.display='none'; gameRunning=true;
 }
 
 canvas.addEventListener('touchstart',e=>{
@@ -180,6 +206,12 @@ canvas.addEventListener('touchstart',e=>{
   if(x<canvas.width/3){if(player.lane>0)player.lane--;}
   else if(x>canvas.width*2/3){if(player.lane<2)player.lane++;}
 },{passive:false});
+
+document.addEventListener('keydown',e=>{
+  if(!gameRunning)return;
+  if(e.key==='ArrowLeft' && player.lane>0) player.lane--;
+  if(e.key==='ArrowRight' && player.lane<2) player.lane++;
+});
 
 setLanes();
 gameLoop();
