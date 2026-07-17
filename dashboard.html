@@ -37,7 +37,7 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 <div class="header"><button class="menu" onclick="openMenu()">≡</button></div>
 
 <img src="./icon-192.png" class="profile-img" id="profilePic">
-<h1 id="profileName">JU</h1>
+<h1 id="profileName">JUJU</h1>
 <p class="sub">Choose Your Adventure! 🎮</p>
 
 <div class="slider" id="slider"></div>
@@ -65,7 +65,7 @@ const allGames = [
 {name:"Vehicles",file:"./vehicles.html",icon:"🚗",color:"blue"},{name:"Vegetables",file:"./vegetables.html",icon:"🥕",color:"purple"},
 {name:"Wild Animals",file:"./wild-animals.html",icon:"🦁",color:"orange"},
 {name:"Coming Soon",file:"#",icon:"🔒",color:"locked"},{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"},{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"}
-]; // SORT TEESANU. Coming Soon last lo undali
+];
 
 function loadGames(){
  const slider = document.getElementById('slider'); slider.innerHTML = '';
@@ -81,13 +81,16 @@ function loadGames(){
    page += '</div>'; slider.innerHTML += page;
  }
  createDots();
- const lastPage = sessionStorage.getItem('lastDashboardPage') || 0;
- setTimeout(()=>{ slider.scrollLeft = lastPage * slider.offsetWidth; }, 100);
+ 
+ // FIX: localStorage use chesam + 300ms delay
+ const lastPage = parseInt(localStorage.getItem('lastDashboardPage') || 0);
+ setTimeout(()=>{ slider.scrollLeft = lastPage * slider.offsetWidth; }, 300);
 }
 
 function openGame(file){
- if(file === "#"){ alert('Coming Soon! 🚀'); return; } // click cheste alert
- sessionStorage.setItem('lastDashboardPage', Math.round(document.getElementById('slider').scrollLeft / document.getElementById('slider').offsetWidth));
+ if(file === "#"){ alert('Coming Soon! 🚀'); return; }
+ // FIX: localStorage lo save chesam
+ localStorage.setItem('lastDashboardPage', Math.round(document.getElementById('slider').scrollLeft / document.getElementById('slider').offsetWidth));
  location.href = file;
 }
 
@@ -118,7 +121,7 @@ function createDots(){
  })
 }
 
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-12'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-13'); }
 </script>
 </body>
 </html>
