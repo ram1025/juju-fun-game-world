@@ -2,213 +2,141 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Juju Car Race</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JU Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#0f172a;overflow:hidden;font-family:system-ui;touch-action:none}
-#game{width:100%;height:100vh;display:block}
-.hud{position:fixed;top:0;left:0;right:0;height:70px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:10;background:#000}
-.btn{background:#fff;color:#1e40af;border:0;border-radius:12px;padding:8px 14px;font-weight:900;font-size:16px;text-decoration:none}
-.score{color:#fff;font-weight:900;font-size:20px;text-align:center}
-.score span{display:block;font-size:12px;color:#a3e635}
-.level{color:#fbbf24;font-weight:900;font-size:22px}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;z-index:999}
-.start-btn{background:#10b981;color:#fff;border:0;padding:18px 50px;border-radius:15px;font-weight:900;font-size:22px;margin:10px}
-.instructions{position:fixed;bottom:20px;width:100%;text-align:center;color:#fbbf24;font-weight:900;font-size:16px}
-.levelUp{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(16,185,129,.95);padding:30px 50px;border-radius:20px;font-size:40px;font-weight:900;z-index:1000;display:none}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  font-family:'Nunito',sans-serif;
+  color:#fff;
+  min-height:100vh;
+  padding:20px;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+.back{
+  background:#fff;
+  color:#1e40af;
+  border:0;
+  border-radius:12px;
+  padding:10px 20px;
+  font-weight:900;
+  text-decoration:none;
+  font-size:16px;
+}
+h1{
+  text-align:center;
+  color:#fbbf24;
+  font-size:32px;
+  margin-bottom:30px;
+  font-weight:900;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+  max-width:600px;
+  margin:0 auto;
+}
+.card{
+  background:#1e293b;
+  padding:30px 20px;
+  border-radius:20px;
+  text-align:center;
+  cursor:pointer;
+  font-weight:900;
+  font-size:18px;
+  transition:.3s;
+  border:3px solid #334155;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+.card:hover{
+  background:#334155;
+  transform:translateY(-5px);
+  border-color:#fbbf24;
+}
+.card .icon{font-size:40px;display:block;margin-bottom:8px}
 </style>
 </head>
 <body>
-<div class="hud">
-  <a href="./dashboard.html" class="btn">← Back</a>
-  <div class="score">
-    <span>COINS</span>
-    <div class="level" id="coinsText">0/10</div>
+<div class="header">
+  <a href="./index.html" class="back">← Home</a>
+</div>
+
+<h1>🎮 Choose a Game</h1>
+
+<div class="grid">
+  <div class="card" onclick="location.href='./addition.html'">
+    <span class="icon">➕</span>
+    Addition
   </div>
-  <div class="score">
-    <span>LEVEL</span>
-    <div class="level" id="level">1</div>
+  <div class="card" onclick="location.href='./alphabets.html'">
+    <span class="icon">🔤</span>
+    Alphabets
   </div>
-  <div class="score">
-    <span>SCORE</span>
-    <div id="score">0</div>
+  <div class="card" onclick="location.href='./balloon-pop-edu.html'">
+    <span class="icon">🎈</span>
+    Balloon Pop
+  </div>
+  <div class="card" onclick="location.href='./body-parts.html'">
+    <span class="icon">👦</span>
+    Body Parts
+  </div>
+  <div class="card" onclick="location.href='./colors.html'">
+    <span class="icon">🎨</span>
+    Colors
+  </div>
+  <div class="card" onclick="location.href='./free-draw.html'">
+    <span class="icon">🖌️</span>
+    Free Draw
+  </div>
+  <div class="card" onclick="location.href='./fruits.html'">
+    <span class="icon">🍎</span>
+    Fruits
+  </div>
+  <div class="card" onclick="location.href='./juju-car-race.html'">
+    <span class="icon">🏎️</span>
+    Coin Collector
+  </div>
+  <div class="card" onclick="location.href='./matching.html'">
+    <span class="icon">🧩</span>
+    Matching
+  </div>
+  <div class="card" onclick="location.href='./numbers.html'">
+    <span class="icon">🔢</span>
+    Numbers
+  </div>
+  <div class="card" onclick="location.href='./painting.html'">
+    <span class="icon">🎨</span>
+    Painting
+  </div>
+  <div class="card" onclick="location.href='./rhymes.html'">
+    <span class="icon">🎵</span>
+    Rhymes
+  </div>
+  <div class="card" onclick="location.href='./shapes.html'">
+    <span class="icon">🔷</span>
+    Shapes
+  </div>
+  <div class="card" onclick="location.href='./temple-run.html'">
+    <span class="icon">🏃</span>
+    Temple Run
+  </div>
+  <div class="card" onclick="location.href='./vegetables.html'">
+    <span class="icon">🥦</span>
+    Vegetables
+  </div>
+  <div class="card" onclick="location.href='./vehicles.html'">
+    <span class="icon">🚗</span>
+    Vehicles
   </div>
 </div>
 
-<canvas id="game"></canvas>
-<div class="instructions">👈 TAP LEFT | TAP RIGHT 👉</div>
-<div class="levelUp" id="levelUp">LEVEL UP!</div>
-
-<div class="overlay" id="startScreen">
-  <h1>🏎️ JUJU COIN COLLECTOR</h1>
-  <p style="margin:20px 0;text-align:center">Collect Coins! 10 Coins = Next Level</p>
-  <button class="start-btn" onclick="startGame()">START</button>
-</div>
-
-<div class="overlay" id="gameWin" style="display:none">
-  <h1>🎉 YOU WIN! 🎉</h1>
-  <p id="finalScore" style="font-size:28px;font-weight:900;margin:10px 0">Score: 0</p>
-  <p style="margin-bottom:20px">All 10 Levels Complete!</p>
-  <button class="start-btn" onclick="restartGame()">PLAY AGAIN</button>
-</div>
-
-<script>
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight - 70;
-
-let gameRunning = false;
-let player = {lane: 1, x: 0};
-let lanes = [], coins = [];
-let score = 0, level = 1, coinsCollected = 0;
-let speed = 6, lastCoin = 0;
-const roadWidth = 360;
-const coinsPerLevel = 10;
-const maxLevels = 10;
-
-function setLanes(){
-  const roadX = (canvas.width - roadWidth)/2;
-  lanes = [roadX + roadWidth/6, roadX + roadWidth/2, roadX + roadWidth*5/6];
-  player.x = lanes[1];
-}
-
-function drawRoad(){
-  ctx.fillStyle = '#166534'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  const roadX = (canvas.width - roadWidth)/2;
-  ctx.fillStyle = '#fbbf24'; ctx.fillRect(roadX-12,0,12,canvas.height); ctx.fillRect(roadX+roadWidth,0,12,canvas.height);
-  ctx.fillStyle = '#1f2937'; ctx.fillRect(roadX,0,roadWidth,canvas.height);
-
-  ctx.strokeStyle = '#fff'; ctx.lineWidth = 6;
-  ctx.setLineDash([40, 40]);
-  ctx.lineDashOffset = -(Date.now()/25 * speed) % 80;
-
-  ctx.beginPath();
-  ctx.moveTo(roadX + roadWidth/3, 0);
-  ctx.lineTo(roadX + roadWidth/3, canvas.height);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(roadX + roadWidth*2/3, 0);
-  ctx.lineTo(roadX + roadWidth*2/3, canvas.height);
-  ctx.stroke();
-  ctx.setLineDash([]);
-}
-
-function drawCar(x,y){
-  ctx.save(); ctx.translate(x,y);
-  ctx.fillStyle='#ef4444'; ctx.fillRect(-30,-45,60,90);
-  ctx.fillStyle='#1e3a8a'; ctx.fillRect(-22,-35,44,20); ctx.fillRect(-22,15,44,20);
-  ctx.fillStyle='black'; ctx.fillRect(-32,-30,8,15); ctx.fillRect(24,-30,8,15);
-  ctx.fillRect(-32,30,8,15); ctx.fillRect(24,30,8,15);
-  ctx.restore();
-}
-
-function drawCoin(x,y,rotate){
-  ctx.save(); ctx.translate(x,y); ctx.rotate(rotate);
-  ctx.fillStyle = 'gold'; ctx.beginPath(); ctx.arc(0,0,18,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('$',0,6);
-  ctx.restore();
-}
-
-function spawnCoin(){
-  let laneIndex = Math.floor(Math.random()*3);
-  coins.push({x:lanes, y:-60, rotate:0});
-}
-
-function showLevelUp(){
-  const el = document.getElementById('levelUp');
-  el.style.display = 'block';
-  setTimeout(()=>{el.style.display='none';}, 1000);
-}
-
-function update(){
-  if(!gameRunning) return;
-
-  speed = 6 + level;
-  let coinSpawnRate = Math.max(500, 1000 - level*50);
-
-  if(Date.now() - lastCoin > coinSpawnRate){
-    lastCoin = Date.now();
-    spawnCoin();
-  }
-
-  for(let i = coins.length - 1; i >= 0; i--){
-    let c = coins[i];
-    c.y += speed;
-    c.rotate += 0.12;
-
-    if(c.y > canvas.height + 100) {
-      coins.splice(i,1);
-      continue;
-    }
-
-    if(Math.abs(c.x - player.x) < 50 && Math.abs(c.y - (canvas.height-120)) < 60){
-      coins.splice(i,1);
-      score += 10 * level;
-      coinsCollected++;
-
-      if(coinsCollected >= coinsPerLevel){
-        coinsCollected = 0;
-        level++;
-        showLevelUp();
-        if(level > maxLevels){ winGame(); }
-      }
-    }
-  }
-
-  document.getElementById('score').textContent = score;
-  document.getElementById('level').textContent = level;
-  document.getElementById('coinsText').textContent = `${coinsCollected}/${coinsPerLevel}`;
-}
-
-function render(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  drawRoad();
-  for(let c of coins) drawCoin(c.x,c.y,c.rotate);
-  player.x = lanes[player.lane];
-  drawCar(player.x,canvas.height-120);
-}
-
-function gameLoop(){ update(); render(); requestAnimationFrame(gameLoop); }
-
-function startGame(){
-  gameRunning = true;
-  score = 0; level = 1; coinsCollected = 0; coins = []; lastCoin = Date.now();
-  speed = 6;
-  document.getElementById('startScreen').style.display = 'none';
-  setLanes(); // 🔥 IDI CHALA IMPORTANT
-}
-
-function winGame(){
-  gameRunning = false;
-  document.getElementById('finalScore').textContent = `Score: ${score}`;
-  setTimeout(()=>{ document.getElementById('gameWin').style.display = 'flex'; }, 500);
-}
-
-function restartGame(){
-  coins = []; score = 0; level = 1; coinsCollected = 0; speed = 6; player.lane = 1; lastCoin = Date.now();
-  document.getElementById('gameWin').style.display = 'none'; gameRunning = true;
-}
-
-canvas.addEventListener('touchstart',e=>{
-  e.preventDefault();
-  if(!gameRunning) return;
-  let x = e.touches[0].clientX;
-  if(x < canvas.width/3){if(player.lane > 0) player.lane--;}
-  else if(x > canvas.width*2/3){if(player.lane < 2) player.lane++;}
-},{passive:false});
-
-window.addEventListener('resize', ()=>{
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight - 70;
-  setLanes();
-});
-
-setLanes();
-gameLoop();
-</script>
 </body>
 </html>
