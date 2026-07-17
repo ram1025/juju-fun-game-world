@@ -13,42 +13,20 @@
 .overlay.active{display:block}.sidemenu h2{color:#1e40af;font-size:24px;font-weight:900;margin-bottom:30px;text-align:center}
 .menu-btn{background:#3B82F6;color:#fff;border:0;padding:15px;border-radius:12px;font-size:18px;font-weight:800;cursor:pointer;margin-bottom:12px;text-align:left;width:100%}
 .logout-btn{background:#EF4444;color:#fff;border:0;padding:15px;border-radius:12px;font-size:18px;font-weight:900;cursor:pointer;margin-top:auto;width:100%}
-
 .profile-img{width:100px;height:100px;border-radius:50%;border:5px solid #fff;margin:0 auto 15px;display:block;object-fit:cover;background:#E5E7EB}
 h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 .sub{text-align:center;font-size:18px;margin-bottom:25px;color:#FEF9C3;font-weight:800}
-
-/* NEAT FULL WIDTH */
-.slider{
-    display:flex;
-    overflow-x:scroll;
-    scroll-snap-type:x mandatory;
-    scroll-behavior:smooth;
-    -webkit-overflow-scrolling: touch;
-    gap:20px;
-    padding:0 10px 20px; /* 10px matrame */
-    max-width:100%;
-    margin:0 auto
-}
+.slider{display:flex;overflow-x:scroll;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling: touch;gap:20px;padding:0 10px 20px;max-width:100%;margin:0 auto}
 .slider::-webkit-scrollbar{display:none}
-
-.page{
-    min-width:100%; /* FULL WIDTH */
-    scroll-snap-align:start; /* START lo snap */
-    flex-shrink:0;
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:20px
-}
-
+.page{min-width:100%;scroll-snap-align:start;flex-shrink:0;display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 .card{background:#fff;padding:30px 15px;border-radius:30px;text-align:center;cursor:pointer;font-weight:900;font-size:18px;color:#1e293b;box-shadow:0 10px 25px rgba(0,0,0,.2);transition:.3s;min-height:150px;display:flex;flex-direction:column;justify-content:center}
 .card:active{transform:scale(0.95)}
 .card .icon{width:80px;height:80px;background:rgba(255,255,255,.3);border-radius:25px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:45px;font-weight:900}
-
+.card.locked{background:#64748B;color:#fff;cursor:not-allowed;opacity:0.8}
+.card.locked:active{transform:scale(1)}
 .dots{display:flex;justify-content:center;gap:8px;margin-top:15px}
 .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);transition:.3s}
 .dot.active{background:#fff;width:20px;border-radius:5px}
-
 .pink{background:#EC4899;color:#fff}.blue{background:#3B82F6;color:#fff}.orange{background:#F97316;color:#fff}
 .purple{background:#A855F7;color:#fff}.green{background:#22C55E;color:#fff}.yellow{background:#FACC15;color:#1e293b}
 </style>
@@ -59,7 +37,7 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 <div class="header"><button class="menu" onclick="openMenu()">≡</button></div>
 
 <img src="./icon-192.png" class="profile-img" id="profilePic">
-<h1 id="profileName">JUJU</h1>
+<h1 id="profileName">JU</h1>
 <p class="sub">Choose Your Adventure! 🎮</p>
 
 <div class="slider" id="slider"></div>
@@ -85,14 +63,21 @@ const allGames = [
 {name:"Rhymes",file:"./rhymes.html",icon:"🎵",color:"purple"},{name:"Shapes",file:"./shapes.html",icon:"⭐",color:"yellow"},
 {name:"Spell It",file:"./spell-it.html",icon:"🧩",color:"blue"},{name:"Temple Run",file:"./temple-run.html",icon:"🏃",color:"blue"},
 {name:"Vehicles",file:"./vehicles.html",icon:"🚗",color:"blue"},{name:"Vegetables",file:"./vegetables.html",icon:"🥕",color:"purple"},
-{name:"Wild Animals",file:"./wild-animals.html",icon:"🦁",color:"orange"}
-].sort((a,b)=>a.name.localeCompare(b.name));
+{name:"Wild Animals",file:"./wild-animals.html",icon:"🦁",color:"orange"},
+{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"},{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"},{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"}
+]; // SORT TEESANU. Coming Soon last lo undali
 
 function loadGames(){
  const slider = document.getElementById('slider'); slider.innerHTML = '';
  for(let i=0; i<allGames.length; i+=4){
    let page = '<div class="page">';
-   allGames.slice(i,i+4).forEach(g=>{ page += `<div class="card ${g.color}" onclick="openGame('${g.file}')"><div class="icon">${g.icon}</div>${g.name}</div>` })
+   allGames.slice(i,i+4).forEach(g=>{ 
+    if(g.file === "#"){
+        page += `<div class="card ${g.color}"><div class="icon">${g.icon}</div>${g.name}</div>`
+    } else {
+        page += `<div class="card ${g.color}" onclick="openGame('${g.file}')"><div class="icon">${g.icon}</div>${g.name}</div>`
+    }
+   })
    page += '</div>'; slider.innerHTML += page;
  }
  createDots();
@@ -101,6 +86,7 @@ function loadGames(){
 }
 
 function openGame(file){
+ if(file === "#"){ alert('Coming Soon! 🚀'); return; } // click cheste alert
  sessionStorage.setItem('lastDashboardPage', Math.round(document.getElementById('slider').scrollLeft / document.getElementById('slider').offsetWidth));
  location.href = file;
 }
@@ -132,7 +118,7 @@ function createDots(){
  })
 }
 
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-10'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-12'); }
 </script>
 </body>
 </html>
