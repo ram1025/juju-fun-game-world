@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=29"><meta name="theme-color" content="#3D8BFF">
+<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=30"><meta name="theme-color" content="#3D8BFF">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden}
@@ -17,15 +17,14 @@ body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden
 @keyframes fadeOut{to{opacity:0;visibility:hidden}}
 .squircle{
   width:300px;height:300px;
-  background: #B08CFF;
-  border-radius: 28%; /* Exact squircle */
+  background: linear-gradient(145deg, #D4B5FF 0%, #B08CFF 100%);
+  border-radius: 28%;
   display:flex;justify-content:center;align-items:center;
   box-shadow: 0 30px 80px rgba(0,0,0,0.25), inset 0 10px 25px rgba(255,255,255,0.25);
   animation:zoomIn 0.8s ease-out
 }
 @keyframes zoomIn{0%{transform:scale(0.4);opacity:0}100%{transform:scale(1);opacity:1}}
 .logo{width:240px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));}
-
 
 /* 2. WELCOME PAGE - 2nd Image: White Card */
 #welcome{
@@ -51,7 +50,7 @@ body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden
   width:130px;height:130px;
   background: #E5CFFF;
   border-radius:50%;
-  border:7px solid #FF6B9D; /* Pink border */
+  border:7px solid #FF6B9D;
   margin:0 auto 25px;
   display:flex;justify-content:center;align-items:center;
 }
