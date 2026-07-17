@@ -63,7 +63,7 @@ let gameRunning = false;
 let player = {lane: 1, x: 0};
 let lanes = [], coins = [];
 let score = 0, level = 1, coinsCollected = 0;
-let speed = 6, lastCoin = 0, coinSpawnRate = 1000;
+let speed = 6, lastCoin = 0, coinSpawnRate = 800; // 800ms ki 1 coin
 const roadWidth = 360;
 const coinsPerLevel = 10;
 const maxLevels = 10;
@@ -79,7 +79,7 @@ function drawRoad(){
   const roadX = (canvas.width - roadWidth)/2;
   ctx.fillStyle = '#fbbf24'; ctx.fillRect(roadX-12,0,12,canvas.height); ctx.fillRect(roadX+roadWidth,0,12,canvas.height);
   ctx.fillStyle = '#1f2937'; ctx.fillRect(roadX,0,roadWidth,canvas.height);
-  
+
   ctx.strokeStyle = '#fff'; ctx.lineWidth = 6;
   ctx.setLineDash([40, 40]);
   ctx.lineDashOffset = -(Date.now()/20 * speed) % 80;
@@ -117,7 +117,7 @@ function drawCoin(x,y,rotate){
 
 function spawnCoin(){
   let lane = Math.floor(Math.random()*3);
-  coins.push({x:lanes, y:-80, rotate:0}); // 🔥 FIXED
+  coins.push({x:lanes, y:-80, rotate:0}); // 🔥 FINAL FIX
 }
 
 function showLevelUp(){
@@ -130,18 +130,24 @@ function update(){
   if(!gameRunning) return;
 
   speed = 6 + level;
-  coinSpawnRate = Math.max(500, 1200 - level*70);
+  coinSpawnRate = Math.max(400, 1000 - level*60); // Level perigina fast
 
   if(Date.now()-lastCoin > coinSpawnRate){lastCoin=Date.now();spawnCoin();}
 
-  coins.forEach((c,i)=>{
-    c.y+=speed;
+  // 🔥 FIX: for loop tho venakki nundi delete cheyyali
+  for(let i = coins.length - 1; i >= 0; i--){
+    let c = coins[i];
+    c.y += speed;
     c.rotate += 0.15;
-    if(c.y>canvas.height+50) coins.splice(i,1);
 
-    if(Math.abs(c.x-player.x)<55 && Math.abs(c.y-(canvas.height-120))<70){
+    if(c.y > canvas.height + 50) {
       coins.splice(i,1);
-      score+=10*level;
+      continue;
+    }
+
+    if(Math.abs(c.x - player.x) < 55 && Math.abs(c.y - (canvas.height-120)) < 70){
+      coins.splice(i,1);
+      score += 10 * level;
       coinsCollected++;
 
       if(coinsCollected >= coinsPerLevel){
@@ -151,17 +157,17 @@ function update(){
         if(level > maxLevels){ winGame(); }
       }
     }
-  });
+  }
 
-  document.getElementById('score').textContent=score;
-  document.getElementById('level').textContent=level;
-  document.getElementById('coinsText').textContent=`${coinsCollected}/${coinsPerLevel}`;
+  document.getElementById('score').textContent = score;
+  document.getElementById('level').textContent = level;
+  document.getElementById('coinsText').textContent = `${coinsCollected}/${coinsPerLevel}`;
 }
 
 function render(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   drawRoad();
-  coins.forEach(c=>drawCoin(c.x,c.y,c.rotate));
+  coins.forEach(c => drawCoin(c.x,c.y,c.rotate));
   player.x = lanes[player.lane];
   drawCar(player.x,canvas.height-120);
 }
@@ -169,28 +175,28 @@ function render(){
 function gameLoop(){ update(); render(); requestAnimationFrame(gameLoop); }
 
 function startGame(){
-  gameRunning=true; score=0; level=1; coinsCollected=0; coins=[];
-  speed=6; document.getElementById('startScreen').style.display='none';
+  gameRunning = true; score = 0; level = 1; coinsCollected = 0; coins = [];
+  speed = 6; document.getElementById('startScreen').style.display = 'none';
   setLanes();
 }
 
 function winGame(){
-  gameRunning=false;
-  document.getElementById('finalScore').textContent=`Score: ${score}`;
-  setTimeout(()=>{ document.getElementById('gameWin').style.display='flex'; }, 500);
+  gameRunning = false;
+  document.getElementById('finalScore').textContent = `Score: ${score}`;
+  setTimeout(()=>{ document.getElementById('gameWin').style.display = 'flex'; }, 500);
 }
 
 function restartGame(){
-  coins=[]; score=0; level=1; coinsCollected=0; speed=6; player.lane=1;
-  document.getElementById('gameWin').style.display='none'; gameRunning=true;
+  coins = []; score = 0; level = 1; coinsCollected = 0; speed = 6; player.lane = 1;
+  document.getElementById('gameWin').style.display = 'none'; gameRunning = true;
 }
 
 canvas.addEventListener('touchstart',e=>{
   e.preventDefault();
-  if(!gameRunning)return;
-  let x=e.touches[0].clientX;
-  if(x<canvas.width/3){if(player.lane>0)player.lane--;}
-  else if(x>canvas.width*2/3){if(player.lane<2)player.lane++;}
+  if(!gameRunning) return;
+  let x = e.touches[0].clientX;
+  if(x < canvas.width/3){if(player.lane > 0) player.lane--;}
+  else if(x > canvas.width*2/3){if(player.lane < 2) player.lane++;}
 },{passive:false});
 
 window.addEventListener('resize', ()=>{
