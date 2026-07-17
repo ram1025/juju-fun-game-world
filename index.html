@@ -56,26 +56,37 @@ input:focus { outline: none; border-color: #3B82F6; }
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBtn').style.display='block'; document.getElementById('welcomeInstallBtn').style.display='block'; });
 function isInstalled() { return window.matchMedia('(display-mode: standalone)').matches; }
+
 setTimeout(() => {
-    const savedName = localStorage.getItem('jujuName') || 'Juju';
-const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
+    const savedName = localStorage.getItem('jujuName');
+    const savedPic = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
-document.getElementById('welcomeName').textContent = savedName;
-document.getElementById('welcomeAvatar').src = savedPic;
-
-if (savedName) {
+    if (savedName) {
+        // Welcome view chupinchadam
         document.getElementById('welcomeView').style.display = 'block';
         document.getElementById('loginView').style.display = 'none';
+        document.getElementById('welcomeName').textContent = savedName;
         document.getElementById('welcomeAvatar').src = savedPic;
         if (!isInstalled()) document.getElementById('welcomeInstallBtn').style.display = 'block';
     } else {
+        // Login view chupinchadam
         document.getElementById('loginView').style.display = 'block';
+        document.getElementById('welcomeView').style.display = 'none';
     }
 }, 2000);
+
 document.getElementById('welcomeInstallBtn').addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } else { alert('Browser Menu ⋮ → Install app'); } });
 document.getElementById('installBtn').addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } else { alert('Browser Menu ⋮ → Install app'); } });
-function saveLogin() { const name = document.getElementById('nameInput').value.trim(); if (!name) { alert('Please enter your name!'); return; } localStorage.setItem('jujuName', name); location.href = './dashboard.html'; }
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=106'); }
+
+function saveLogin() { 
+  const name = document.getElementById('nameInput').value.trim(); 
+  if (!name) { alert('Please enter your name!'); return; } 
+  localStorage.setItem('jujuName', name); 
+  localStorage.setItem('jujuAvatar', './icon-192.png'); // First time default avatar
+  location.href = './dashboard.html'; 
+}
+
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=109'); }
 </script>
 </body>
 </html>
