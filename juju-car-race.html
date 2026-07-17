@@ -63,7 +63,7 @@ let gameRunning = false;
 let player = {lane: 1, x: 0};
 let lanes = [], coins = [];
 let score = 0, level = 1, coinsCollected = 0;
-let speed = 6, lastCoin = 0, coinSpawnRate = 800; // 800ms ki 1 coin
+let speed = 6, lastCoin = 0, coinSpawnRate = 700;
 const roadWidth = 360;
 const coinsPerLevel = 10;
 const maxLevels = 10;
@@ -116,8 +116,8 @@ function drawCoin(x,y,rotate){
 }
 
 function spawnCoin(){
-  let lane = Math.floor(Math.random()*3);
-  coins.push({x:lanes, y:-80, rotate:0}); // 🔥 FINAL FIX
+  let laneIndex = Math.floor(Math.random()*3);
+  coins.push({x:lanes, y:-50, rotate:Math.random()*6}); // 🔥 Y -50 nundi start
 }
 
 function showLevelUp(){
@@ -130,22 +130,27 @@ function update(){
   if(!gameRunning) return;
 
   speed = 6 + level;
-  coinSpawnRate = Math.max(400, 1000 - level*60); // Level perigina fast
+  coinSpawnRate = Math.max(400, 900 - level*50);
 
-  if(Date.now()-lastCoin > coinSpawnRate){lastCoin=Date.now();spawnCoin();}
+  if(Date.now() - lastCoin > coinSpawnRate){
+    lastCoin = Date.now();
+    spawnCoin();
+  }
 
-  // 🔥 FIX: for loop tho venakki nundi delete cheyyali
+  // BACKWARDS LOOP - idi chala imp
   for(let i = coins.length - 1; i >= 0; i--){
     let c = coins[i];
     c.y += speed;
-    c.rotate += 0.15;
+    c.rotate += 0.1;
 
-    if(c.y > canvas.height + 50) {
+    if(c.y > canvas.height + 100) {
       coins.splice(i,1);
       continue;
     }
 
-    if(Math.abs(c.x - player.x) < 55 && Math.abs(c.y - (canvas.height-120)) < 70){
+    let dy = Math.abs(c.y - (canvas.height-120));
+    let dx = Math.abs(c.x - player.x);
+    if(dx < 50 && dy < 60){
       coins.splice(i,1);
       score += 10 * level;
       coinsCollected++;
@@ -167,7 +172,7 @@ function update(){
 function render(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   drawRoad();
-  coins.forEach(c => drawCoin(c.x,c.y,c.rotate));
+  for(let c of coins) drawCoin(c.x,c.y,c.rotate); // for loop
   player.x = lanes[player.lane];
   drawCar(player.x,canvas.height-120);
 }
@@ -176,7 +181,8 @@ function gameLoop(){ update(); render(); requestAnimationFrame(gameLoop); }
 
 function startGame(){
   gameRunning = true; score = 0; level = 1; coinsCollected = 0; coins = [];
-  speed = 6; document.getElementById('startScreen').style.display = 'none';
+  speed = 6; lastCoin = 0;
+  document.getElementById('startScreen').style.display = 'none';
   setLanes();
 }
 
@@ -187,7 +193,7 @@ function winGame(){
 }
 
 function restartGame(){
-  coins = []; score = 0; level = 1; coinsCollected = 0; speed = 6; player.lane = 1;
+  coins = []; score = 0; level = 1; coinsCollected = 0; speed = 6; player.lane = 1; lastCoin = 0;
   document.getElementById('gameWin').style.display = 'none'; gameRunning = true;
 }
 
