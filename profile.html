@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile - Juju Fun World</title>
-<link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#3B82F6">
+<link rel="manifest" href="./manifest.json?v=38"><meta name="theme-color" content="#3B82F6">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
@@ -26,10 +26,10 @@ input:focus,select:focus{outline:none;border-color:#3B82F6}
 </style>
 </head>
 <body>
-<div class="header"><button class="back-btn" onclick="history.back()">←</button><div class="header-title">My Profile 🦁</div></div>
+<div class="header"><button class="back-btn" onclick="location.href='./dashboard.html'">←</button><div class="header-title">My Profile 🦁</div></div>
 <div class="container">
 <div class="avatar-wrapper"><img src="./icon-192.png" class="avatar" id="profileAvatar"><button class="camera-btn" onclick="document.getElementById('fileInput').click()">📷</button><input type="file" id="fileInput" accept="image/*" onchange="updateAvatar(event)"></div>
-<div class="field"><label>Full Name *</label><input type="text" id="fullName" placeholder="JUJU" maxlength="20"></div>
+<div class="field"><label>Full Name *</label><input type="text" id="fullName" placeholder="JU" maxlength="20"></div>
 <div class="row"><div><label>Nick Name / Kid ID</label><input type="text" id="nickname" placeholder="Nickname"></div><div><label>Date of Birth</label><input type="date" id="dob"></div></div>
 <div class="field"><label>Email</label><input type="email" id="email" placeholder="parent@email.com"></div>
 <div class="row"><div><label>Phone Number</label><input type="tel" id="phone" placeholder="9876543210" maxlength="10"></div><div><label>Blood Group</label><select id="bloodGroup"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div></div>
@@ -38,16 +38,17 @@ input:focus,select:focus{outline:none;border-color:#3B82F6}
 <button class="save-btn" onclick="saveProfile()">Save Profile ✅</button>
 </div>
 <script>
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=38'); }
 let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 
 function getProfile(){
   return JSON.parse(localStorage.getItem('jujuProfile') || '{}');
 }
 
+// FIX 1: LOAD CHESETAPPUDU 'image' KEY USE CHEYYADAM
 window.addEventListener('DOMContentLoaded', () => {
   let p = getProfile();
-  document.getElementById('profileAvatar').src = p.photo || localStorage.getItem('jujuAvatar') || './icon-192.png';
+  document.getElementById('profileAvatar').src = p.image || localStorage.getItem('jujuAvatar') || './icon-192.png';
   document.getElementById('fullName').value = p.name || localStorage.getItem('jujuName') || '';
   document.getElementById('nickname').value = p.nickname || localStorage.getItem('jujuNickname') || '';
   document.getElementById('dob').value = p.dob || localStorage.getItem('jujuDob') || '';
@@ -63,19 +64,28 @@ function updateAvatar(event) {
   if (file) { const reader = new FileReader(); reader.onload = e => { currentAvatar = e.target.result; document.getElementById('profileAvatar').src = currentAvatar; }; reader.readAsDataURL(file); }
 }
 
+// FIX 2: SAVE CHESETAPPUDU 'image' KEY USE CHEYYADAM
 function saveProfile() {
   const name = document.getElementById('fullName').value.trim();
   if (!name) { alert('Please enter Full Name!'); return; }
   const profile = {
-    name, photo: currentAvatar, nickname: document.getElementById('nickname').value.trim(),
-    dob: document.getElementById('dob').value, email: document.getElementById('email').value.trim(),
-    phone: document.getElementById('phone').value.trim(), blood: document.getElementById('bloodGroup').value,
-    father: document.getElementById('fatherName').value.trim(), mother: document.getElementById('motherName').value.trim()
+    name,
+    image: currentAvatar, // 'photo' nunchi 'image' ki marcham
+    nickname: document.getElementById('nickname').value.trim(),
+    dob: document.getElementById('dob').value,
+    email: document.getElementById('email').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    blood: document.getElementById('bloodGroup').value,
+    father: document.getElementById('fatherName').value.trim(),
+    mother: document.getElementById('motherName').value.trim()
   };
-  localStorage.setItem('jujuProfile', JSON.stringify(profile)); // New key for sync
-  // Old keys for backup
-  Object.keys(profile).forEach(k => localStorage.setItem('juju'+k.charAt(0).toUpperCase()+k.slice(1), profile[k]));
-  alert('Profile saved! 🎉'); location.href = './dashboard.html';
+  localStorage.setItem('jujuProfile', JSON.stringify(profile)); // Main key
+  // Backup keys
+  localStorage.setItem('jujuName', name);
+  localStorage.setItem('jujuAvatar', currentAvatar);
+
+  alert('Profile saved! 🎉');
+  location.href = './dashboard.html';
 }
 </script>
 </body>
