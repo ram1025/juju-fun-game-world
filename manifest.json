@@ -4,8 +4,8 @@
   "description": "Fun learning app for kids with rhymes, alphabets, games",
   "start_url": "./index.html",  // 1. IDHI MARCHU
   "display": "standalone",
-  "background_color": "#A855F7", // 2. Splash background color
-  "theme_color": "#A855F7",      // 2. Status bar color
+  "background_color": "#3B82F6",
+  "theme_color": "#3B82F6",
   "orientation": "portrait",
   "scope": "./",
   "categories": ["education", "kids", "music"],
