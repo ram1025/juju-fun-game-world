@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juju Fun World</title><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#3B82F6">
+<title>Juju Fun World</title><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#A855F7"> <!-- Purple chesam -->
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#3B82F6;font-family:'Nunito',sans-serif;display:flex;justify-content:center;align-items:center;height:100vh}
-.card{background:#fff;border-radius:30px;padding:30px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.2);width:90%;max-width:350px}
+body{margin:0;background:#A855F7;font-family:'Nunito',sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden}
+#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#A855F7;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;animation:fadeOut 0.5s 2.2s forwards}
+@keyframes fadeOut{to{opacity:0;visibility:hidden}}
+.logo{width:180px;animation:zoomIn 1s ease-out}
+@keyframes zoomIn{0%{transform:scale(0.3)}100%{transform:scale(1)}}
+#splash h1{color:#fff;font-size:32px;margin-top:15px;font-weight:900}
+
+.card{background:#fff;border-radius:30px;padding:30px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.2);width:90%;max-width:350px;display:none} /* display:none */
 .profile-img{width:120px;height:120px;border-radius:50%;border:5px solid #FF6B9D;object-fit:cover;margin:0 auto 15px;animation:bounce 2s infinite}
 @keyframes bounce {0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 h1{color:#EC4899;margin:10px 0;font-size:28px;font-weight:900}
@@ -16,9 +22,17 @@ p{color:#6B7280;font-weight:800}
 </style>
 </head>
 <body>
-<div class="card">
+
+<!-- 1. SPLASH SCREEN -->
+<div id="splash">
+  <img src="./icon-512.png" class="logo">
+  <h1>Juju Fun World</h1>
+</div>
+
+<!-- 2. WELCOME CARD -->
+<div class="card" id="welcomeCard">
  <img id="userImg" src="./icon-192.png" class="profile-img" onclick="goDashboard()">
- <h1 id="userName">JUJU</h1>
+ <h1 id="userName">JU</h1>
  <p>Let's get started!</p>
  <button class="btn btn-install" onclick="installApp()">📱 Install Juju App</button>
  <button class="btn" onclick="goDashboard()">Start Adventure! 🎮</button>
@@ -32,9 +46,17 @@ function loadProfile(){
  let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
  if(p.name){ document.getElementById('userName').innerText = p.name; }
  if(p.photo){ document.getElementById('userImg').src = p.photo; }
- // IF PROFILE UNDI ANTE DIRECT DASHBOARD KI
- if(p.name && localStorage.getItem('jujuProfile')){ location.href = 'dashboard.html'; }
+ 
+ // 2.5 sec tarvata card chupinchu
+ setTimeout(()=>{
+   document.getElementById('welcomeCard').style.display = 'block';
+   // PROFILE UNDI ANTE 1 sec tarvata DIRECT DASHBOARD
+   if(p.name && localStorage.getItem('jujuProfile')){ 
+     setTimeout(()=>{ location.href = 'dashboard.html'; }, 1000); 
+   }
+ }, 2500); 
 }
+
 function goDashboard(){ window.location.href = 'dashboard.html'; }
 async function installApp(){
  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt = null; }
