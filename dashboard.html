@@ -18,23 +18,24 @@
 h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 .sub{text-align:center;font-size:18px;margin-bottom:25px;color:#FEF9C3;font-weight:800}
 
-/* CENTERED + SLOW SCROLL */
+/* NORMAL PHONE SWIPE */
 .slider{
     display:flex;
-    overflow-x:auto;
+    overflow-x:scroll; /* auto -> scroll chesam */
+    scroll-snap-type:x mandatory; /* Phone default snap */
     scroll-behavior:smooth;
     -webkit-overflow-scrolling: touch;
-    scroll-snap-type:x mandatory; /* Snap on pettam */
     gap:15px;
-    padding:0 20px 20px; /* 10px -> 20px. Pakkala space kosam */
+    padding:0 20px 20px;
     max-width:100%;
     margin:0 auto
 }
 .slider::-webkit-scrollbar{display:none}
 
 .page{
-    min-width:calc(100% - 40px); /* 40px less chesam. Center lo kanipinchadaniki */
-    scroll-snap-align:center; /* start -> center chesam */
+    min-width:calc(100% - 40px);
+    scroll-snap-align:center; /* Center lo snap avvali */
+    flex-shrink:0; /* Shrink avvakudadhu */
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:15px
@@ -58,7 +59,7 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 <div class="header"><button class="menu" onclick="openMenu()">≡</button></div>
 
 <img src="./icon-192.png" class="profile-img" id="profilePic">
-<h1 id="profileName">JUJU</h1>
+<h1 id="profileName">JU</h1>
 <p class="sub">Choose Your Adventure! 🎮</p>
 
 <div class="slider" id="slider"></div>
@@ -108,11 +109,12 @@ function getProfile(){ return JSON.parse(localStorage.getItem('jujuProfile') || 
 
 window.addEventListener('DOMContentLoaded', () => {
   let p = getProfile();
-  document.getElementById('profileName').textContent = p.name || localStorage.getItem('jujuName') || 'JUJU';
+  document.getElementById('profileName').textContent = p.name || localStorage.getItem('jujuName') || 'JU';
   document.getElementById('profilePic').src = p.photo || localStorage.getItem('jujuAvatar') || './icon-192.png';
   loadGames();
 });
 
+// SIMPLE DOTS ONLY - No JS control on swipe
 function createDots(){
  const slider = document.getElementById('slider'); 
  const dotsContainer = document.getElementById('dots'); 
@@ -128,9 +130,10 @@ function createDots(){
  slider.addEventListener('scroll', ()=>{ 
     const pageIndex = Math.round(slider.scrollLeft / slider.offsetWidth);
     document.querySelectorAll('.dot').forEach((d,i)=>{ d.classList.toggle('active', i===pageIndex) })
+ })
 }
 
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-8'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-9'); }
 </script>
 </body>
 </html>
