@@ -2,10 +2,10 @@
   "name": "Juju Fun World",
   "short_name": "Juju",
   "description": "Fun learning app for kids with rhymes, alphabets, games",
-  "start_url": "./index.html",  // 1. IDHI MARCHU
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#3B82F6",
-  "theme_color": "#3B82F6",
+  "background_color": "#3D8BFF",
+  "theme_color": "#3D8BFF",
   "orientation": "portrait",
   "scope": "./",
   "categories": ["education", "kids", "music"],
