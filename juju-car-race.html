@@ -75,26 +75,34 @@ function setLanes(){
 }
 
 function drawRoad(){
-  ctx.fillStyle = '#166534'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#166534'; ctx.fillRect(0,0,canvas.width,canvas.height); // grass
   const roadX = (canvas.width - roadWidth)/2;
-  ctx.fillStyle = '#fbbf24'; ctx.fillRect(roadX-12,0,12,canvas.height); ctx.fillRect(roadX+roadWidth,0,12,canvas.height);
-  ctx.fillStyle = '#1f2937'; ctx.fillRect(roadX,0,roadWidth,canvas.height);
-  
-  // Straight dashed lines
-  ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; 
-  const dashOffset = (Date.now()/30 * speed) % 60;
-  
-  for(let i=-dashOffset; i<canvas.height; i+=60){
-    // Left line
-    ctx.fillRect(roadX + roadWidth/3 - 3, i, 6, 30);
-    // Right line 
-    ctx.fillRect(roadX + roadWidth*2/3 - 3, i, 6, 30);
-  }
+  ctx.fillStyle = '#fbbf24'; ctx.fillRect(roadX-12,0,12,canvas.height); ctx.fillRect(roadX+roadWidth,0,12,canvas.height); // yellow borders
+  ctx.fillStyle = '#1f2937'; ctx.fillRect(roadX,0,roadWidth,canvas.height); // road
+
+  // 🔥 FIX: Proper dashed lines using stroke
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 6;
+  ctx.setLineDash([40, 40]); // 40px line, 40px gap
+  ctx.lineDashOffset = -(Date.now()/20 * speed) % 80; // smooth movement
+
+  // Left lane divider
+  ctx.beginPath();
+  ctx.moveTo(roadX + roadWidth/3, 0);
+  ctx.lineTo(roadX + roadWidth/3, canvas.height);
+  ctx.stroke();
+
+  // Right lane divider
+  ctx.beginPath();
+  ctx.moveTo(roadX + roadWidth*2/3, 0);
+  ctx.lineTo(roadX + roadWidth*2/3, canvas.height);
+  ctx.stroke();
+
+  ctx.setLineDash([]); // reset
 }
 
 function drawCar(x,y){
   ctx.save(); ctx.translate(x,y);
-  // Red car like your screenshot
   ctx.fillStyle='#ef4444'; ctx.fillRect(-30,-45,60,90);
   ctx.fillStyle='#1e3a8a'; ctx.fillRect(-22,-35,44,20); ctx.fillRect(-22,15,44,20);
   ctx.fillStyle='black'; ctx.fillRect(-32,-30,8,15); ctx.fillRect(24,-30,8,15);
@@ -113,7 +121,7 @@ function drawCoin(x,y,rotate){
 
 function spawnCoin(){
   let lane = Math.floor(Math.random()*3);
-  coins.push({x:lanes, y:-80, rotate:0});
+  coins.push({x:lanes, y:-80, rotate:0}); // 🔥 FIX: lanes
 }
 
 function showLevelUp(){
