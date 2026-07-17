@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>JUJU Dashboard</title><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#3B82F6">
+<title>JUJU Dashboard</title><link rel="manifest" href="./manifest.json?v=38"><meta name="theme-color" content="#3B82F6">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}body{background:#3B82F6;font-family:'Nunito',sans-serif;color:#fff;min-height:100vh;padding:20px;overflow-x:hidden}
@@ -17,31 +17,31 @@
 h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 .sub{text-align:center;font-size:18px;margin-bottom:25px;color:#FEF9C3;font-weight:800}
 
-/* PHONE GALLERY SWIPE */
+/* FIX: SWIPE SLOW + NEAT */
 .slider{
     display:flex;
     overflow-x:scroll;
-    scroll-snap-type:x mandatory; /* Mandatory snap */
-    scroll-behavior:smooth;
+    scroll-snap-type:x mandatory; 
+    scroll-behavior:smooth; /* Smooth swipe */
     -webkit-overflow-scrolling: touch;
-    gap:0; /* gap teesam */
-    padding:0; /* padding teesam */
+    gap:0; 
+    padding:0; 
     max-width:100%;
     margin:0 auto
 }
 .slider::-webkit-scrollbar{display:none}
 
 .page{
-    min-width:100%; /* Full width */
-    scroll-snap-align:start; /* Start lo snap */
+    min-width:100%; 
+    scroll-snap-align:start; 
     flex-shrink:0;
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:20px;
-    padding:0 10px 20px; /* padding ikkada icham */
+    padding:0 10px 20px; 
 }
 
-.card{background:#fff;padding:30px 15px;border-radius:30px;text-align:center;cursor:pointer;font-weight:900;font-size:18px;color:#1e293b;box-shadow:0 10px 25px rgba(0,0,0,.2);transition:.3s;min-height:150px;display:flex;flex-direction:column;justify-content:center}
+.card{background:#fff;padding:30px 15px;border-radius:30px;text-align:center;cursor:pointer;font-weight:900;font-size:18px;color:#1e293b;box-shadow:0 10px 25px rgba(0,0,0,.2);transition:.2s;min-height:150px;display:flex;flex-direction:column;justify-content:center}
 .card:active{transform:scale(0.95)}
 .card .icon{width:80px;height:80px;background:rgba(255,255,255,.3);border-radius:25px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:45px;font-weight:900}
 .card.locked{background:#64748B;color:#fff;cursor:not-allowed;opacity:0.8}
@@ -59,7 +59,7 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 <div class="header"><button class="menu" onclick="openMenu()">≡</button></div>
 
 <img src="./icon-192.png" class="profile-img" id="profilePic">
-<h1 id="profileName">JUJU</h1>
+<h1 id="profileName">JU</h1>
 <p class="sub">Choose Your Adventure! 🎮</p>
 
 <div class="slider" id="slider"></div>
@@ -68,10 +68,12 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 <script>
 function openMenu(){document.getElementById('sidemenu').classList.add('active');document.getElementById('overlay').classList.add('active')}
 function closeMenu(){document.getElementById('sidemenu').classList.remove('active');document.getElementById('overlay').classList.remove('active')}
+
+// FIX 1: LOGOUT → WELCOME PAGE KI
 function logout(){
-  localStorage.clear();
+  localStorage.clear(); // Profile reset
   alert('Logged out! 👋');
-  location.href='./index.html?v='+Date.now();
+  location.href='./index.html?v='+Date.now(); // Welcome ki
 }
 
 const allGames = [
@@ -89,7 +91,7 @@ const allGames = [
 {name:"Coming Soon",file:"#",icon:"🔒",color:"locked"},{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"},{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"}
 ];
 
-let currentPage = 0; // Global variable
+let currentPage = 0; 
 
 function loadGames(){
  const slider = document.getElementById('slider'); slider.innerHTML = '';
@@ -106,15 +108,15 @@ function loadGames(){
  }
  createDots();
  
- // FIX 1: Page load ayyaka scroll cheyyadam
+ // FIX 2: LAST PAGE GURTHU PETTUKONI AKKADE OPEN CHEYYADAM
  currentPage = parseInt(localStorage.getItem('lastDashboardPage') || 0);
  const sliderWidth = slider.offsetWidth;
- setTimeout(()=>{ slider.scrollTo({left: currentPage * sliderWidth, behavior: 'auto'}); }, 500);
+ setTimeout(()=>{ slider.scrollTo({left: currentPage * sliderWidth, behavior: 'auto'}); }, 100);
 }
 
 function openGame(file){
  if(file === "#"){ alert('Coming Soon! 🚀'); return; }
- // FIX 2: Card click chesetappude current page save cheyyadam
+ // FIX 3: CARD CLICK CHESE MUNDU PAGE SAVE CHEYYADAM
  currentPage = Math.round(document.getElementById('slider').scrollLeft / document.getElementById('slider').offsetWidth);
  localStorage.setItem('lastDashboardPage', currentPage);
  location.href = file;
@@ -122,10 +124,11 @@ function openGame(file){
 
 function getProfile(){ return JSON.parse(localStorage.getItem('jujuProfile') || '{}'); }
 
+// FIX 4: NAME + IMAGE DYNAMIC GA LOAD
 window.addEventListener('DOMContentLoaded', () => {
   let p = getProfile();
-  document.getElementById('profileName').textContent = p.name || localStorage.getItem('jujuName') || 'JUJU';
-  document.getElementById('profilePic').src = p.photo || localStorage.getItem('jujuAvatar') || './icon-192.png';
+  document.getElementById('profileName').textContent = p.name || 'JU';
+  document.getElementById('profilePic').src = p.image || './icon-192.png'; // 'image' key use chesam
   loadGames();
 });
 
@@ -147,7 +150,7 @@ function createDots(){
  })
 }
 
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-14'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=38'); }
 </script>
 </body>
 </html>
