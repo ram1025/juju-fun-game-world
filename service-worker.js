@@ -1,9 +1,9 @@
-const CACHE_NAME = 'juju-fun-world-v30-0'; // FINAL Splash + Welcome Card
+const CACHE_NAME = 'juju-fun-world-v36-0'; // FINAL Splash + Welcome Card v36
 
 const urlsToCache = [
     './',
-    './index.html?v=30',       // 🔥 Splash + Welcome Page
-    './manifest.json?v=30',    // 🔥 Blue theme
+    './index.html?v=36',       // 🔥 Splash + Welcome Page v36
+    './manifest.json?v=36',    // 🔥 Blue theme v36
     
     // Pages
     './dashboard.html', 
