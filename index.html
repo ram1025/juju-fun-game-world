@@ -2,87 +2,112 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=24"><meta name="theme-color" content="#3D8BFF">
+<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=29"><meta name="theme-color" content="#3D8BFF">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden}
 
-/* 1. SPLASH */
+/* 1. SPLASH - 1st Image */
 #splash{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:#3D8BFF; /* Image Blue */
+  background:#3D8BFF;
   display:flex;justify-content:center;align-items:center;
   z-index:9999;animation:fadeOut 0.5s 2.2s forwards
 }
 @keyframes fadeOut{to{opacity:0;visibility:hidden}}
-
 .squircle{
-  width:260px;height:260px;
-  background: #C49FFF; /* Image Purple */
-  border-radius: 32%; /* Squircle shape - square kadu, blob kadu */
+  width:300px;height:300px;
+  background: #B08CFF;
+  border-radius: 28%; /* Exact squircle */
   display:flex;justify-content:center;align-items:center;
-  box-shadow: 0 30px 70px rgba(0,0,0,0.25), inset 0 10px 25px rgba(255,255,255,0.35);
-  animation:zoomIn 1s ease-out, float 2.5s ease-in-out infinite 1s
+  box-shadow: 0 30px 80px rgba(0,0,0,0.25), inset 0 10px 25px rgba(255,255,255,0.25);
+  animation:zoomIn 0.8s ease-out
 }
-@keyframes zoomIn{0%{transform:scale(0.3)}100%{transform:scale(1)}}
-@keyframes float {0%,100%{transform: translateY(0px)}50%{transform: translateY(-15px)}}
-.logo{width:200px; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.2));}
+@keyframes zoomIn{0%{transform:scale(0.4);opacity:0}100%{transform:scale(1);opacity:1}}
+.logo{width:240px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));}
 
-/* 2. WELCOME NOTE PAGE */
+
+/* 2. WELCOME PAGE - 2nd Image: White Card */
 #welcome{
   display:none;
   background:#3D8BFF;
   height:100vh;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
   padding:20px;
-  text-align:center;
   animation:popIn 0.5s
 }
-@keyframes popIn{0%{opacity:0}100%{opacity:1}}
-#welcome h1{color:#fff;font-size:42px;margin:0;font-weight:900}
-#welcome p{color:#E0E7FF;font-size:20px;margin:15px 0 40px;font-weight:700}
-.btn{
-  background:#fff;color:#3D8BFF;border:none;padding:20px 60px;
-  border-radius:25px;font-size:22px;font-weight:900;cursor:pointer;
-  box-shadow:0 10px 30px rgba(0,0,0,0.2)
+@keyframes popIn{0%{opacity:0;transform:scale(0.9)}100%{opacity:1;transform:scale(1)}}
+
+.card{
+  background:#fff;
+  width:90%;max-width:420px;
+  border-radius:35px;
+  padding:45px 35px;
+  text-align:center;
+  box-shadow:0 25px 70px rgba(0,0,0,0.25)
 }
+.card-logo{
+  width:130px;height:130px;
+  background: #E5CFFF;
+  border-radius:50%;
+  border:7px solid #FF6B9D; /* Pink border */
+  margin:0 auto 25px;
+  display:flex;justify-content:center;align-items:center;
+}
+.card-logo img{width:100px}
+.card h2{color:#FF6B9D;font-size:40px;margin:0;font-weight:900}
+.card p{color:#6B7280;font-size:20px;margin:12px 0 35px;font-weight:700}
+
+.btn{
+  border:none;width:100%;padding:20px;
+  border-radius:22px;font-size:21px;font-weight:900;cursor:pointer;
+  display:flex;justify-content:center;align-items:center;gap:10px;
+  transition:all 0.2s
+}
+.btn-green{
+  background:#22C55E;color:#fff;
+  box-shadow:0 9px 0 #16A34A;margin-bottom:18px;
+}
+.btn-orange{
+  background:#F97316;color:#fff;
+  box-shadow:0 9px 0 #EA580C;
+}
+.btn:active{transform:translateY(5px)}
 </style>
 </head>
 <body>
 
-<!-- 1. SPLASH SCREEN -->
+<!-- 1. SPLASH -->
 <div id="splash">
   <div class="squircle">
     <img src="./icon-512.png" class="logo">
   </div>
 </div>
 
-<!-- 2. WELCOME NOTE PAGE -->
+<!-- 2. WELCOME PAGE -->
 <div id="welcome">
-  <h1 id="welcomeText">Welcome! 👋</h1>
-  <p>Let's Learn & Play</p>
-  <button class="btn" onclick="goNext()">Start Adventure! 🎮</button>
+  <div class="card">
+    <div class="card-logo">
+      <img src="./icon-512.png">
+    </div>
+    <h2>JU</h2>
+    <p>Let's get started!</p>
+    
+    <button class="btn btn-green" onclick="alert('App is already installed!')">📱 Install Juju App</button>
+    <button class="btn btn-orange" onclick="goNext()">Start Adventure! 🎮</button>
+  </div>
 </div>
 
 <script>
 function loadWelcome(){
- let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
- if(p.name){ document.getElementById('welcomeText').innerText = `Welcome ${p.name}! 👋`; }
- 
- setTimeout(()=>{
-   document.getElementById('welcome').style.display = 'flex';
- }, 2500); 
+ setTimeout(()=>{ document.getElementById('welcome').style.display = 'flex'; }, 2200); 
 }
 
 function goNext(){
   let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
-  if(p.name){ 
-    window.location.href = 'dashboard.html';
-  } else {
-    window.location.href = 'profile.html';
-  }
+  if(p.name){ window.location.href = 'dashboard.html'; } 
+  else { window.location.href = 'profile.html'; }
 }
 
 loadWelcome();
