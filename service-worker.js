@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v19-FINAL'; // v19-14 nunchi FINAL ki marcham
+const CACHE_NAME = 'juju-fun-world-v19-FINAL2'; // v19-14 nunchi FINAL ki marcham
 
 const urlsToCache = [
     './',
