@@ -1,13 +1,16 @@
-const CACHE_NAME = 'juju-fun-world-v19-FINAL2'; // v19-14 nunchi FINAL ki marcham
+const CACHE_NAME = 'juju-fun-world-v30-0'; // FINAL Splash + Welcome Card
 
 const urlsToCache = [
     './',
-    './index.html?v=FINAL',      // 🔥 Splash kosam add chesam  
+    './index.html?v=30',       // 🔥 Splash + Welcome Page
+    './manifest.json?v=30',    // 🔥 Blue theme
+    
+    // Pages
     './dashboard.html', 
     './profile.html',
     './spell-it.html', 
     './juju-car-race.html',
-    './balloon-pop-edu.html?v=156', // 🔥 bump
+    './balloon-pop-edu.html?v=156',
     './temple-run.html',
     './fruits.html',           
     './pet-animals.html',      
@@ -15,18 +18,19 @@ const urlsToCache = [
     './vegetables.html',       
     './vehicles.html',         
     './matching.html',
-    './drag-drop.html?v=156', // 🔥 bump
+    './drag-drop.html?v=156',
     './addition.html',
     './alphabets.html',
     './numbers.html',
     './painting.html',
     './free-draw.html',
-    './rhymes.html?v=139', // 🔥 bump
+    './rhymes.html?v=139',
     './body-parts.html',       
     './colors.html',           
     './color-mixing.html',     
     './shapes.html',
-    './manifest.json?v=FINAL', // 🔥 purple theme + index start_url
+
+    // Icons
     './icon-192.png',
     './icon-512.png',
 
@@ -55,22 +59,29 @@ const urlsToCache = [
     './assets/audio/number-16.mp3','./assets/audio/number-17.mp3','./assets/audio/number-18.mp3','./assets/audio/number-19.mp3','./assets/audio/number-20.mp3'
 ];
 
+// INSTALL
 self.addEventListener('install', (event) => {
     self.skipWaiting(); 
-    event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+    );
 });
 
+// ACTIVATE - Old cache anni delete
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME) // 🔥 Purana v19-14 anni delete
+                cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
                    .map((cacheName) => caches.delete(cacheName))
             );
         }).then(() => self.clients.claim())
     );
 });
 
+// FETCH - Network First
 self.addEventListener('fetch', (event) => {
-    event.respondWith(fetch(event.request).catch(() => caches.match(event.request))); // Network first
+    event.respondWith(
+        fetch(event.request).catch(() => caches.match(event.request))
+    );
 });
