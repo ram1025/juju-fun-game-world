@@ -2,26 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=36"><meta name="theme-color" content="#3D8BFF">
+<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=37"><meta name="theme-color" content="#3D8BFF">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden}
-
-/* 1. SPLASH PAGE FIX */
 #splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#3D8BFF;display:flex;justify-content:center;align-items:center;z-index:9999;animation:fadeOut 0.5s 2.2s forwards}
 @keyframes fadeOut{to{opacity:0;visibility:hidden}}
 .squircle{width:280px;height:280px;background: linear-gradient(145deg, #D4B5FF 0%, #B08CFF 100%);border-radius: 28%;display:flex;justify-content:center;align-items:center;box-shadow: 0 30px 80px rgba(0,0,0,0.25);animation:zoomIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)}
 @keyframes zoomIn{0%{transform:scale(0.2) rotate(-10deg)}100%{transform:scale(1) rotate(0)}}
 .logo{width:220px}
-
-/* 2. WELCOME PAGE FIX */
 #welcome{display:none;background:#3D8BFF;height:100vh;justify-content:center;align-items:center;padding:20px;animation:popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)}
 @keyframes popIn{0%{opacity:0;transform:scale(0.7)}100%{opacity:1;transform:scale(1)}}
 .card{background:#fff;width:90%;max-width:420px;border-radius:35px;padding:45px 35px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.25)}
-.card-logo{width:130px;height:130px;background: linear-gradient(145deg, #D4B5FF 0%, #B08CFF 100%);border-radius:50%;border:7px solid #FF6B9D;margin:0 auto 25px;display:flex;justify-content:center;align-items:center;cursor:pointer;animation:bounce 1.2s infinite alternate ease-in-out} /* BOUNCE UNDI */
+#welcomeLogo{width:130px;height:130px;border-radius:50%;border:7px solid #FF6B9D;margin:0 auto 25px;object-fit:cover;cursor:pointer;animation:bounce 1.2s infinite alternate ease-in-out} /* DYNAMIC IMAGE */
 @keyframes bounce{0%{transform:translateY(0)}100%{transform:translateY(-12px)}}
-.card-logo img{width:100px}
-.card h2{color:#FF6B9D;font-size:42px;margin:0;font-weight:900} /* JUJU FIX */
+#welcomeName{color:#FF6B9D;font-size:42px;margin:0;font-weight:900} /* DYNAMIC NAME */
 .card p{color:#6B7280;font-size:20px;margin:12px 0 35px;font-weight:700}
 .btn{border:none;width:100%;padding:20px;border-radius:22px;font-size:21px;font-weight:900;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:10px;transition:all 0.2s}
 .btn-orange{background:#F97316;color:#fff;box-shadow:0 9px 0 #EA580C;}
@@ -30,22 +25,31 @@ body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden
 </head>
 <body>
 
-<!-- 1. SPLASH -->
 <div id="splash"><div class="squircle"><img src="./icon-512.png" class="logo"></div></div>
 
-<!-- 2. WELCOME -->
 <div id="welcome">
   <div class="card">
-    <div class="card-logo" onclick="goDashboard()"><img src="./icon-512.png"></div> <!-- LOGO CLICK = DASHBOARD -->
-    <h2>JU</h2> <!-- JUJU -->
+    <img id="welcomeLogo" src="./icon-512.png" onclick="goDashboard()"> <!-- DYNAMIC -->
+    <h2 id="welcomeName">JUJU</h2> <!-- DYNAMIC -->
     <p>Let's get started!</p>
-    <button class="btn btn-orange" onclick="goDashboard()">Start Adventure! 🎮</button> <!-- BUTTON CLICK = DASHBOARD -->
+    <button class="btn btn-orange" onclick="goDashboard()">Start Adventure! 🎮</button>
   </div>
 </div>
 
 <script>
-function loadWelcome(){ setTimeout(()=>{ document.getElementById('welcome').style.display = 'flex'; }, 2200); }
-function goDashboard(){ window.location.href = './dashboard.html'; } // DIRECT DASHBOARD
+function loadWelcome(){
+  let p = JSON.parse(localStorage.getItem('jujuProfile'));
+  if(p && p.name){
+    document.getElementById('welcomeName').innerText = p.name; // NAME UPDATE
+    document.getElementById('welcomeLogo').src = p.image || './icon-512.png'; // IMAGE UPDATE
+  }
+  setTimeout(()=>{ document.getElementById('welcome').style.display = 'flex'; }, 2200); 
+}
+function goDashboard(){ window.location.href = './dashboard.html'; } 
+function showWelcomeOnly(){ // LOGOUT KOSAM
+  document.getElementById('splash').style.display = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+}
 
 loadWelcome();
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js'); }
