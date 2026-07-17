@@ -18,25 +18,31 @@
 h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 .sub{text-align:center;font-size:18px;margin-bottom:25px;color:#FEF9C3;font-weight:800}
 
-/* NO MORE FAST SCROLL */
+/* CENTERED + SLOW SCROLL */
 .slider{
     display:flex;
     overflow-x:auto;
     scroll-behavior:smooth;
     -webkit-overflow-scrolling: touch;
-    gap:20px;
-    padding:0 10px 20px;
-    max-width:450px;
-    margin:0 auto;
-    scroll-snap-type:none; /* SNAP TEESANU */
+    scroll-snap-type:x mandatory; /* Snap on pettam */
+    gap:15px;
+    padding:0 20px 20px; /* 10px -> 20px. Pakkala space kosam */
+    max-width:100%;
+    margin:0 auto
 }
 .slider::-webkit-scrollbar{display:none}
 
-.page{min-width:100%;display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.page{
+    min-width:calc(100% - 40px); /* 40px less chesam. Center lo kanipinchadaniki */
+    scroll-snap-align:center; /* start -> center chesam */
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px
+}
 
-.card{background:#fff;padding:30px 15px;border-radius:30px;text-align:center;cursor:pointer;font-weight:900;font-size:18px;color:#1e293b;box-shadow:0 10px 25px rgba(0,0,0,.2);transition:.3s;min-height:150px;display:flex;flex-direction:column;justify-content:center}
+.card{background:#fff;padding:25px 10px;border-radius:25px;text-align:center;cursor:pointer;font-weight:900;font-size:16px;color:#1e293b;box-shadow:0 10px 25px rgba(0,0,0,.2);transition:.3s;min-height:140px;display:flex;flex-direction:column;justify-content:center}
 .card:active{transform:scale(0.95)}
-.card.icon{width:80px;height:80px;background:rgba(255,255,255,.3);border-radius:25px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:45px;font-weight:900}
+.card .icon{width:70px;height:70px;background:rgba(255,255,255,.3);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:40px;font-weight:900}
 
 .dots{display:flex;justify-content:center;gap:8px;margin-top:15px}
 .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);transition:.3s}
@@ -81,8 +87,6 @@ const allGames = [
 {name:"Wild Animals",file:"./wild-animals.html",icon:"🦁",color:"orange"}
 ].sort((a,b)=>a.name.localeCompare(b.name));
 
-let currentPage = 0; // Manual page control
-
 function loadGames(){
  const slider = document.getElementById('slider'); slider.innerHTML = '';
  for(let i=0; i<allGames.length; i+=4){
@@ -91,12 +95,12 @@ function loadGames(){
    page += '</div>'; slider.innerHTML += page;
  }
  createDots();
- currentPage = parseInt(sessionStorage.getItem('lastDashboardPage') || 0);
- goToPage(currentPage, false); // jump, no smooth
+ const lastPage = sessionStorage.getItem('lastDashboardPage') || 0;
+ setTimeout(()=>{ slider.scrollLeft = lastPage * slider.offsetWidth; }, 100);
 }
 
 function openGame(file){
- sessionStorage.setItem('lastDashboardPage', currentPage);
+ sessionStorage.setItem('lastDashboardPage', Math.round(document.getElementById('slider').scrollLeft / document.getElementById('slider').offsetWidth));
  location.href = file;
 }
 
@@ -109,45 +113,24 @@ window.addEventListener('DOMContentLoaded', () => {
   loadGames();
 });
 
-// MANUAL SWIPE CONTROL - Fast scroll aagipothundi
 function createDots(){
- const slider = document.getElementById('slider');
- const dotsContainer = document.getElementById('dots');
+ const slider = document.getElementById('slider'); 
+ const dotsContainer = document.getElementById('dots'); 
  dotsContainer.innerHTML='';
- const totalPages = Math.ceil(allGames.length / 4);
-
- for(let i=0; i<totalPages; i++){
-    const dot = document.createElement('div');
-    dot.className = 'dot' + (i===0?' active':'');
-    dot.onclick = () => goToPage(i, true); // dot click cheste page marali
-    dotsContainer.appendChild(dot);
- }
-
- let startX = 0;
- slider.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
-
- slider.addEventListener('touchend', e => {
-    let endX = e.changedTouches[0].clientX;
-    let diff = startX - endX;
-
-    // 80px kanna ekkuva swipe cheste matrame page marali
-    if(Math.abs(diff) > 80){
-        if(diff > 0 && currentPage < totalPages - 1) currentPage++; // left swipe
-        if(diff < 0 && currentPage > 0) currentPage--; // right swipe
-        goToPage(currentPage, true);
-    } else {
-        goToPage(currentPage, true); // chinnaga swipe cheste same page ki vellipothundi
-    }
- });
+ const pages = document.querySelectorAll('.page');
+ 
+ pages.forEach((_,i)=>{ 
+    const dot = document.createElement('div'); 
+    dot.className = 'dot' + (i===0?' active':''); 
+    dotsContainer.appendChild(dot); 
+ })
+ 
+ slider.addEventListener('scroll', ()=>{ 
+    const pageIndex = Math.round(slider.scrollLeft / slider.offsetWidth);
+    document.querySelectorAll('.dot').forEach((d,i)=>{ d.classList.toggle('active', i===pageIndex) })
 }
 
-function goToPage(page, smooth){
- const slider = document.getElementById('slider');
- slider.scrollTo({left: page * slider.offsetWidth, behavior: smooth? 'smooth' : 'auto'});
- document.querySelectorAll('.dot').forEach((d,i)=>{ d.classList.toggle('active', i===page) })
-}
-
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-7'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=19-8'); }
 </script>
 </body>
 </html>
