@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v18-5'; // 🔥 Version bump for ABC song
+const CACHE_NAME = 'juju-fun-world-v18-6'; // 🔥 Version bump for ABC song
 
 const urlsToCache = [
     './',
