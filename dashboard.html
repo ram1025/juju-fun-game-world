@@ -4,139 +4,284 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JU Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#3B82F6">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
-  background:linear-gradient(135deg,#0f172a,#1e293b);
+  background:#3B82F6;
   font-family:'Nunito',sans-serif;
   color:#fff;
   min-height:100vh;
   padding:20px;
+  overflow-x:hidden;
 }
 .header{
   display:flex;
-  justify-content:space-between;
+  justify-content:flex-start;
   align-items:center;
-  margin-bottom:20px;
+  margin-bottom:10px;
+  max-width:400px;
+  margin:0 auto 10px;
 }
-.back{
+.menu{
   background:#fff;
-  color:#1e40af;
   border:0;
   border-radius:12px;
-  padding:10px 20px;
+  padding:10px 14px;
+  font-size:24px;
   font-weight:900;
-  text-decoration:none;
-  font-size:16px;
+  color:#1e40af;
+  cursor:pointer;
+  z-index:10;
+}
+
+/* Side Menu */
+.sidemenu{
+  position:fixed;
+  top:0;
+  left:-280px;
+  width:280px;
+  height:100%;
+  background:#fff;
+  box-shadow:2px 0 20px rgba(0,0,0,.3);
+  transition:.3s;
+  z-index:100;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+}
+.sidemenu.active{left:0}
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.5);
+  display:none;
+  z-index:99;
+}
+.overlay.active{display:block}
+.sidemenu h2{
+  color:#1e40af;
+  font-size:24px;
+  font-weight:900;
+  margin-bottom:30px;
+  text-align:center;
+}
+.menu-btn{
+  background:#3B82F6;
+  color:#fff;
+  border:0;
+  padding:15px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+  margin-bottom:12px;
+  text-align:left;
+  width:100%;
+}
+.logout-btn{
+  background:#EF4444;
+  color:#fff;
+  border:0;
+  padding:15px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:auto;
+  width:100%;
+}
+
+.profile-img{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  border:5px solid #fff;
+  margin:0 auto 15px;
+  display:block;
+  object-fit:cover;
+  background:#E5E7EB;
 }
 h1{
   text-align:center;
-  color:#fbbf24;
   font-size:32px;
-  margin-bottom:30px;
   font-weight:900;
+  margin-bottom:5px;
 }
-.grid{
+.sub{
+  text-align:center;
+  font-size:18px;
+  margin-bottom:25px;
+  color:#FEF9C3;
+  font-weight:800;
+}
+.slider{
+  display:flex;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  gap:15px;
+  padding-bottom:20px;
+  max-width:400px;
+  margin:0 auto;
+}
+.slider::-webkit-scrollbar{display:none}
+.page{
+  min-width:100%;
+  scroll-snap-align:start;
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:18px;
-  max-width:600px;
-  margin:0 auto;
 }
 .card{
-  background:#1e293b;
-  padding:30px 20px;
-  border-radius:20px;
+  background:#fff;
+  padding:25px 15px;
+  border-radius:25px;
   text-align:center;
   cursor:pointer;
   font-weight:900;
-  font-size:18px;
+  font-size:16px;
+  color:#1e293b;
+  box-shadow:0 10px 25px rgba(0,0,0,.2);
   transition:.3s;
-  border:3px solid #334155;
-  box-shadow:0 8px 20px rgba(0,0,0,.3);
 }
-.card:hover{
-  background:#334155;
-  transform:translateY(-5px);
-  border-color:#fbbf24;
+.card:active{transform:scale(0.95)}
+.card.icon{
+  width:70px;
+  height:70px;
+  background:rgba(255,255,255,.3);
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 10px;
+  font-size:40px;
+  font-weight:900;
 }
-.card .icon{font-size:40px;display:block;margin-bottom:8px}
+.dots{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:15px;
+}
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:rgba(255,255,255,.4);
+}
+.dot.active{background:#fff;width:20px;border-radius:5px}
+
+/* Card Colors */
+.pink{background:#EC4899;color:#fff}
+.blue{background:#3B82F6;color:#fff}
+.orange{background:#F97316;color:#fff}
+.purple{background:#A855F7;color:#fff}
+.green{background:#22C55E;color:#fff}
+.yellow{background:#FACC15;color:#1e293b}
 </style>
 </head>
 <body>
+
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<!-- Side Menu -->
+<div class="sidemenu" id="sidemenu">
+  <h2>Menu</h2>
+  <button class="menu-btn" onclick="location.href='./profile.html'">👤 Profile</button>
+  <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+</div>
+
 <div class="header">
-  <a href="./index.html" class="back">← Home</a>
+  <button class="menu" onclick="openMenu()">≡</button>
 </div>
 
-<h1>🎮 Choose a Game</h1>
+<img src="./icon-192.png" class="profile-img" id="profilePic">
+<h1 id="profileName">JU</h1>
+<p class="sub">Choose Your Adventure! 🎮</p>
 
-<div class="grid">
-  <div class="card" onclick="location.href='./addition.html'">
-    <span class="icon">➕</span>
-    Addition
+<div class="slider" id="slider">
+  <div class="page">
+    <div class="card pink" onclick="location.href='./alphabets.html'"><div class="icon">abc</div>Alphabets</div>
+    <div class="card blue" onclick="location.href='./numbers.html'"><div class="icon">123</div>Numbers</div>
+    <div class="card orange" onclick="location.href='./painting.html'"><div class="icon">🎨</div>Paint Letter</div>
+    <div class="card purple" onclick="location.href='./free-draw.html'"><div class="icon">🐒</div>Free Draw</div>
   </div>
-  <div class="card" onclick="location.href='./alphabets.html'">
-    <span class="icon">🔤</span>
-    Alphabets
+  <div class="page">
+    <div class="card pink" onclick="location.href='./drag-drop.html'"><div class="icon">✋</div>Drag & Drop</div>
+    <div class="card orange" onclick="location.href='./fruits.html'"><div class="icon">🍎</div>Fruits</div>
+    <div class="card green" onclick="location.href='./matching.html'"><div class="icon">🧩</div>Matching</div>
+    <div class="card green" onclick="location.href='./numbers.html'"><div class="icon">🔢</div>Numbers</div>
   </div>
-  <div class="card" onclick="location.href='./balloon-pop-edu.html'">
-    <span class="icon">🎈</span>
-    Balloon Pop
+  <div class="page">
+    <div class="card blue" onclick="location.href='./alphabets.html'"><div class="icon">abc</div>Alphabets</div>
+    <div class="card yellow" onclick="location.href='./body-parts.html'"><div class="icon">👂</div>Body Parts</div>
+    <div class="card green" onclick="location.href='./colors.html'"><div class="icon">🎨</div>Colors</div>
+    <div class="card purple" onclick="location.href='./color-mixing.html'"><div class="icon">🧪</div>Color Mix</div>
   </div>
-  <div class="card" onclick="location.href='./body-parts.html'">
-    <span class="icon">👦</span>
-    Body Parts
+  <div class="page">
+    <div class="card blue" onclick="location.href='./vehicles.html'"><div class="icon">🚗</div>Vehicles</div>
+    <div class="card purple" onclick="location.href='./vegetables.html'"><div class="icon">🥕</div>Vegetables</div>
+    <div class="card orange" onclick="location.href='./wild-animals.html'"><div class="icon">🦁</div>Wild Animals</div>
+    <div class="card pink" onclick="location.href='./addition.html'"><div class="icon">➕</div>Addition</div>
   </div>
-  <div class="card" onclick="location.href='./colors.html'">
-    <span class="icon">🎨</span>
-    Colors
-  </div>
-  <div class="card" onclick="location.href='./free-draw.html'">
-    <span class="icon">🖌️</span>
-    Free Draw
-  </div>
-  <div class="card" onclick="location.href='./fruits.html'">
-    <span class="icon">🍎</span>
-    Fruits
-  </div>
-  <div class="card" onclick="location.href='./juju-car-race.html'">
-    <span class="icon">🏎️</span>
-    Coin Collector
-  </div>
-  <div class="card" onclick="location.href='./matching.html'">
-    <span class="icon">🧩</span>
-    Matching
-  </div>
-  <div class="card" onclick="location.href='./numbers.html'">
-    <span class="icon">🔢</span>
-    Numbers
-  </div>
-  <div class="card" onclick="location.href='./painting.html'">
-    <span class="icon">🎨</span>
-    Painting
-  </div>
-  <div class="card" onclick="location.href='./rhymes.html'">
-    <span class="icon">🎵</span>
-    Rhymes
-  </div>
-  <div class="card" onclick="location.href='./shapes.html'">
-    <span class="icon">🔷</span>
-    Shapes
-  </div>
-  <div class="card" onclick="location.href='./temple-run.html'">
-    <span class="icon">🏃</span>
-    Temple Run
-  </div>
-  <div class="card" onclick="location.href='./vegetables.html'">
-    <span class="icon">🥦</span>
-    Vegetables
-  </div>
-  <div class="card" onclick="location.href='./vehicles.html'">
-    <span class="icon">🚗</span>
-    Vehicles
+  <div class="page">
+    <div class="card pink" onclick="location.href='./painting.html'"><div class="icon">🎨</div>Paint Letter</div>
+    <div class="card purple" onclick="location.href='./pet-animals.html'"><div class="icon">🐶</div>Pet Animals</div>
+    <div class="card purple" onclick="location.href='./rhymes.html'"><div class="icon">🎵</div>Rhymes</div>
+    <div class="card yellow" onclick="location.href='./shapes.html'"><div class="icon">⭐</div>Shapes</div>
   </div>
 </div>
 
+<div class="dots" id="dots"></div>
+
+<script>
+// Menu functions
+function openMenu(){
+  document.getElementById('sidemenu').classList.add('active');
+  document.getElementById('overlay').classList.add('active');
+}
+function closeMenu(){
+  document.getElementById('sidemenu').classList.remove('active');
+  document.getElementById('overlay').classList.remove('active');
+}
+function logout(){
+  localStorage.clear();
+  alert('Logged out! 👋');
+  location.href='./index.html';
+}
+
+// Profile data load
+window.addEventListener('DOMContentLoaded', () => {
+  const name = localStorage.getItem('jujuName') || 'JU';
+  const avatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profilePic').src = avatar;
+});
+
+// Dots
+const slider = document.getElementById('slider');
+const pages = document.querySelectorAll('.page');
+const dotsContainer = document.getElementById('dots');
+
+pages.forEach((_,i)=>{
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i===0?' active':'');
+  dotsContainer.appendChild(dot);
+})
+
+slider.addEventListener('scroll', ()=>{
+  const pageIndex = Math.round(slider.scrollLeft / slider.offsetWidth);
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.classList.toggle('active', i===pageIndex)
+  })
+})
+
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=109'); }
+</script>
 </body>
 </html>
