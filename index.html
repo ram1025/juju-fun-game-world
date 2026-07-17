@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=23"><meta name="theme-color" content="#3D8BFF">
+<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=24"><meta name="theme-color" content="#3D8BFF">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden}
@@ -15,24 +15,24 @@ body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden
   z-index:9999;animation:fadeOut 0.5s 2.2s forwards
 }
 @keyframes fadeOut{to{opacity:0;visibility:hidden}}
-.logo-container{
-  width:240px;height:240px;
-  background: #C49FFF; /* Image Purple Blob */
-  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+
+.squircle{
+  width:260px;height:260px;
+  background: #C49FFF; /* Image Purple */
+  border-radius: 32%; /* Squircle shape - square kadu, blob kadu */
   display:flex;justify-content:center;align-items:center;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.25), inset 0 8px 20px rgba(255,255,255,0.4);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.25), inset 0 10px 25px rgba(255,255,255,0.35);
   animation:zoomIn 1s ease-out, float 2.5s ease-in-out infinite 1s
 }
 @keyframes zoomIn{0%{transform:scale(0.3)}100%{transform:scale(1)}}
 @keyframes float {0%,100%{transform: translateY(0px)}50%{transform: translateY(-15px)}}
-.logo{width:180px;}
+.logo{width:200px; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.2));}
 
 /* 2. WELCOME NOTE PAGE */
 #welcome{
   display:none;
   background:#3D8BFF;
   height:100vh;
-  display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
@@ -54,7 +54,7 @@ body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden
 
 <!-- 1. SPLASH SCREEN -->
 <div id="splash">
-  <div class="logo-container">
+  <div class="squircle">
     <img src="./icon-512.png" class="logo">
   </div>
 </div>
@@ -71,7 +71,6 @@ function loadWelcome(){
  let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
  if(p.name){ document.getElementById('welcomeText').innerText = `Welcome ${p.name}! 👋`; }
  
- // 2.5 sec splash tarvata welcome page chupinchu
  setTimeout(()=>{
    document.getElementById('welcome').style.display = 'flex';
  }, 2500); 
@@ -80,9 +79,9 @@ function loadWelcome(){
 function goNext(){
   let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
   if(p.name){ 
-    window.location.href = 'dashboard.html'; // Profile unte dashboard
+    window.location.href = 'dashboard.html';
   } else {
-    window.location.href = 'profile.html'; // Profile lekapothe profile page
+    window.location.href = 'profile.html';
   }
 }
 
