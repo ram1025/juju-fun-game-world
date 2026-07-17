@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v36-0'; // FINAL Splash + Welcome Card v36
+const CACHE_NAME = 'juju-fun-world-v38-0'; // FINAL Splash + Welcome Card v36
 
 const urlsToCache = [
     './',
