@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=37"><meta name="theme-color" content="#3D8BFF">
+<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=42"><meta name="theme-color" content="#3D8BFF">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden}
@@ -14,45 +14,49 @@ body{margin:0;background:#3D8BFF;font-family:'Nunito',sans-serif;overflow:hidden
 #welcome{display:none;background:#3D8BFF;height:100vh;justify-content:center;align-items:center;padding:20px;animation:popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)}
 @keyframes popIn{0%{opacity:0;transform:scale(0.7)}100%{opacity:1;transform:scale(1)}}
 .card{background:#fff;width:90%;max-width:420px;border-radius:35px;padding:45px 35px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.25)}
-#welcomeLogo{width:130px;height:130px;border-radius:50%;border:7px solid #FF6B9D;margin:0 auto 25px;object-fit:cover;cursor:pointer;animation:bounce 1.2s infinite alternate ease-in-out} /* DYNAMIC IMAGE */
+#welcomeLogo{width:130px;height:130px;border-radius:50%;border:7px solid #FF6B9D;margin:0 auto 25px;object-fit:cover;cursor:pointer;animation:bounce 1.2s infinite alternate ease-in-out}
 @keyframes bounce{0%{transform:translateY(0)}100%{transform:translateY(-12px)}}
-#welcomeName{color:#FF6B9D;font-size:42px;margin:0;font-weight:900} /* DYNAMIC NAME */
-.card p{color:#6B7280;font-size:20px;margin:12px 0 35px;font-weight:700}
-.btn{border:none;width:100%;padding:20px;border-radius:22px;font-size:21px;font-weight:900;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:10px;transition:all 0.2s}
+#welcomeName{color:#FF6B9D;font-size:42px;margin:0;font-weight:900}
+.card p{color:#6B7280;font-size:20px;margin:12px 0 25px;font-weight:700}
+.btn{border:none;width:100%;padding:20px;border-radius:22px;font-size:21px;font-weight:900;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:10px;transition:all 0.2s;margin-bottom:15px}
 .btn-orange{background:#F97316;color:#fff;box-shadow:0 9px 0 #EA580C;}
+.btn-blue{background:#3B82F6;color:#fff;box-shadow:0 9px 0 #2563EB;}
 .btn:active{transform:translateY(5px)}
 </style>
 </head>
 <body>
-
 <div id="splash"><div class="squircle"><img src="./icon-512.png" class="logo"></div></div>
-
 <div id="welcome">
   <div class="card">
-    <img id="welcomeLogo" src="./icon-512.png" onclick="goDashboard()"> <!-- DYNAMIC -->
-    <h2 id="welcomeName">JUJU</h2> <!-- DYNAMIC -->
+    <img id="welcomeLogo" src="./icon-512.png" onclick="goDashboard()">
+    <h2 id="welcomeName">JU</h2>
     <p>Let's get started!</p>
     <button class="btn btn-orange" onclick="goDashboard()">Start Adventure! 🎮</button>
+    <button class="btn btn-blue" id="installBtn" style="display:none">📲 Install App</button>
   </div>
 </div>
-
 <script>
+let deferredPrompt;
 function loadWelcome(){
+  const urlParams = new URLSearchParams(window.location.search);
+  const skipSplash = urlParams.get('skipSplash');
   let p = JSON.parse(localStorage.getItem('jujuProfile'));
   if(p && p.name){
-    document.getElementById('welcomeName').innerText = p.name; // NAME UPDATE
-    document.getElementById('welcomeLogo').src = p.image || './icon-512.png'; // IMAGE UPDATE
+    document.getElementById('welcomeName').innerText = p.name;
+    document.getElementById('welcomeLogo').src = p.image || './icon-512.png';
   }
-  setTimeout(()=>{ document.getElementById('welcome').style.display = 'flex'; }, 2200); 
+  if(skipSplash === 'true'){
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('welcome').style.display = 'flex';
+  } else {
+    setTimeout(()=>{ document.getElementById('welcome').style.display = 'flex'; }, 2200);
+  }
 }
-function goDashboard(){ window.location.href = './dashboard.html'; } 
-function showWelcomeOnly(){ // LOGOUT KOSAM
-  document.getElementById('splash').style.display = 'none';
-  document.getElementById('welcome').style.display = 'flex';
-}
-
+function goDashboard(){ window.location.href = './dashboard.html'; }
+window.addEventListener('beforeinstallprompt', (e) => {e.preventDefault();deferredPrompt = e;document.getElementById('installBtn').style.display = 'flex';});
+document.getElementById('installBtn').addEventListener('click', async () => {if (deferredPrompt) {deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt = null;document.getElementById('installBtn').style.display = 'none';}});
 loadWelcome();
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js'); }
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=42'); }
 </script>
 </body>
 </html>
