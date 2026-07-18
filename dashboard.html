@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>JU Dashboard</title><link rel="manifest" href="./manifest.json?v=46"><meta name="theme-color" content="#3B82F6">
+<title>JUJU Dashboard</title><link rel="manifest" href="./manifest.json?v=46"><meta name="theme-color" content="#3B82F6">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -39,7 +39,7 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 </div>
 <div class="header"><button class="menu" onclick="openMenu()">≡</button></div>
 <img src="./icon-192.png" class="profile-img" id="profilePic">
-<h1 id="profileName">JU</h1>
+<h1 id="profileName">JUJU</h1>
 <p class="sub">Choose Your Adventure! 🎮</p>
 <div class="slider" id="slider"></div>
 <div class="dots" id="dots"></div>
@@ -55,12 +55,12 @@ function logout(){
 
 function exitApp(){
   closeMenu();
+  // Fix: Direct ga home ki pampadam
   if (window.matchMedia('(display-mode: standalone)').matches) {
     window.close();
-  }
-  setTimeout(()=>{
+  } else {
     window.location.href = "intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;scheme=;end";
-  }, 100);
+  }
 }
 
 const allGames = [
