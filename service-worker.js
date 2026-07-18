@@ -1,13 +1,13 @@
-const CACHE_NAME = 'juju-fun-world-v43-0'; // v43
+const CACHE_NAME = 'juju-fun-world-v46-0'; // v46 ki marchesa
 
 const urlsToCache = [
     './',
-    './index.html?v=43',       
-    './manifest.json?v=43',    
+    './index.html?v=46',       
+    './manifest.json?v=46',    
     
-    // Pages - anni v43
-    './dashboard.html?v=43', 
-    './profile.html?v=43',
+    // Pages - anni v46
+    './dashboard.html?v=46', 
+    './profile.html?v=46',
     './spell-it.html', 
     './juju-car-race.html',
     './balloon-pop-edu.html?v=156',
