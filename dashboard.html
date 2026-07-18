@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>JU Dashboard</title><link rel="manifest" href="./manifest.json?v=42"><meta name="theme-color" content="#3B82F6">
+<title>JU Dashboard</title><link rel="manifest" href="./manifest.json?v=43"><meta name="theme-color" content="#3B82F6">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}body{background:#3B82F6;font-family:'Nunito',sans-serif;color:#fff;min-height:100vh;padding:20px;overflow-x:hidden}
@@ -60,6 +60,16 @@ const allGames = [
 {name:"Coming Soon",file:"#",icon:"🔒",color:"locked"},{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"},{name:"Coming Soon",file:"#",icon:"🔒",color:"locked"}
 ];
 let currentPage = 0;
+
+function restorePagePosition(){
+  const slider = document.getElementById('slider');
+  currentPage = parseInt(localStorage.getItem('lastDashboardPage') || 0);
+  const sliderWidth = slider.offsetWidth;
+  if(sliderWidth > 0){
+    slider.scrollTo({left: currentPage * sliderWidth, behavior: 'auto'});
+  }
+}
+
 function loadGames(){
  const slider = document.getElementById('slider'); slider.innerHTML = '';
  for(let i=0; i<allGames.length; i+=4){
@@ -71,29 +81,37 @@ function loadGames(){
    page += '</div>'; slider.innerHTML += page;
  }
  createDots();
- currentPage = parseInt(localStorage.getItem('lastDashboardPage') || 0);
- const sliderWidth = slider.offsetWidth;
- setTimeout(()=>{ slider.scrollTo({left: currentPage * sliderWidth, behavior: 'auto'}); }, 100);
+ setTimeout(restorePagePosition, 300);
 }
+
 function openGame(file){
  if(file === "#"){ alert('Coming Soon! 🚀'); return; }
- currentPage = Math.round(document.getElementById('slider').scrollLeft / document.getElementById('slider').offsetWidth);
+ const slider = document.getElementById('slider');
+ currentPage = Math.round(slider.scrollLeft / slider.offsetWidth);
  localStorage.setItem('lastDashboardPage', currentPage);
  location.href = file;
 }
+
 window.addEventListener('DOMContentLoaded', () => {
   let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
   document.getElementById('profileName').textContent = p.name || 'JU';
   document.getElementById('profilePic').src = p.image || './icon-192.png';
   loadGames();
 });
+
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    setTimeout(restorePagePosition, 300);
+  }
+});
+
 function createDots(){
  const slider = document.getElementById('slider'); const dotsContainer = document.getElementById('dots'); dotsContainer.innerHTML='';
  const pages = document.querySelectorAll('.page');
  pages.forEach((_,i)=>{ const dot = document.createElement('div'); dot.className = 'dot' + (i===0?' active':''); dotsContainer.appendChild(dot); })
  slider.addEventListener('scroll', ()=>{ currentPage = Math.round(slider.scrollLeft / slider.offsetWidth); document.querySelectorAll('.dot').forEach((d,i)=>{ d.classList.toggle('active', i===currentPage) }) })
 }
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=42'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=43'); }
 </script>
 </body>
 </html>
