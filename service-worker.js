@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v46-0'; // v46 ki marchesa
+const CACHE_NAME = 'juju-fun-world-v46-1'; // v46 ki marchesa
 
 const urlsToCache = [
     './',
