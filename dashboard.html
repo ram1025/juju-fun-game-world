@@ -34,7 +34,6 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 <div class="sidemenu" id="sidemenu">
   <h2>Menu</h2>
   <button class="menu-btn" onclick="location.href='./profile.html'">👤 Profile</button>
-  <button class="menu-btn" onclick="exitApp()">🚪 Exit App</button>
   <button class="logout-btn" onclick="logout()">🚪 Logout</button>
 </div>
 <div class="header"><button class="menu" onclick="openMenu()">≡</button></div>
@@ -51,16 +50,6 @@ function logout(){
   history.replaceState({page:0},'',location.href);
   alert('Logged out! 👋');
   location.href='./index.html?skipSplash=true&v='+Date.now();
-}
-
-function exitApp(){
-  closeMenu();
-  // Fix: Direct ga home ki pampadam
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    window.close();
-  } else {
-    window.location.href = "intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;scheme=;end";
-  }
 }
 
 const allGames = [
