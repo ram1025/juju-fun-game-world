@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile - Juju Fun World</title>
-<link rel="manifest" href="./manifest.json?v=42"><meta name="theme-color" content="#3B82F6">
+<link rel="manifest" href="./manifest.json?v=43"><meta name="theme-color" content="#3B82F6">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -37,7 +37,7 @@ input:focus,select:focus{outline:none;border-color:#3B82F6}
 <button class="save-btn" onclick="saveProfile()">Save Profile ✅</button>
 </div>
 <script>
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=42'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=43'); }
 let currentAvatar = localStorage.getItem('jujuAvatar') || './icon-192.png';
 window.addEventListener('DOMContentLoaded', () => {
   let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
