@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>JUJU Dashboard</title><link rel="manifest" href="./manifest.json?v=44"><meta name="theme-color" content="#3B82F6">
+<title>JU Dashboard</title><link rel="manifest" href="./manifest.json?v=46"><meta name="theme-color" content="#3B82F6">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#3B82F6;font-family:'Nunito',sans-serif;color:#fff;min-height:100vh;padding:20px;overflow-x:hidden}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#3B82F6;font-family:'Nunito',sans-serif;color:#fff;min-height:100vh;padding:20px;overflow-y:auto;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}
 .header{display:flex;justify-content:flex-start;align-items:center;margin-bottom:10px;max-width:400px;margin:0 auto 10px}
 .menu{background:#fff;border:0;border-radius:12px;padding:10px 14px;font-size:24px;font-weight:900;color:#1e40af;cursor:pointer;z-index:10}
 .sidemenu{position:fixed;top:0;left:-280px;width:280px;height:100%;background:#fff;box-shadow:2px 0 20px rgba(0,0,0,.3);transition:.3s;z-index:100;padding:20px;display:flex;flex-direction:column}
@@ -16,7 +17,7 @@
 .profile-img{width:100px;height:100px;border-radius:50%;border:5px solid #fff;margin:0 auto 15px;display:block;object-fit:cover;background:#E5E7EB}
 h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 .sub{text-align:center;font-size:18px;margin-bottom:25px;color:#FEF9C3;font-weight:800}
-.slider{display:flex;overflow-x:scroll;scroll-snap-type:x mandatory;scroll-behavior:auto;-webkit-overflow-scrolling: touch;gap:0;padding:0;max-width:100%;margin:0 auto}
+.slider{display:flex;overflow-x:scroll;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:auto;-webkit-overflow-scrolling: touch;gap:0;padding:0;max-width:100%;margin:0 auto}
 .slider::-webkit-scrollbar{display:none}
 .page{min-width:100%;scroll-snap-align:start;flex-shrink:0;display:grid;grid-template-columns:repeat(2,1fr);gap:20px;padding:0 10px 20px}
 .card{background:#fff;padding:30px 15px;border-radius:30px;text-align:center;cursor:pointer;font-weight:900;font-size:18px;color:#1e293b;box-shadow:0 10px 25px rgba(0,0,0,.2);transition:.2s;min-height:150px;display:flex;flex-direction:column;justify-content:center}
@@ -54,18 +55,13 @@ function logout(){
 
 function exitApp(){
   closeMenu();
-  
-  // PWA ayithe close cheyyadaniki try
   if (window.matchMedia('(display-mode: standalone)').matches) {
     window.close();
   }
-  
-  // Browser ayithe history anni clear chesi bayataki
   setTimeout(()=>{
-    history.go(-(history.length));
-    location.href = 'about:blank';
+    window.location.href = "intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.HOME;scheme=;end";
   }, 100);
-  }
+}
 
 const allGames = [
 {name:"Addition",file:"./addition.html",icon:"➕",color:"pink"},{name:"Alphabets",file:"./alphabets.html",icon:"abc",color:"blue"},
@@ -119,7 +115,6 @@ function loadGames(){
  }
  createDots();
  
- // Immediate restore without animation
  requestAnimationFrame(()=>{
    const saved = getSavedPage();
    goToPage(saved, false);
@@ -152,15 +147,13 @@ function createDots(){
  })
 }
 
-// Profile load
 window.addEventListener('DOMContentLoaded', () => {
   let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
-  document.getElementById('profileName').textContent = p.name || 'JUJU';
+  document.getElementById('profileName').textContent = p.name || 'JU';
   document.getElementById('profilePic').src = p.image || './icon-192.png';
   loadGames();
 });
 
-// Handle back/forward button - instant jump
 window.addEventListener('pageshow', (event) => {
   setTimeout(()=>{
     const saved = getSavedPage();
@@ -168,7 +161,7 @@ window.addEventListener('pageshow', (event) => {
   }, 50);
 });
 
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=44'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=46'); }
 </script>
 </body>
 </html>
