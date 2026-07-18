@@ -30,7 +30,12 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 </head>
 <body>
 <div class="overlay" id="overlay" onclick="closeMenu()"></div>
-<div class="sidemenu" id="sidemenu"><h2>Menu</h2><button class="menu-btn" onclick="location.href='./profile.html'">👤 Profile</button><button class="logout-btn" onclick="logout()">🚪 Logout</button></div>
+<div class="sidemenu" id="sidemenu">
+  <h2>Menu</h2>
+  <button class="menu-btn" onclick="location.href='./profile.html'">👤 Profile</button>
+  <button class="menu-btn" onclick="exitApp()">🚪 Exit App</button>
+  <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+</div>
 <div class="header"><button class="menu" onclick="openMenu()">≡</button></div>
 <img src="./icon-192.png" class="profile-img" id="profilePic">
 <h1 id="profileName">JU</h1>
@@ -46,6 +51,21 @@ function logout(){
   alert('Logged out! 👋');
   location.href='./index.html?skipSplash=true&v='+Date.now();
 }
+
+function exitApp(){
+  closeMenu();
+  
+  // PWA ayithe close cheyyadaniki try
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    window.close();
+  }
+  
+  // Browser ayithe history anni clear chesi bayataki
+  setTimeout(()=>{
+    history.go(-(history.length));
+    location.href = 'about:blank';
+  }, 100);
+  }
 
 const allGames = [
 {name:"Addition",file:"./addition.html",icon:"➕",color:"pink"},{name:"Alphabets",file:"./alphabets.html",icon:"abc",color:"blue"},
