@@ -138,7 +138,7 @@ function createDots(){
 
 window.addEventListener('DOMContentLoaded', () => {
   let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
-  document.getElementById('profileName').textContent = p.name || 'JU';
+  document.getElementById('profileName').textContent = p.name || 'JUJU';
   document.getElementById('profilePic').src = p.image || './icon-192.png';
   loadGames();
 });
