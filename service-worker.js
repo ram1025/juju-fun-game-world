@@ -1,13 +1,13 @@
-const CACHE_NAME = 'juju-fun-world-v42-0'; // v42
+const CACHE_NAME = 'juju-fun-world-v43-0'; // v43
 
 const urlsToCache = [
     './',
-    './index.html?v=42',       // v42 Splash + Welcome
-    './manifest.json?v=42',    // v42
+    './index.html?v=43',       
+    './manifest.json?v=43',    
     
-    // Pages
-    './dashboard.html?v=42', 
-    './profile.html?v=42',
+    // Pages - anni v43
+    './dashboard.html?v=43', 
+    './profile.html?v=43',
     './spell-it.html', 
     './juju-car-race.html',
     './balloon-pop-edu.html?v=156',
