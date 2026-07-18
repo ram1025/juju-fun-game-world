@@ -24,12 +24,12 @@ html,body{margin:0;background:#3D8BFF;font-family:Nunito,sans-serif;color:#fff;m
 .btn:active{transform:translateY(5px)}
 </style>
 <script>
-// 1. Pull to refresh chesthe cache update cheyyi
+// 1. SW Register
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js?v=46');
 }
 
-// 2. Pull cheste reload cheyyadam, kani skipSplash tho
+// 2. Pull to refresh
 let startY = 0;
 document.addEventListener('touchstart', e => { startY = e.touches[0].pageY; });
 document.addEventListener('touchmove', e => {
@@ -37,11 +37,6 @@ document.addEventListener('touchmove', e => {
     location.href = './index.html?skipSplash=true&v='+Date.now();
   }
 }, {passive:false});
-
-// 3. FIX: splash.html kadu dashboard.html ki vellali
-if(!location.search.includes('skipSplash=true')){
-  setTimeout(()=> location.href='./dashboard.html', 2000);
-}
 </script>
 </head>
 <body>
@@ -57,11 +52,11 @@ if(!location.search.includes('skipSplash=true')){
 </div>
 <script>
 let deferredPrompt;
+
 function loadWelcome(){
   const urlParams = new URLSearchParams(window.location.search);
   const skipSplash = urlParams.get('skipSplash');
 
-  // 2. FIX: Login appudu 1st page ki velladaniki
   if(skipSplash!== 'true'){
     localStorage.removeItem('lastDashboardPage');
   }
@@ -72,18 +67,28 @@ function loadWelcome(){
     document.getElementById('welcomeLogo').src = p.image || './icon-512.png';
   }
 
+  // FIX: Akkada auto dashboard ki velladam teesesa
   if(skipSplash === 'true'){
     document.getElementById('splash').style.display = 'none';
     document.getElementById('welcome').style.display = 'flex';
   } else {
-    setTimeout(()=>{ document.getElementById('welcome').style.display = 'flex'; }, 1200); // 1. FIX: 2.2s → 1.2s chesam. Zoom 1 sariki aipothundi
+    // Splash 1.2s tarvata welcome chupinchu, akkada aagipovu
+    setTimeout(()=>{
+      document.getElementById('splash').style.display = 'none';
+      document.getElementById('welcome').style.display = 'flex';
+    }, 1200);
   }
 }
-function goDashboard(){ window.location.href = './dashboard.html'; }
+
+// FIX: Button click cheste matrame dashboard ki vellali
+function goDashboard(){
+  window.location.href = './dashboard.html';
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {e.preventDefault();deferredPrompt = e;document.getElementById('installBtn').style.display = 'flex';});
 document.getElementById('installBtn').addEventListener('click', async () => {if (deferredPrompt) {deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt = null;document.getElementById('installBtn').style.display = 'none';}});
+
 loadWelcome();
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=46'); } // 3. FIX: v46 ki marchanu
 </script>
 </body>
 </html>
