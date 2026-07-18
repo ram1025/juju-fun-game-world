@@ -23,6 +23,26 @@ html,body{margin:0;background:#3D8BFF;font-family:Nunito,sans-serif;color:#fff;m
 .btn-blue{background:#3B82F6;color:#fff;box-shadow:0 9px 0 #2563EB;}
 .btn:active{transform:translateY(5px)}
 </style>
+<script>
+// 1. Pull to refresh chesthe cache update cheyyi
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js?v=46');
+}
+
+// 2. Pull cheste reload cheyyadam, kani skipSplash tho
+let startY = 0;
+document.addEventListener('touchstart', e => { startY = e.touches[0].pageY; });
+document.addEventListener('touchmove', e => {
+  if(startY < 10 && window.scrollY === 0) {
+    location.href = './index.html?skipSplash=true&v='+Date.now();
+  }
+}, {passive:false});
+
+// 3. Normal flow: First time matrame splash ki vellali
+if(!location.search.includes('skipSplash=true')){
+  setTimeout(()=> location.href='./splash.html', 2000);
+}
+</script>
 </head>
 <body>
 <div id="splash"><div class="squircle"><img src="./icon-512.png" class="logo"></div></div>
