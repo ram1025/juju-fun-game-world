@@ -38,9 +38,9 @@ document.addEventListener('touchmove', e => {
   }
 }, {passive:false});
 
-// 3. Normal flow: First time matrame splash ki vellali
+// 3. FIX: splash.html kadu dashboard.html ki vellali
 if(!location.search.includes('skipSplash=true')){
-  setTimeout(()=> location.href='./splash.html', 2000);
+  setTimeout(()=> location.href='./dashboard.html', 2000);
 }
 </script>
 </head>
@@ -49,7 +49,7 @@ if(!location.search.includes('skipSplash=true')){
 <div id="welcome">
   <div class="card">
     <img id="welcomeLogo" src="./icon-512.png" onclick="goDashboard()">
-    <h2 id="welcomeName">JUJU</h2>
+    <h2 id="welcomeName">JU</h2>
     <p>Let's get started!</p>
     <button class="btn btn-orange" onclick="goDashboard()">Start Adventure! 🎮</button>
     <button class="btn btn-blue" id="installBtn" style="display:none">📲 Install App</button>
@@ -62,7 +62,7 @@ function loadWelcome(){
   const skipSplash = urlParams.get('skipSplash');
 
   // 2. FIX: Login appudu 1st page ki velladaniki
-  if(skipSplash !== 'true'){
+  if(skipSplash!== 'true'){
     localStorage.removeItem('lastDashboardPage');
   }
 
@@ -83,7 +83,7 @@ function goDashboard(){ window.location.href = './dashboard.html'; }
 window.addEventListener('beforeinstallprompt', (e) => {e.preventDefault();deferredPrompt = e;document.getElementById('installBtn').style.display = 'flex';});
 document.getElementById('installBtn').addEventListener('click', async () => {if (deferredPrompt) {deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt = null;document.getElementById('installBtn').style.display = 'none';}});
 loadWelcome();
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=43'); } // 3. FIX: v43
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js?v=46'); } // 3. FIX: v46 ki marchanu
 </script>
 </body>
 </html>
