@@ -1,13 +1,13 @@
-const CACHE_NAME = 'juju-fun-world-v38-0'; // FINAL Splash + Welcome Card v36
+const CACHE_NAME = 'juju-fun-world-v42-0'; // v42
 
 const urlsToCache = [
     './',
-    './index.html?v=36',       // 🔥 Splash + Welcome Page v36
-    './manifest.json?v=36',    // 🔥 Blue theme v36
+    './index.html?v=42',       // v42 Splash + Welcome
+    './manifest.json?v=42',    // v42
     
     // Pages
-    './dashboard.html', 
-    './profile.html',
+    './dashboard.html?v=42', 
+    './profile.html?v=42',
     './spell-it.html', 
     './juju-car-race.html',
     './balloon-pop-edu.html?v=156',
