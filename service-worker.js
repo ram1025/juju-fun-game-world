@@ -1,6 +1,6 @@
-const CACHE_NAME = 'juju-fun-game-world-v59';
+const CACHE_NAME = 'juju-fun-game-world-v62-REAL';
 
-// APP LO UNNA ANNI 24 FILES LIST IKKADA
+// NUV UNNA ACTUAL FILES - Screenshot nunchi thisanu
 const urlsToCache = [
     '/juju-fun-game-world/',
     '/juju-fun-game-world/index.html',
@@ -9,26 +9,28 @@ const urlsToCache = [
     '/juju-fun-game-world/icon-192.png',
     '/juju-fun-game-world/icon-512.png',
 
-    // All 24 Pages
+    // All 20 Real Pages
+    '/juju-fun-game-world/addition.html',
     '/juju-fun-game-world/alphabets.html',
-    '/juju-fun-game-world/numbers.html',
+    '/juju-fun-game-world/balloon-pop-edu.html',
+    '/juju-fun-game-world/body-parts.html',
+    '/juju-fun-game-world/juju-car-race.html',
+    '/juju-fun-game-world/color-mixing.html',
     '/juju-fun-game-world/colors.html',
-    '/juju-fun-game-world/shapes.html',
-    '/juju-fun-game-world/animals.html',
+    '/juju-fun-game-world/drag-drop.html',
+    '/juju-fun-game-world/free-draw.html',
     '/juju-fun-game-world/fruits.html',
-    '/juju-fun-game-world/vehicles.html',
-    '/juju-fun-game-world/rhymes.html',
-    '/juju-fun-game-world/stories.html',
-    '/juju-fun-game-world/games.html',
-    '/juju-fun-game-world/drawing.html',
-    '/juju-fun-game-world/music.html',
-    '/juju-fun-game-world/puzzles.html',
-    '/juju-fun-game-world/memory.html',
     '/juju-fun-game-world/matching.html',
-    '/juju-fun-game-world/quiz.html',
-    '/juju-fun-game-world/tracing.html',
-    '/juju-fun-game-world/coding.html',
-    '/juju-fun-game-world/dance.html',
+    '/juju-fun-game-world/numbers.html',
+    '/juju-fun-game-world/paint-letter.html',
+    '/juju-fun-game-world/pet-animals.html',
+    '/juju-fun-game-world/rhymes.html',
+    '/juju-fun-game-world/shapes.html',
+    '/juju-fun-game-world/spell-it.html',
+    '/juju-fun-game-world/temple-run.html',
+    '/juju-fun-game-world/vehicles.html',
+    '/juju-fun-game-world/vegetables.html',
+    '/juju-fun-game-world/wild-animals.html',
     
     // 8 Rhymes MP3
     '/juju-fun-game-world/twinkle-twinkle.mp3',
@@ -41,26 +43,18 @@ const urlsToCache = [
     '/juju-fun-game-world/abc-rhyme.mp3'
 ];
 
-// Install: anni okesari cache
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
 });
 
-// Activate: purana cache delete
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-    )).then(() => self.clients.claim())
+    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+    .then(() => self.clients.claim())
   );
 });
 
-// Fetch: cache first
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
-  );
+  event.respondWith(caches.match(event.request).then(res => res || fetch(event.request)));
 });
