@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="./manifest.json?v=139">
+<link rel="manifest" href="/juju-fun-game-world/manifest.json?v=53">
 <meta name="theme-color" content="#A855F7">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
@@ -13,11 +13,9 @@
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
 .back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .page-heading{display:none}
-
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;margin-top:10px}
 .rhyme-box{width:100%;max-height:280px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s;margin-top:5px}
 .rhyme-box:active{transform:scale(.98)}
-
 .card-heading{background:#A855F7;color:#fff;font-size:20px;font-weight:900;padding:12px 20px;border-radius:15px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px}
 .rhyme-icon{font-size:60px;margin-bottom:10px}
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
@@ -26,8 +24,7 @@
 .play-btn{flex:2;background:#A855F7;color:#fff;border:0;border-radius:25px;padding:14px 22px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
 .repeat-btn{flex:1;background:#F59E0B;color:#fff;border:0;border-radius:25px;padding:14px 10px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #D97706}
 .play-btn:active,.repeat-btn:active{transform:scale(.97)}
-.repeat-btn.active{background:#10B981;box-shadow:0 4px 0 #059669} /* green when repeat on */
-
+.repeat-btn.active{background:#10B981;box-shadow:0 4px 0 #059669}
 .controls{display:flex;gap:12px;justify-content:center;margin-bottom:10px}
 .btn{flex:1;background:#A855F7;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
 .btn:active{transform:scale(.97)}
@@ -38,7 +35,7 @@
 <body>
 
   <div class="header">
-    <button class="back-btn" onclick="location.href='./dashboard.html#rhymes'">←</button>
+    <button class="back-btn" onclick="location.href='/juju-fun-game-world/dashboard.html#rhymes'">←</button>
   </div>
 
   <div class="card">
@@ -67,21 +64,20 @@
 
 <script>
   const rhymes = [
-    {icon:'⭐', title:'Twinkle Twinkle', audio: './twinkle-twinkle.mp3', text:`Twinkle, twinkle, little star,
+    {icon:'⭐', title:'Twinkle Twinkle', audio: '/juju-fun-game-world/twinkle-twinkle.mp3', text:`Twinkle, twinkle, little star,
 How I wonder what you are!
 Up above the world so high,
 Like a diamond in the sky.
 Twinkle, twinkle, little star,
 How I wonder what you are!`},
-
-    {icon:'🐑', title:'Baa Baa Black Sheep', audio: './baa-baa-black.mp3', text:`Baa, baa, black sheep,
+    {icon:'🐑', title:'Baa Baa Black Sheep', audio: '/juju-fun-game-world/baa-baa-black.mp3', text:`Baa, baa, black sheep,
 have you any wool?`},
-    {icon:'🚌', title:'Wheels on the Bus', audio: './wheels-on-bus.mp3', text:`The wheels on the bus go 'round and 'round`},
-    {icon:'☀️', title:'You Are My Sunshine', audio: './you-are-my-sunshine.mp3', text:`You are my sunshine`},
-    {icon:'🐰', title:'Johnny Johnny', audio: './johnny-johnny.mp3', text:`Johnny, Johnny`},
-    {icon:'🥚', title:'Humpty Dumpty', audio: './humpty-dumpty.mp3', text:`Humpty Dumpty sat on a wall`},
-    {icon:'🌹', title:'Ring-a-Ring O Roses', audio: './ring-ring-roses.mp3', text:`Ring a ring o'roses`},
-    {icon:'🔤', title:'ABC Song', audio: './abc-rhyme.mp3', text:`A for Apple, B for Ball...`}
+    {icon:'🚌', title:'Wheels on the Bus', audio: '/juju-fun-game-world/wheels-on-bus.mp3', text:`The wheels on the bus go 'round and 'round`},
+    {icon:'☀️', title:'You Are My Sunshine', audio: '/juju-fun-game-world/you-are-my-sunshine.mp3', text:`You are my sunshine`},
+    {icon:'🐰', title:'Johnny Johnny', audio: '/juju-fun-game-world/johnny-johnny.mp3', text:`Johnny, Johnny`},
+    {icon:'🥚', title:'Humpty Dumpty', audio: '/juju-fun-game-world/humpty-dumpty.mp3', text:`Humpty Dumpty sat on a wall`},
+    {icon:'🌹', title:'Ring-a-Ring O Roses', audio: '/juju-fun-game-world/ring-ring-roses.mp3', text:`Ring a ring o'roses`},
+    {icon:'🔤', title:'ABC Song', audio: '/juju-fun-game-world/abc-rhyme.mp3', text:`A for Apple, B for Ball...`}
   ];
 
   let currentIndex = 0;
@@ -98,6 +94,20 @@ have you any wool?`},
   const repeatBtn = document.getElementById('repeatBtn');
   const rhymeAudio = document.getElementById('rhymeAudio');
 
+  function setMediaSession(rhyme){
+    if('mediaSession' in navigator){
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: rhyme.title,
+        artist: 'Juju Fun World',
+        artwork: [{src: '/juju-fun-game-world/icon-512.png', sizes: '512x512', type: 'image/png'}]
+      });
+      navigator.mediaSession.setActionHandler('play', () => rhymeAudio.play());
+      navigator.mediaSession.setActionHandler('pause', () => rhymeAudio.pause());
+      navigator.mediaSession.setActionHandler('nexttrack', () => nextRhyme());
+      navigator.mediaSession.setActionHandler('previoustrack', () => prevRhyme());
+    }
+  }
+
   function loadRhyme(index){
     const rhyme = rhymes[index];
     rhymeIcon.textContent = rhyme.icon;
@@ -108,11 +118,12 @@ have you any wool?`},
     rhymeBox.scrollTop = 0;
     rhymeAudio.pause();
     rhymeAudio.src = rhyme.audio;
-    rhymeAudio.loop = isRepeat; // repeat logic
+    rhymeAudio.loop = isRepeat;
     playBtn.textContent = '▶️ Play';
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === rhymes.length - 1;
     nextBtn.textContent = index === rhymes.length - 1? 'Completed ✓' : 'Next →';
+    setMediaSession(rhyme); // 🔥 Lock screen title update
   }
 
   function prevRhyme(){ if(currentIndex > 0){ currentIndex--; loadRhyme(currentIndex); } }
@@ -128,18 +139,21 @@ have you any wool?`},
   function playAudio(){
     if(!rhymeAudio.src) return;
     if(rhymeAudio.paused){
-      rhymeAudio.play().catch(err=>{ alert("Audio Error: " + err.message); });
+      rhymeAudio.play().then(()=>{
+        if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+      }).catch(err=>{ alert("Audio Error: " + err.message); });
       playBtn.textContent = '⏸️ Pause';
     } else {
       rhymeAudio.pause();
+      if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
       playBtn.textContent = '▶️ Play';
     }
     rhymeAudio.onended = () => {
       if(!isRepeat) playBtn.textContent = '▶️ Play';
+      if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'none';
     }
   }
 
-  // 🔥 LOCK SCREEN AUDIO FIX for iOS + Android
   document.addEventListener('visibilitychange', () => {
     if(document.visibilityState === 'visible' &&!rhymeAudio.paused){
       rhymeAudio.play().catch(()=>{});
