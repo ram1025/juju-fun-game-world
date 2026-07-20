@@ -1,83 +1,60 @@
-const CACHE_NAME = 'juju-fun-world-v46-1';
-const BASE = '/juju-fun-game-world/';
+const CACHE_NAME = 'juju-fun-world-v49'; // version marchesam
 
 const urlsToCache = [
-    BASE,
-    BASE + 'index.html?v=46',       
-    BASE + 'manifest.json?v=46',    
-    
-    // Pages
-    BASE + 'dashboard.html?v=46', 
-    BASE + 'profile.html?v=46',
-    BASE + 'spell-it.html', 
-    BASE + 'juju-car-race.html',
-    BASE + 'balloon-pop-edu.html?v=156',
-    BASE + 'temple-run.html',
-    BASE + 'fruits.html',           
-    BASE + 'pet-animals.html',      
-    BASE + 'wild-animals.html',     
-    BASE + 'vegetables.html',       
-    BASE + 'vehicles.html',         
-    BASE + 'matching.html',
-    BASE + 'drag-drop.html?v=156',
-    BASE + 'addition.html',
-    BASE + 'alphabets.html',
-    BASE + 'numbers.html',
-    BASE + 'painting.html',
-    BASE + 'free-draw.html',
-    BASE + 'rhymes.html?v=139',
-    BASE + 'body-parts.html',       
-    BASE + 'colors.html',           
-    BASE + 'color-mixing.html',     
-    BASE + 'shapes.html',
-
-    // Icons
-    BASE + 'icon-192.png',
-    BASE + 'icon-512.png',
-
-    // Rhymes
-    BASE + 'twinkle-twinkle.mp3',
-    BASE + 'baa-baa-black.mp3',
-    BASE + 'wheels-on-bus.mp3',
-    BASE + 'you-are-my-sunshine.mp3',
-    BASE + 'johnny-johnny.mp3',
-    BASE + 'humpty-dumpty.mp3',
-    BASE + 'ring-ring-roses.mp3',
-    BASE + 'abc-rhyme.mp3',
-
-    // Assets
-    BASE + 'assets/img/a.png',
-    BASE + 'assets/img/b.png',
-    BASE + 'assets/img/1.png',BASE + 'assets/img/2.png',BASE + 'assets/img/3.png',BASE + 'assets/img/4.png',BASE + 'assets/img/5.png',
-    BASE + 'assets/img/6.png',BASE + 'assets/img/7.png',BASE + 'assets/img/8.png',BASE + 'assets/img/9.png',BASE + 'assets/img/10.png',
-    BASE + 'assets/img/11.png',BASE + 'assets/img/12.png',BASE + 'assets/img/13.png',BASE + 'assets/img/14.png',BASE + 'assets/img/15.png',
-    BASE + 'assets/img/16.png',BASE + 'assets/img/17.png',BASE + 'assets/img/18.png',BASE + 'assets/img/19.png',BASE + 'assets/img/20.png',
-    BASE + 'assets/img/logout.png',
-    BASE + 'assets/audio/a.mp3',BASE + 'assets/audio/b.mp3',
-    BASE + 'assets/audio/number-1.mp3',BASE + 'assets/audio/number-2.mp3',BASE + 'assets/audio/number-3.mp3',BASE + 'assets/audio/number-4.mp3',BASE + 'assets/audio/number-5.mp3',
-    BASE + 'assets/audio/number-6.mp3',BASE + 'assets/audio/number-7.mp3',BASE + 'assets/audio/number-8.mp3',BASE + 'assets/audio/number-9.mp3',BASE + 'assets/audio/number-10.mp3',
-    BASE + 'assets/audio/number-11.mp3',BASE + 'assets/audio/number-12.mp3',BASE + 'assets/audio/number-13.mp3',BASE + 'assets/audio/number-14.mp3',BASE + 'assets/audio/number-15.mp3',
-    BASE + 'assets/audio/number-16.mp3',BASE + 'assets/audio/number-17.mp3',BASE + 'assets/audio/number-18.mp3',BASE + 'assets/audio/number-19.mp3',BASE + 'assets/audio/number-20.mp3',
-
-    // External Font - offline kosam
-    'https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap'
+    '/juju-fun-game-world/',
+    '/juju-fun-game-world/index.html?v=49',       
+    '/juju-fun-game-world/manifest.json?v=49',    
+    '/juju-fun-game-world/dashboard.html?v=49', 
+    '/juju-fun-game-world/profile.html?v=49',
+    '/juju-fun-game-world/spell-it.html', 
+    '/juju-fun-game-world/juju-car-race.html',
+    '/juju-fun-game-world/balloon-pop-edu.html?v=156',
+    '/juju-fun-game-world/temple-run.html',
+    '/juju-fun-game-world/fruits.html',           
+    '/juju-fun-game-world/pet-animals.html',      
+    '/juju-fun-game-world/wild-animals.html',     
+    '/juju-fun-game-world/vegetables.html',       
+    '/juju-fun-game-world/vehicles.html',         
+    '/juju-fun-game-world/matching.html',
+    '/juju-fun-game-world/drag-drop.html?v=156',
+    '/juju-fun-game-world/addition.html',
+    '/juju-fun-game-world/alphabets.html',
+    '/juju-fun-game-world/numbers.html',
+    '/juju-fun-game-world/painting.html',
+    '/juju-fun-game-world/free-draw.html',
+    '/juju-fun-game-world/rhymes.html?v=139',
+    '/juju-fun-game-world/body-parts.html',       
+    '/juju-fun-game-world/colors.html',           
+    '/juju-fun-game-world/color-mixing.html',     
+    '/juju-fun-game-world/shapes.html',
+    '/juju-fun-game-world/icon-192.png',
+    '/juju-fun-game-world/icon-512.png',
+    '/juju-fun-game-world/twinkle-twinkle.mp3',
+    '/juju-fun-game-world/baa-baa-black.mp3',
+    '/juju-fun-game-world/wheels-on-bus.mp3',
+    '/juju-fun-game-world/you-are-my-sunshine.mp3',
+    '/juju-fun-game-world/johnny-johnny.mp3',
+    '/juju-fun-game-world/humpty-dumpty.mp3',
+    '/juju-fun-game-world/ring-ring-roses.mp3',
+    '/juju-fun-game-world/abc-rhyme.mp3'
 ];
 
-// INSTALL
+// assets folder unte tarvatha add cheddam. Ippudu basic tho test cheddam
+
 self.addEventListener('install', (event) => {
     self.skipWaiting(); 
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
+            // cache.addAll badulu - 1 file fail ayina skip chestundi
             return Promise.all(
                 urlsToCache.map(url => 
-                    cache.add(url).catch(err => console.log('Failed to cache:', url))
+                    cache.add(url).catch(err => console.log('Skipped:', url))
                 )
             )
         })
     );
 });
 
-// ACTIVATE - Old cache delete
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -89,9 +66,11 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// FETCH - Network First, fallback to cache
+// Cache First - offline kosam best
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        fetch(event.request).catch(() => caches.match(event.request))
+        caches.match(event.request).then(response => {
+            return response || fetch(event.request);
+        })
     );
 });
