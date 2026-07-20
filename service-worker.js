@@ -1,32 +1,33 @@
-const CACHE_NAME = 'juju-fun-world-v55';
+const CACHE_NAME = 'juju-fun-world-v58';
 
+// 1. Core files + 2. All HTML + 3. All MP3
 const urlsToCache = [
     '/juju-fun-game-world/',
-    '/juju-fun-game-world/index.html?v=55',       
-    '/juju-fun-game-world/manifest.json?v=55',    
-    '/juju-fun-game-world/dashboard.html?v=55', 
-    '/juju-fun-game-world/profile.html?v=55',
-    '/juju-fun-game-world/spell-it.html?v=55',
-    '/juju-fun-game-world/juju-car-race.html?v=55',
-    '/juju-fun-game-world/balloon-pop-edu.html?v=55',
-    '/juju-fun-game-world/temple-run.html?v=55',
-    '/juju-fun-game-world/fruits.html?v=55',           
-    '/juju-fun-game-world/pet-animals.html?v=55',      
-    '/juju-fun-game-world/wild-animals.html?v=55',     
-    '/juju-fun-game-world/vegetables.html?v=55',       
-    '/juju-fun-game-world/vehicles.html?v=55',         
-    '/juju-fun-game-world/matching.html?v=55',
-    '/juju-fun-game-world/drag-drop.html?v=55',
-    '/juju-fun-game-world/addition.html?v=55',
-    '/juju-fun-game-world/alphabets.html?v=55',
-    '/juju-fun-game-world/numbers.html?v=55',
-    '/juju-fun-game-world/painting.html?v=55',
-    '/juju-fun-game-world/free-draw.html?v=55',
-    '/juju-fun-game-world/rhymes.html?v=55',
-    '/juju-fun-game-world/body-parts.html?v=55',       
-    '/juju-fun-game-world/colors.html?v=55',           
-    '/juju-fun-game-world/color-mixing.html?v=55',     
-    '/juju-fun-game-world/shapes.html?v=55',
+    '/juju-fun-game-world/index.html?v=58',       
+    '/juju-fun-game-world/manifest.json?v=58',    
+    '/juju-fun-game-world/dashboard.html?v=58', 
+    '/juju-fun-game-world/profile.html?v=58',
+    '/juju-fun-game-world/spell-it.html?v=58',
+    '/juju-fun-game-world/juju-car-race.html?v=58',
+    '/juju-fun-game-world/balloon-pop-edu.html?v=58', // 156 nunchi 58 ki marcham
+    '/juju-fun-game-world/temple-run.html?v=58',
+    '/juju-fun-game-world/fruits.html?v=58',           
+    '/juju-fun-game-world/pet-animals.html?v=58',      
+    '/juju-fun-game-world/wild-animals.html?v=58',     
+    '/juju-fun-game-world/vegetables.html?v=58',       
+    '/juju-fun-game-world/vehicles.html?v=58',         
+    '/juju-fun-game-world/matching.html?v=58',
+    '/juju-fun-game-world/drag-drop.html?v=58', // 156 nunchi 58 ki marcham
+    '/juju-fun-game-world/addition.html?v=58',
+    '/juju-fun-game-world/alphabets.html?v=58',
+    '/juju-fun-game-world/numbers.html?v=58',
+    '/juju-fun-game-world/painting.html?v=58',
+    '/juju-fun-game-world/free-draw.html?v=58',
+    '/juju-fun-game-world/rhymes.html?v=58',
+    '/juju-fun-game-world/body-parts.html?v=58',       
+    '/juju-fun-game-world/colors.html?v=58',           
+    '/juju-fun-game-world/color-mixing.html?v=58',     
+    '/juju-fun-game-world/shapes.html?v=58',
     '/juju-fun-game-world/icon-192.png',
     '/juju-fun-game-world/icon-512.png',
     
@@ -47,23 +48,19 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
-        .then(() => self.clients.claim())
-    );
+    event.waitUntil(caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))) .then(() => self.clients.claim()));
 });
 
-// 🔥 IDHE MAGIC: Cache First + Auto Save
+// 🔥 Runtime Cache: User click chesina anni auto save
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request).then(cached => {
             return cached || fetch(event.request).then(res => {
-                // network nunchi vaste ventane cache lo veyyi
-                return caches.open(CACHE_NAME).then(cache => {
-                    cache.put(event.request, res.clone());
-                    return res;
-                });
-            }).catch(()=>caches.match('/juju-fun-game-world/index.html?v=55'));
-        })
+                if(event.request.url.includes('/juju-fun-game-world/')){
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, res.clone()));
+                }
+                return res;
+            });
+        }).catch(() => caches.match('/juju-fun-game-world/index.html?v=58'))
     );
 });
