@@ -26,7 +26,7 @@ html,body{margin:0;background:#3D8BFF;font-family:Nunito,sans-serif;color:#fff;m
 <script>
 // 1. SW Register
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=46');
+  navigator.serviceWorker.register('/juju-fun-game-world/service-worker.js?v=46');
 }
 
 // 2. Pull to refresh
@@ -34,7 +34,7 @@ let startY = 0;
 document.addEventListener('touchstart', e => { startY = e.touches[0].pageY; });
 document.addEventListener('touchmove', e => {
   if(startY < 10 && window.scrollY === 0) {
-    location.href = './index.html?skipSplash=true&v='+Date.now();
+    location.href = '/juju-fun-game-world/index.html?skipSplash=true&v='+Date.now();
   }
 }, {passive:false});
 </script>
