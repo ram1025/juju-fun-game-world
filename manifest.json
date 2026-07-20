@@ -2,22 +2,22 @@
   "name": "Juju Fun World",
   "short_name": "Juju",
   "description": "Fun learning app for kids with rhymes, alphabets, games",
-  "start_url": "./index.html?v=43",
+  "start_url": "/juju-fun-game-world/index.html?v=46",
   "display": "standalone",
   "background_color": "#3D8BFF",
   "theme_color": "#3D8BFF",
   "orientation": "portrait",
-  "scope": "./",
+  "scope": "/juju-fun-game-world/",
   "categories": ["education", "kids", "music"],
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "/juju-fun-game-world/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./icon-512.png",
+      "src": "/juju-fun-game-world/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
