@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-v64-all-in-one';
+const CACHE_NAME = 'juju-v68-all-in-one';
 
 // NUV UNNA ANNI FILES + 8 RHYMES MP3
 const urlsToCache = [
