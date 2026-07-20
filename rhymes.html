@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="/juju-fun-game-world/manifest.json?v=53">
+<link rel="manifest" href="/juju-fun-game-world/manifest.json?v=58"> <!-- v58 ki marchanu -->
 <meta name="theme-color" content="#A855F7">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+  /* 🔥 Google Font teesesa - system font use chestham */
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
-  body{font-family:'Nunito',sans-serif;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
+  body{font-family:'Nunito', sans-serif, system-ui;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
-.back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.back-btn{position:absolute;left:0;background:#fff;color:#7C3AED;border:0;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:900;font-family:Nunito, sans-serif;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 .page-heading{display:none}
 .card{background:#fff;color:#1F2937;border-radius:25px;padding:20px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.2);display:flex;flex-direction:column;margin-top:10px}
 .rhyme-box{width:100%;max-height:280px;overflow-y:auto;background:#F3E8FF;border-radius:20px;display:flex;align-items:flex-start;justify-content:center;cursor:pointer;user-select:none;margin-bottom:15px;padding:20px;transition:transform.1s;margin-top:5px}
@@ -21,12 +21,12 @@
 .rhyme-title{font-size:24px;font-weight:900;color:#7C3AED;margin-bottom:10px}
 .rhyme-text{font-size:17px;font-weight:700;color:#4B5563;line-height:1.7;white-space:pre-line}
 .audio-controls{display:flex;gap:10px;margin-bottom:15px}
-.play-btn{flex:2;background:#A855F7;color:#fff;border:0;border-radius:25px;padding:14px 22px;font-size:18px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
-.repeat-btn{flex:1;background:#F59E0B;color:#fff;border:0;border-radius:25px;padding:14px 10px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #D97706}
+.play-btn{flex:2;background:#A855F7;color:#fff;border:0;border-radius:25px;padding:14px 22px;font-size:18px;font-weight:900;font-family:Nunito, sans-serif;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
+.repeat-btn{flex:1;background:#F59E0B;color:#fff;border:0;border-radius:25px;padding:14px 10px;font-size:16px;font-weight:900;font-family:Nunito, sans-serif;cursor:pointer;box-shadow:0 4px 0 #D97706}
 .play-btn:active,.repeat-btn:active{transform:scale(.97)}
 .repeat-btn.active{background:#10B981;box-shadow:0 4px 0 #059669}
 .controls{display:flex;gap:12px;justify-content:center;margin-bottom:10px}
-.btn{flex:1;background:#A855F7;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
+.btn{flex:1;background:#A855F7;color:#fff;border:0;border-radius:12px;padding:14px 18px;font-size:16px;font-weight:900;font-family:Nunito, sans-serif;cursor:pointer;box-shadow:0 4px 0 #7C3AED}
 .btn:active{transform:scale(.97)}
 .btn:disabled{background:#9CA3AF;box-shadow:0 4px 0 #6B7280;cursor:not-allowed}
 .counter{font-size:14px;font-weight:800;color:#6B7280;text-align:center}
@@ -123,7 +123,7 @@ have you any wool?`},
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === rhymes.length - 1;
     nextBtn.textContent = index === rhymes.length - 1? 'Completed ✓' : 'Next →';
-    setMediaSession(rhyme); // 🔥 Lock screen title update
+    setMediaSession(rhyme);
   }
 
   function prevRhyme(){ if(currentIndex > 0){ currentIndex--; loadRhyme(currentIndex); } }
