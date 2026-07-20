@@ -1,6 +1,4 @@
-const CACHE_NAME = 'juju-v68-all-in-one';
-
-// NUV UNNA ANNI FILES + 8 RHYMES MP3
+const CACHE_NAME = 'juju-v69-cache-first';
 const urlsToCache = [
     '/juju-fun-game-world/',
     '/juju-fun-game-world/index.html',
@@ -9,7 +7,6 @@ const urlsToCache = [
     '/juju-fun-game-world/icon-192.png',
     '/juju-fun-game-world/icon-512.png',
 
-    // All 21 Pages
     '/juju-fun-game-world/addition.html',
     '/juju-fun-game-world/alphabets.html',
     '/juju-fun-game-world/balloon-pop-edu.html',
@@ -32,7 +29,6 @@ const urlsToCache = [
     '/juju-fun-game-world/vegetables.html',
     '/juju-fun-game-world/wild-animals.html',
     
-    // 8 Rhymes MP3 - Ivi offline play avvali ante must
     '/juju-fun-game-world/twinkle-twinkle.mp3',
     '/juju-fun-game-world/baa-baa-black.mp3',
     '/juju-fun-game-world/wheels-on-bus.mp3',
@@ -43,25 +39,20 @@ const urlsToCache = [
     '/juju-fun-game-world/abc-rhyme.mp3'
 ];
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', e => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('Caching all files');
-      return cache.addAll(urlsToCache);
+  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(() => self.clients.claim()));
+});
+
+// KEY FIX: MUNDU CACHE LO CHUDU. LEKAPOTHE MATREME NETWORK
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(cachedResponse => {
+      return cachedResponse || fetch(e.request);
     })
-  );
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
-    .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
