@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v49'; // version marchesam
+const CACHE_NAME = 'juju-fun-world-v50'; // version marchesam
 
 const urlsToCache = [
     '/juju-fun-game-world/',
