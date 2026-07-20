@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-fun-world-v52'; // v50 -> v52 ki jump
+const CACHE_NAME = 'juju-fun-world-v53'; // v50 -> v52 ki jump
 
 const urlsToCache = [
     '/juju-fun-game-world/',
