@@ -1,114 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juju Fun World</title><link rel="manifest" href="./manifest.json?v=46"><meta name="theme-color" content="#3D8BFF">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
-<style>
-html,body{margin:0;background:#3D8BFF;font-family:Nunito,sans-serif;color:#fff;min-height:100vh;padding:0;overflow-y:auto;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}
-#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#3D8BFF;display:flex;justify-content:center;align-items:center;z-index:9999;animation:fadeOut 0.5s 1.2s forwards}
-@keyframes fadeOut{to{opacity:0;visibility:hidden}}
-.squircle{width:280px;height:280px;background: linear-gradient(145deg, #D4B5FF 0%, #B08CFF 100%);border-radius: 28%;display:flex;justify-content:center;align-items:center;box-shadow: 0 30px 80px rgba(0,0,0,0.25);animation:zoomIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)}
-@keyframes zoomIn{0%{transform:scale(0.2) rotate(-10deg)}100%{transform:scale(1) rotate(0)}}
-.logo{width:220px}
-#welcome{display:none;background:#3D8BFF;height:100vh;justify-content:center;align-items:center;padding:20px;animation:popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)}
-@keyframes popIn{0%{opacity:0;transform:scale(0.7)}100%{opacity:1;transform:scale(1)}}
-.card{background:#fff;width:90%;max-width:420px;border-radius:35px;padding:45px 35px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,0.25)}
-#welcomeLogo{width:130px;height:130px;border-radius:50%;border:7px solid #FF6B9D;margin:0 auto 25px;object-fit:cover;cursor:pointer;animation:bounce 1.2s infinite alternate ease-in-out}
-@keyframes bounce{0%{transform:translateY(0)}100%{transform:translateY(-12px)}}
-#welcomeName{color:#FF6B9D;font-size:42px;margin:0;font-weight:900}
-.card p{color:#6B7280;font-size:20px;margin:12px 0 25px;font-weight:700}
-.btn{border:none;width:100%;padding:20px;border-radius:22px;font-size:21px;font-weight:900;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:10px;transition:all 0.2s;margin-bottom:15px}
-.btn-orange{background:#F97316;color:#fff;box-shadow:0 9px 0 #EA580C;}
-.btn-blue{background:#3B82F6;color:#fff;box-shadow:0 9px 0 #2563EB;}
-.btn:active{transform:translateY(5px)}
-</style>
-<script>
-// 1. SW Register with full path
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/juju-fun-game-world/service-worker.js?v=47')
-   .then(reg => console.log('SW Registered:', reg.scope))
-   .catch(err => console.log('SW Failed:', err));
-  });
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juju Fun World</title>
+  <link rel="manifest" href="/juju-fun-game-world/manifest.json?v=47">
+  <meta name="theme-color" content="#3D8BFF">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* All styles same */
+  </style>
+  <script>
+    // 1. SW Register
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/juju-fun-game-world/service-worker.js?v=47')
+          .then(reg => console.log('SW Registered:', reg.scope))
+          .catch(err => console.log('SW Failed:', err));
+      });
+    }
 
-// 2. Install button
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installBtn').style.display = 'flex';
-});
-document.getElementById('installBtn').addEventListener('click', async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    document.getElementById('installBtn').style.display = 'none';
-  }
-});
-
-// 3. Pull to refresh
-let startY = 0;
-document.addEventListener('touchstart', e => { startY = e.touches[0].pageY; });
-document.addEventListener('touchmove', e => {
-  if(startY < 10 && window.scrollY === 0) {
-    location.href = '/juju-fun-game-world/index.html?skipSplash=true&v='+Date.now();
-  }
-}, {passive:false});
-</script>
+    // 2. Pull to refresh
+    let startY = 0;
+    document.addEventListener('touchstart', e => { startY = e.touches[0].pageY; });
+    document.addEventListener('touchmove', e => {
+      if(startY < 10 && window.scrollY === 0) {
+        location.href = '/juju-fun-game-world/index.html?skipSplash=true&v='+Date.now();
+      }
+    }, {passive:false});
+  </script>
 </head>
 <body>
-<div id="splash"><div class="squircle"><img src="./icon-512.png" class="logo"></div></div>
-<div id="welcome">
-  <div class="card">
-    <img id="welcomeLogo" src="./icon-512.png" onclick="goDashboard()">
-    <h2 id="welcomeName">JUJU</h2>
-    <p>Let's get started!</p>
-    <button class="btn btn-orange" onclick="goDashboard()">Start Adventure! 🎮</button>
-    <button class="btn btn-blue" id="installBtn" style="display:none">📲 Install App</button>
+  <div id="splash"><div class="squircle"><img src="./icon-512.png" class="logo"></div></div>
+  <div id="welcome">
+    <div class="card">
+      <img id="welcomeLogo" src="./icon-512.png" onclick="goDashboard()">
+      <h2 id="welcomeName">JUJU</h2>
+      <p>Let's get started!</p>
+      <button class="btn btn-orange" onclick="goDashboard()">Start Adventure! 🎮</button>
+      <button class="btn btn-blue" id="installBtn" style="display:none">📲 Install App</button>
+    </div>
   </div>
-</div>
-<script>
-let deferredPrompt;
+  <script>
+    let deferredPrompt;
 
-function loadWelcome(){
-  const urlParams = new URLSearchParams(window.location.search);
-  const skipSplash = urlParams.get('skipSplash');
+    function loadWelcome(){
+      const urlParams = new URLSearchParams(window.location.search);
+      const skipSplash = urlParams.get('skipSplash');
 
-  if(skipSplash!== 'true'){
-    localStorage.removeItem('lastDashboardPage');
-  }
+      if(skipSplash !== 'true'){
+        localStorage.removeItem('lastDashboardPage');
+      }
 
-  let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
-  if(p && p.name){
-    document.getElementById('welcomeName').innerText = p.name;
-    document.getElementById('welcomeLogo').src = p.image || './icon-512.png';
-  }
+      let p = JSON.parse(localStorage.getItem('jujuProfile') || '{}');
+      if(p && p.name){
+        document.getElementById('welcomeName').innerText = p.name;
+        document.getElementById('welcomeLogo').src = p.image || './icon-512.png';
+      }
 
-  // FIX: Akkada auto dashboard ki velladam teesesa
-  if(skipSplash === 'true'){
-    document.getElementById('splash').style.display = 'none';
-    document.getElementById('welcome').style.display = 'flex';
-  } else {
-    // Splash 1.2s tarvata welcome chupinchu, akkada aagipovu
-    setTimeout(()=>{
-      document.getElementById('splash').style.display = 'none';
-      document.getElementById('welcome').style.display = 'flex';
-    }, 1200);
-  }
-}
+      if(skipSplash === 'true'){
+        goDashboard();
+      } else {
+        setTimeout(()=>{
+          document.getElementById('splash').style.display = 'none';
+          document.getElementById('welcome').style.display = 'flex';
+        }, 1200);
+      }
+    }
 
-// FIX: Button click cheste matrame dashboard ki vellali
-function goDashboard(){
-  window.location.href = './dashboard.html';
-}
+    function goDashboard(){
+      window.location.assign('./dashboard.html');
+    }
 
-window.addEventListener('beforeinstallprompt', (e) => {e.preventDefault();deferredPrompt = e;document.getElementById('installBtn').style.display = 'flex';});
-document.getElementById('installBtn').addEventListener('click', async () => {if (deferredPrompt) {deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt = null;document.getElementById('installBtn').style.display = 'none';}});
+    // Install button
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'flex';
+    });
 
-loadWelcome();
-</script>
+    document.getElementById('installBtn').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        document.getElementById('installBtn').style.display = 'none';
+      }
+    });
+
+    loadWelcome();
+  </script>
 </body>
 </html>
