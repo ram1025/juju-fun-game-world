@@ -1,6 +1,6 @@
-const CACHE_NAME = 'juju-fun-game-world-v62-REAL';
+const CACHE_NAME = 'juju-v64-all-in-one';
 
-// NUV UNNA ACTUAL FILES - Screenshot nunchi thisanu
+// NUV UNNA ANNI FILES + 8 RHYMES MP3
 const urlsToCache = [
     '/juju-fun-game-world/',
     '/juju-fun-game-world/index.html',
@@ -9,7 +9,7 @@ const urlsToCache = [
     '/juju-fun-game-world/icon-192.png',
     '/juju-fun-game-world/icon-512.png',
 
-    // All 20 Real Pages
+    // All 21 Pages
     '/juju-fun-game-world/addition.html',
     '/juju-fun-game-world/alphabets.html',
     '/juju-fun-game-world/balloon-pop-edu.html',
@@ -32,7 +32,7 @@ const urlsToCache = [
     '/juju-fun-game-world/vegetables.html',
     '/juju-fun-game-world/wild-animals.html',
     
-    // 8 Rhymes MP3
+    // 8 Rhymes MP3 - Ivi offline play avvali ante must
     '/juju-fun-game-world/twinkle-twinkle.mp3',
     '/juju-fun-game-world/baa-baa-black.mp3',
     '/juju-fun-game-world/wheels-on-bus.mp3',
@@ -45,7 +45,12 @@ const urlsToCache = [
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Caching all files');
+      return cache.addAll(urlsToCache);
+    })
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -56,5 +61,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(caches.match(event.request).then(res => res || fetch(event.request)));
+  event.respondWith(
+    caches.match(event.request).then(res => res || fetch(event.request))
+  );
 });
