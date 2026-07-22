@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-v103-cache-first';
+const CACHE_NAME = 'juju-v104-cache-first';
 const urlsToCache = [
     '/juju-fun-game-world/',
     '/juju-fun-game-world/index.html',
@@ -19,7 +19,7 @@ const urlsToCache = [
     '/juju-fun-game-world/fruits.html',
     '/juju-fun-game-world/matching.html',
     '/juju-fun-game-world/numbers.html',
-    '/juju-fun-game-world/paint-letter.html',
+    '/juju-fun-game-world/painting.html',
     '/juju-fun-game-world/pet-animals.html',
     '/juju-fun-game-world/rhymes.html',
     '/juju-fun-game-world/shapes.html',
