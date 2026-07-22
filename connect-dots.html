@@ -26,8 +26,8 @@ body{font-family:'Baloo 2';background:#3B82F6;padding:12px; overscroll-behavior-
     <button class="btn" onclick="nextFigure()">Next →</button>
 </div>
 <div class="container">
-    <div class="topbar">Connect the Dots</div>
-    <div class="title" id="titleText">Make a Fish 🐟</div>
+    <div class="topbar">Trace the Shape</div>
+    <div class="title" id="titleText">Trace a Fish 🐟</div>
     <canvas id="canvas"></canvas>
     <div class="win" id="winText">Great Job! 🎉</div>
 </div>
@@ -37,62 +37,49 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let cw,ch;
 let currentFigure=0;
-let currentDot=0;
+let currentPoint=0;
 let drawing=false;
 let drawnLines=[];
 
 const figures=[
-    {name:"Fish", emoji:"🐟", dots:[{x:60,y:135},{x:90,y:105},{x:130,y:95},{x:180,y:105},{x:220,y:135},{x:180,y:165},{x:130,y:175},{x:90,y:165}]},
-    {name:"Star", emoji:"⭐", dots:[{x:180,y:65},{x:195,y:115},{x:250,y:115},{x:205,y:145},{x:220,y:195},{x:180,y:165},{x:140,y:195},{x:155,y:145},{x:110,y:115},{x:165,y:115}]},
-    {name:"Heart", emoji:"❤️", dots:[{x:180,y:105},{x:145,y:85},{x:110,y:105},{x:110,y:140},{x:180,y:205},{x:250,y:140},{x:250,y:105},{x:215,y:85}]},
-    {name:"Cat", emoji:"🐱", dots:[{x:120,y:95},{x:105,y:75},{x:135,y:70},{x:165,y:80},{x:195,y:70},{x:225,y:75},{x:210,y:95},{x:210,y:165},{x:120,y:165}]},
-    {name:"Car", emoji:"🚗", dots:[{x:90,y:155},{x:90,y:125},{x:120,y:110},{x:220,y:110},{x:250,y:125},{x:250,y:155},{x:220,y:170},{x:120,y:170}]},
-    {name:"Boat", emoji:"⛵", dots:[{x:100,y:175},{x:240,y:175},{x:200,y:145},{x:140,y:145},{x:170,y:115}]},
-    {name:"Cap", emoji:"🧢", dots:[{x:110,y:135},{x:130,y:115},{x:150,y:105},{x:180,y:105},{x:210,y:115},{x:230,y:135},{x:210,y:155},{x:130,y:155}]},
-    {name:"Moon", emoji:"🌙", dots:[{x:180,y:85},{x:210,y:95},{x:230,y:125},{x:210,y:155},{x:180,y:165},{x:150,y:155},{x:130,y:125},{x:150,y:95}]},
-    {name:"Square", emoji:"🟦", dots:[{x:130,y:115},{x:230,y:115},{x:230,y:215},{x:130,y:215}]},
-    {name:"Triangle", emoji:"🔺", dots:[{x:180,y:95},{x:120,y:205},{x:240,y:205}]},
-    {name:"Hexagon", emoji:"⬡", dots:[{x:180,y:95},{x:220,y:115},{x:220,y:155},{x:180,y:175},{x:140,y:155},{x:140,y:115}]}
+    {name:"Fish", emoji:"🐟", points:[{x:60,y:135},{x:90,y:105},{x:130,y:95},{x:180,y:105},{x:220,y:135},{x:180,y:165},{x:130,y:175},{x:90,y:165}]},
+    {name:"Star", emoji:"⭐", points:[{x:180,y:65},{x:195,y:115},{x:250,y:115},{x:205,y:145},{x:220,y:195},{x:180,y:165},{x:140,y:195},{x:155,y:145},{x:110,y:115},{x:165,y:115}]},
+    {name:"Heart", emoji:"❤️", points:[{x:180,y:105},{x:145,y:85},{x:110,y:105},{x:110,y:140},{x:180,y:205},{x:250,y:140},{x:250,y:105},{x:215,y:85}]},
+    {name:"Boat", emoji:"⛵", points:[{x:100,y:175},{x:240,y:175},{x:200,y:145},{x:140,y:145},{x:170,y:115}]},
+    {name:"Square", emoji:"🟦", points:[{x:130,y:115},{x:230,y:115},{x:230,y:215},{x:130,y:215}]},
+    {name:"Triangle", emoji:"🔺", points:[{x:180,y:95},{x:120,y:205},{x:240,y:205}]},
+    {name:"Hexagon", emoji:"⬡", points:[{x:180,y:95},{x:220,y:115},{x:220,y:155},{x:180,y:175},{x:140,y:155},{x:140,y:115}]},
+    {name:"Moon", emoji:"🌙", points:[{x:180,y:85},{x:210,y:95},{x:230,y:125},{x:210,y:155},{x:180,y:165},{x:150,y:155},{x:130,y:125},{x:150,y:95}]}
 ];
 
 function init(){
     cw=canvas.width=canvas.offsetWidth; ch=270; canvas.height=ch;
-    currentDot=0; drawing=false; drawnLines=[];
+    currentPoint=0; drawing=false; drawnLines=[];
     const f=figures[currentFigure];
-    document.getElementById('titleText').innerHTML=`Make a ${f.name} ${f.emoji}`;
+    document.getElementById('titleText').innerHTML=`Trace a ${f.name} ${f.emoji}`;
     document.getElementById('winText').style.display='none';
     drawAll();
 }
 
 function drawAll(){
     ctx.clearRect(0,0,cw,ch);
-    const dots=figures[currentFigure].dots;
+    const pts=figures[currentFigure].points;
 
-    // Light dotted guide
-    ctx.strokeStyle='rgba(180,180,180,0.4)';
-    ctx.lineWidth=2;
-    ctx.setLineDash([5,5]);
+    // 1. Light gray guide outline - dots lekunda
+    ctx.strokeStyle='rgba(180,180,180,0.5)';
+    ctx.lineWidth=4;
+    ctx.setLineDash([8,6]);
     ctx.beginPath();
-    dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
+    pts.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);});
     ctx.closePath();ctx.stroke();
     ctx.setLineDash([]);
 
-    // User blue lines
+    // 2. User drawn blue line
     ctx.strokeStyle='#3B82F6';
-    ctx.lineWidth=5;
+    ctx.lineWidth=6;
     ctx.lineCap='round';
     drawnLines.forEach(line=>{
         ctx.beginPath();ctx.moveTo(line.x1,line.y1);ctx.lineTo(line.x2,line.y2);ctx.stroke();
-    });
-
-    // Dots: Black with white number. Current = Red
-    dots.forEach((d,i)=>{
-        ctx.fillStyle= i===currentDot? '#EF4444' : '#1F2937';
-        ctx.beginPath();ctx.arc(d.x,d.y,8,0,Math.PI*2);ctx.fill();
-        ctx.fillStyle='white';
-        ctx.font='800 11px Baloo 2';
-        ctx.textAlign='center';
-        ctx.fillText(i+1, d.x, d.y+3.5);
     });
 }
 
@@ -111,25 +98,30 @@ canvas.addEventListener('touchend',end);
 canvas.addEventListener('mouseup',end);
 
 function start(e){
+    drawing=true;
     const pos=getPos(e);
-    const d=figures[currentFigure].dots[currentDot];
-    if(Math.hypot(pos.x-d.x, pos.y-d.y) < 18){ drawing=true; }
+    ctx.beginPath();
+    ctx.moveTo(pos.x,pos.y);
 }
 
 function move(e){
     if(!drawing) return;
     const pos=getPos(e);
-    const dots=figures[currentFigure].dots;
-    const next=dots[currentDot+1];
-    if(next && Math.hypot(pos.x-next.x, pos.y-next.y) < 25){
-        const prev=dots[currentDot];
+    const pts=figures[currentFigure].points;
+
+    // Check if near next point
+    const next=pts[currentPoint+1] || pts[0];
+    if(Math.hypot(pos.x-next.x, pos.y-next.y) < 30){
+        const prev=pts[currentPoint];
         drawnLines.push({x1:prev.x,y1:prev.y,x2:next.x,y2:next.y});
-        currentDot++; drawAll();
-        if(currentDot>=dots.length-1){
+        currentPoint++;
+        drawAll();
+
+        if(currentPoint>=pts.length-1){
             drawing=false;
             // Fill shape
-            ctx.fillStyle='rgba(59,130,246,0.2)';
-            ctx.beginPath(); dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
+            ctx.fillStyle='rgba(59,130,246,0.25)';
+            ctx.beginPath(); pts.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);});
             ctx.closePath();ctx.fill();
             // Win
             document.getElementById('winText').style.display='block';
