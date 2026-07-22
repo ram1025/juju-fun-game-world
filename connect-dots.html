@@ -2,22 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Connect the Dots - Juju Fun World</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
-body{font-family:'Baloo 2';background:#3B82F6;display:flex;flex-direction:column;align-items:center;justify-content:center; overscroll-behavior-y: auto}
-.header{display:flex;justify-content:space-between;width:100%;max-width:380px;padding:0 10px;margin-bottom:8px}
-.btn{background:white;border:none;padding:8px 14px;border-radius:12px;font-size:14px;font-weight:900;color:#F97316;cursor:pointer}
-.container{background:#FFF7ED;padding:12px;border-radius:25px;width:92%;max-width:380px;text-align:center}
-.topbar{background:#3B82F6;color:white;padding:8px;border-radius:12px;font-size:18px;font-weight:900;margin-bottom:8px}
-#canvas{background:#FFFFFF;border:3px solid #FDBA74;border-radius:15px;width:100%;height:320px; touch-action:none}
-.title{font-size:18px;font-weight:900;color:#F97316;margin:8px 0}
-.win{font-size:16px;color:#10B981;font-weight:900;margin-top:6px;display:none; animation:pop 0.5s}
-@keyframes pop{0%{transform:scale(0.5)}100%{transform:scale(1)}}
-.ref-img{width:45px;float:right}
+body{font-family:'Baloo 2';background:#3B82F6;padding:12px; overscroll-behavior-y: auto}
+.header{display:flex;justify-content:space-between;gap:6px;margin-bottom:10px;max-width:400px;margin:0 auto 10px}
+.btn{background:white;border:none;padding:8px 12px;border-radius:12px;font-size:14px;font-weight:900;color:#F97316;cursor:pointer}
+.btn:active{transform:scale(0.95)}
+.container{background:#FFF7ED;padding:12px;border-radius:20px;max-width:400px;margin:0 auto;box-shadow:0 4px 0 #FDBA74}
+.topbar{background:#3B82F6;color:white;padding:10px;border-radius:12px;font-size:18px;font-weight:900;margin-bottom:8px;text-align:center}
+#canvas{background:#FFFFFF;border:2px solid #FDBA74;border-radius:12px;width:100%;height:270px; touch-action:none}
+.title{font-size:17px;font-weight:900;color:#F97316;margin:8px 0;text-align:center}
+.win{font-size:16px;color:#10B981;font-weight:900;margin-top:6px;text-align:center;display:none}
 </style>
 </head>
 <body>
@@ -25,11 +23,11 @@ body{font-family:'Baloo 2';background:#3B82F6;display:flex;flex-direction:column
     <button class="btn" onclick="location.href='./dashboard.html'">← Back</button>
     <button class="btn" onclick="prevFigure()">← Prev</button>
     <button class="btn" onclick="resetGame()">Reset</button>
-    <button class="btn" style="background:#3B82F6;color:white" onclick="nextFigure()">Next →</button>
+    <button class="btn" onclick="nextFigure()">Next →</button>
 </div>
 <div class="container">
     <div class="topbar">Connect the Dots</div>
-    <div class="title" id="titleText"><img id="refImg" src="" class="ref-img">Make a Fish 🐟</div>
+    <div class="title" id="titleText">Make a Fish 🐟</div>
     <canvas id="canvas"></canvas>
     <div class="win" id="winText">Great Job! 🎉</div>
 </div>
@@ -44,72 +42,57 @@ let drawing=false;
 let drawnLines=[];
 
 const figures=[
-    {
-        name:"Fish", emoji:"🐟", img:"https://cdn-icons-png.flaticon.com/512/616/616408.png",
-        dots:[{x:60,y:180},{x:100,y:140},{x:160,y:120},{x:220,y:140},{x:260,y:180},{x:220,y:220},{x:160,y:240},{x:100,y:220}]
-    },
-    {
-        name:"Star", emoji:"⭐", img:"",
-        dots:[{x:180,y:80},{x:200,y:140},{x:260,y:140},{x:210,y:180},{x:230,y:240},{x:180,y:200},{x:130,y:240},{x:150,y:180},{x:100,y:140},{x:160,y:140}]
-    },
-    {
-        name:"Heart", emoji:"❤️", img:"",
-        dots:[{x:180,y:120},{x:140,y:90},{x:100,y:120},{x:100,y:160},{x:180,y:230},{x:260,y:160},{x:260,y:120},{x:220,y:90}]
-    },
-    {
-        name:"Cat", emoji:"🐱", img:"",
-        dots:[{x:120,y:100},{x:100,y:70},{x:140,y:60},{x:180,y:80},{x:220,y:60},{x:260,y:70},{x:240,y:100},{x:240,y:180},{x:120,y:180}]
-    },
-    {
-        name:"Car", emoji:"🚗", img:"",
-        dots:[{x:80,y:200},{x:80,y:160},{x:120,y:140},{x:240,y:140},{x:280,y:160},{x:280,y:200},{x:240,y:220},{x:120,y:220}]
-    }
+    {name:"Fish", emoji:"🐟", dots:[{x:60,y:135},{x:90,y:105},{x:130,y:95},{x:180,y:105},{x:220,y:135},{x:180,y:165},{x:130,y:175},{x:90,y:165}]},
+    {name:"Star", emoji:"⭐", dots:[{x:180,y:65},{x:195,y:115},{x:250,y:115},{x:205,y:145},{x:220,y:195},{x:180,y:165},{x:140,y:195},{x:155,y:145},{x:110,y:115},{x:165,y:115}]},
+    {name:"Heart", emoji:"❤️", dots:[{x:180,y:105},{x:145,y:85},{x:110,y:105},{x:110,y:140},{x:180,y:205},{x:250,y:140},{x:250,y:105},{x:215,y:85}]},
+    {name:"Cat", emoji:"🐱", dots:[{x:120,y:95},{x:105,y:75},{x:135,y:70},{x:165,y:80},{x:195,y:70},{x:225,y:75},{x:210,y:95},{x:210,y:165},{x:120,y:165}]},
+    {name:"Car", emoji:"🚗", dots:[{x:90,y:155},{x:90,y:125},{x:120,y:110},{x:220,y:110},{x:250,y:125},{x:250,y:155},{x:220,y:170},{x:120,y:170}]},
+    {name:"Boat", emoji:"⛵", dots:[{x:100,y:175},{x:240,y:175},{x:200,y:145},{x:140,y:145},{x:170,y:115}]},
+    {name:"Cap", emoji:"🧢", dots:[{x:110,y:135},{x:130,y:115},{x:150,y:105},{x:180,y:105},{x:210,y:115},{x:230,y:135},{x:210,y:155},{x:130,y:155}]},
+    {name:"Moon", emoji:"🌙", dots:[{x:180,y:85},{x:210,y:95},{x:230,y:125},{x:210,y:155},{x:180,y:165},{x:150,y:155},{x:130,y:125},{x:150,y:95}]},
+    {name:"Square", emoji:"🟦", dots:[{x:130,y:115},{x:230,y:115},{x:230,y:215},{x:130,y:215}]},
+    {name:"Triangle", emoji:"🔺", dots:[{x:180,y:95},{x:120,y:205},{x:240,y:205}]},
+    {name:"Hexagon", emoji:"⬡", dots:[{x:180,y:95},{x:220,y:115},{x:220,y:155},{x:180,y:175},{x:140,y:155},{x:140,y:115}]}
 ];
 
 function init(){
-    cw=canvas.width=canvas.offsetWidth; ch=320; canvas.height=ch;
-    currentDot=0;
-    drawing=false;
-    drawnLines=[];
+    cw=canvas.width=canvas.offsetWidth; ch=270; canvas.height=ch;
+    currentDot=0; drawing=false; drawnLines=[];
     const f=figures[currentFigure];
-    document.getElementById('titleText').innerHTML=`<img id="refImg" src="${f.img}" class="ref-img">Make a ${f.name} ${f.emoji}`;
-    document.getElementById('refImg').style.display = f.img? 'inline' : 'none';
+    document.getElementById('titleText').innerHTML=`Make a ${f.name} ${f.emoji}`;
     document.getElementById('winText').style.display='none';
     drawAll();
 }
 
 function drawAll(){
     ctx.clearRect(0,0,cw,ch);
+    const dots=figures[currentFigure].dots;
 
-    // 1. Draw full figure outline in light gray first - so kids see what to make
-    ctx.strokeStyle='rgba(200,200,200,0.4)';
-    ctx.lineWidth=3;
+    // Light dotted guide
+    ctx.strokeStyle='rgba(180,180,180,0.4)';
+    ctx.lineWidth=2;
     ctx.setLineDash([5,5]);
     ctx.beginPath();
-    const dots=figures[currentFigure].dots;
     dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
     ctx.closePath();ctx.stroke();
     ctx.setLineDash([]);
 
-    // 2. Draw connected blue lines
+    // User blue lines
     ctx.strokeStyle='#3B82F6';
-    ctx.lineWidth=6;
+    ctx.lineWidth=5;
     ctx.lineCap='round';
     drawnLines.forEach(line=>{
-        ctx.beginPath();
-        ctx.moveTo(line.x1,line.y1);
-        ctx.lineTo(line.x2,line.y2);
-        ctx.stroke();
+        ctx.beginPath();ctx.moveTo(line.x1,line.y1);ctx.lineTo(line.x2,line.y2);ctx.stroke();
     });
 
-    // 3. Draw dots
+    // Dots: Black with white number. Current = Red
     dots.forEach((d,i)=>{
-        ctx.fillStyle= i===currentDot? '#EF4444' : '#374151';
-        ctx.beginPath();ctx.arc(d.x,d.y,9,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle= i===currentDot? '#EF4444' : '#1F2937';
+        ctx.beginPath();ctx.arc(d.x,d.y,8,0,Math.PI*2);ctx.fill();
         ctx.fillStyle='white';
-        ctx.font='900 12px Baloo 2';
+        ctx.font='800 11px Baloo 2';
         ctx.textAlign='center';
-        ctx.fillText(i+1, d.x, d.y+4);
+        ctx.fillText(i+1, d.x, d.y+3.5);
     });
 }
 
@@ -130,9 +113,7 @@ canvas.addEventListener('mouseup',end);
 function start(e){
     const pos=getPos(e);
     const d=figures[currentFigure].dots[currentDot];
-    if(Math.sqrt((pos.x-d.x)**2 + (pos.y-d.y)**2) < 20){
-        drawing=true;
-    }
+    if(Math.hypot(pos.x-d.x, pos.y-d.y) < 18){ drawing=true; }
 }
 
 function move(e){
@@ -140,45 +121,38 @@ function move(e){
     const pos=getPos(e);
     const dots=figures[currentFigure].dots;
     const next=dots[currentDot+1];
-    if(next && Math.sqrt((pos.x-next.x)**2 + (pos.y-next.y)**2) < 28){
+    if(next && Math.hypot(pos.x-next.x, pos.y-next.y) < 25){
         const prev=dots[currentDot];
         drawnLines.push({x1:prev.x,y1:prev.y,x2:next.x,y2:next.y});
-        currentDot++;
-        drawAll();
+        currentDot++; drawAll();
         if(currentDot>=dots.length-1){
             drawing=false;
-            // Fill with color
-            ctx.fillStyle='rgba(59,130,246,0.25)';
-            ctx.beginPath();
-            dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
+            // Fill shape
+            ctx.fillStyle='rgba(59,130,246,0.2)';
+            ctx.beginPath(); dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
             ctx.closePath();ctx.fill();
             // Win
             document.getElementById('winText').style.display='block';
-            speak("Great Job! " + figures[currentFigure].name);
-            // Confetti
-            for(let i=0;i<30;i++){
-                setTimeout(()=>{
-                    const x = Math.random()*cw;
-                    const y = Math.random()*ch/2;
-                    ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
-                    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
-                }, i*50)
-            }
+            confetti();
         }
+    }
+}
+
+function confetti(){
+    for(let i=0;i<30;i++){
+        setTimeout(()=>{
+            const x = Math.random()*cw;
+            const y = Math.random()*ch/2;
+            ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
+            ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fill();
+        }, i*50)
     }
 }
 
 function end(){ drawing=false; }
 function resetGame(){ init(); }
-function nextFigure(){
-    currentFigure=(currentFigure+1)%figures.length;
-    init();
-}
-function prevFigure(){
-    currentFigure=(currentFigure-1+figures.length)%figures.length;
-    init();
-}
-function speak(t){if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(t);u.rate=0.8;speechSynthesis.speak(u);}}
+function nextFigure(){ currentFigure=(currentFigure+1)%figures.length; init(); }
+function prevFigure(){ currentFigure=(currentFigure-1+figures.length)%figures.length; init(); }
 init();
 </script>
 </body>
