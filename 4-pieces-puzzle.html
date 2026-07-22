@@ -3,159 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Alphabet Puzzle - Juju Fun World</title>
-<link rel="manifest" href="./manifest.json">
+<title>Connect Dots - Juju Fun World</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;touch-action:none}
-body{font-family:'Baloo 2';background:#3B82F6;min-height:100vh;padding:15px}
+body{font-family:'Baloo 2';background:#3B82F6;padding:15px}
 .header{display:flex;justify-content:space-between;margin-bottom:10px}
-.btn{background:white;border:none;padding:10px 20px;border-radius:15px;font-size:16px;font-weight:900;color:#F97316;cursor:pointer}
+.btn{background:white;border:none;padding:10px 20px;border-radius:15px;font-size:16px;font-weight:900;color:#F97316}
 .container{background:#FFF7ED;padding:20px;border-radius:30px;max-width:400px;margin:0 auto;text-align:center}
-.title{font-size:28px;font-weight:900;color:#F97316;margin-bottom:5px}
-.subtitle{font-size:18px;color:#92400E;margin-bottom:10px}
-.canvas-wrap{background:#FFFFFF;border:4px solid #FDBA74;border-radius:20px;position:relative;height:350px}
-#canvas{width:100%;height:100%;display:block;border-radius:16px;background:#fff}
-.pieces{margin-top:15px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;min-height:80px}
-.piece{width:70px;height:70px;background:#10B981;color:white;font-size:36px;font-weight:900;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:grab;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
-.piece:active{transform:scale(0.9)}
+.title{font-size:28px;font-weight:900;color:#F97316;margin-bottom:10px}
+#canvas{background:#FFFFFF;border:4px solid #FDBA74;border-radius:20px;width:100%;height:350px}
 .win{font-size:20px;color:#10B981;font-weight:900;margin-top:10px;display:none}
 </style>
 </head>
 <body>
 <div class="header">
     <button class="btn" onclick="location.href='./dashboard.html'">← Back</button>
-    <button class="btn" style="background:#3B82F6;color:white" onclick="nextLetter()">Next →</button>
+    <button class="btn" style="background:#3B82F6;color:white" onclick="nextFigure()">Next →</button>
 </div>
 <div class="container">
-    <div class="title" id="letterTitle">Letter A</div>
-    <div class="subtitle" id="letterWord">A for Apple 🍎</div>
-    <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
-    <div class="win" id="winText">Great Job! 🎉</div>
-    <div class="pieces" id="pieces"></div>
+    <div class="title" id="figureTitle">Connect Dots: Square 🟦</div>
+    <canvas id="canvas"></canvas>
+    <div class="win" id="winText">Great! You made a Square 🎉</div>
 </div>
 
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=106')}
-
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-let cw,ch,cx,cy;
-let currentLetter = 0; // 0=A, 1=B
+let cw,ch;
+let currentFigure=0;
+let nextDot=0; // which dot to connect next
+let drawing=false;
 
-const letters = [
+const figures=[
     {
-        letter: 'A',
-        word: 'A for Apple 🍎',
-        pieces: [
-            {id:'a1', char:'/', color:'#EF4444'},
-            {id:'a2', char:'\\', color:'#3B82F6'},
-            {id:'a3', char:'-', color:'#F97316'} // cross line
-        ]
+        name:"Square", emoji:"🟦",
+        dots:[{x:120,y:120},{x:280,y:120},{x:280,y:280},{x:120,y:280}] // 4 points
     },
     {
-        letter: 'B',
-        word: 'B for Ball ⚽',
-        pieces: [
-            {id:'b1', char:'|', color:'#EF4444'},
-            {id:'b2', char:')', color:'#3B82F6'},
-            {id:'b3', char:')', color:'#F97316'}
-        ]
+        name:"Triangle", emoji:"🔺",
+        dots:[{x:200,y:100},{x:100,y:280},{x:300,y:280}] // 3 points
+    },
+    {
+        name:"House", emoji:"🏠",
+        dots:[{x:120,y:200},{x:280,y:200},{x:280,y:300},{x:120,y:300},{x:200,y:120}] // house shape
     }
 ];
 
-let placed = {};
-
 function init(){
-    cw=canvas.offsetWidth; ch=350;
-    canvas.width=cw; canvas.height=ch;
-    cx=cw/2; cy=ch/2;
-    placed = {};
-    drawOutline();
-    createPieces();
-    document.getElementById('letterTitle').textContent = `Letter ${letters[currentLetter].letter}`;
-    document.getElementById('letterWord').textContent = letters[currentLetter].word;
+    cw=canvas.width=canvas.offsetWidth; ch=350; canvas.height=ch;
+    nextDot=0;
+    drawing=false;
+    drawDots();
+    document.getElementById('figureTitle').textContent=`Connect Dots: ${figures[currentFigure].name} ${figures[currentFigure].emoji}`;
     document.getElementById('winText').style.display='none';
-    speak(letters[currentLetter].letter);
+    speak(figures[currentFigure].name);
 }
 
-function drawOutline(){
+function drawDots(){
     ctx.clearRect(0,0,cw,ch);
-    ctx.strokeStyle='#374151';
-    ctx.lineWidth=18;
-    ctx.lineCap='round';
-    ctx.font='900 200px Baloo 2';
-    ctx.textAlign='center';
-    ctx.strokeText(letters[currentLetter].letter, cx, cy+70);
-}
-
-function createPieces(){
-    const piecesDiv = document.getElementById('pieces');
-    piecesDiv.innerHTML='';
-    letters[currentLetter].pieces.forEach(p=>{
-        const div = document.createElement('div');
-        div.className='piece';
-        div.textContent=p.char;
-        div.id=p.id;
-        div.style.background = p.color;
-        div.draggable=true;
-        div.addEventListener('touchstart',dragStart);
-        div.addEventListener('mousedown',dragStart);
-        piecesDiv.appendChild(div);
+    const dots=figures[currentFigure].dots;
+    dots.forEach((d,i)=>{
+        // draw dot
+        ctx.fillStyle= i===nextDot? '#EF4444' : '#374151'; // next dot red
+        ctx.beginPath();ctx.arc(d.x,d.y,12,0,Math.PI*2);ctx.fill();
+        // draw number
+        ctx.fillStyle='white';
+        ctx.font='900 14px Baloo 2';
+        ctx.textAlign='center';
+        ctx.fillText(i+1, d.x, d.y+5);
     });
 }
 
-let dragEl=null;
-function dragStart(e){
-    dragEl=e.target;
-}
-canvas.addEventListener('touchend',drop);
-canvas.addEventListener('mouseup',drop);
+canvas.addEventListener('touchstart',start);
+canvas.addEventListener('mousedown',start);
+canvas.addEventListener('touchmove',move);
+canvas.addEventListener('mousemove',move);
+canvas.addEventListener('touchend',end);
+canvas.addEventListener('mouseup',end);
 
-function drop(e){
-    if(!dragEl) return;
+function getPos(e){
     const rect=canvas.getBoundingClientRect();
-    const x=(e.changedTouches?e.changedTouches[0].clientX:e.clientX)-rect.left;
-    const y=(e.changedTouches?e.changedTouches[0].clientY:e.clientY)-rect.top;
-
-    if(x>50 && x<cw-50 && y>50 && y<ch-50){
-        placed[dragEl.id]=true;
-        dragEl.style.display='none';
-        drawPieceOnCanvas(dragEl.textContent, dragEl.style.background, x, y);
-        checkWin();
-    }
-    dragEl=null;
+    const x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+    const y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+    return {x,y};
 }
 
-function drawPieceOnCanvas(char, color, x, y){
-    ctx.fillStyle = color;
-    ctx.font='900 100px Baloo 2';
-    ctx.textAlign='center';
-    ctx.fillText(char, x, y);
-}
-
-function checkWin(){
-    if(Object.keys(placed).length === letters[currentLetter].pieces.length){
-        document.getElementById('winText').style.display='block';
-        speak("Great Job");
+function start(e){
+    const pos=getPos(e);
+    const d=figures[currentFigure].dots[nextDot];
+    if(Math.sqrt((pos.x-d.x)**2 + (pos.y-d.y)**2) < 20){
+        drawing=true;
     }
 }
 
-function nextLetter(){
-    currentLetter = (currentLetter + 1) % letters.length;
+function move(e){
+    if(!drawing) return;
+    const pos=getPos(e);
+    const d=figures[currentFigure].dots[nextDot+1];
+    if(d && Math.sqrt((pos.x-d.x)**2 + (pos.y-d.y)**2) < 30){
+        // connect line
+        ctx.strokeStyle='#3B82F6';
+        ctx.lineWidth=8;
+        ctx.beginPath();
+        ctx.moveTo(figures[currentFigure].dots[nextDot].x, figures[currentFigure].dots[nextDot].y);
+        ctx.lineTo(d.x,d.y);
+        ctx.stroke();
+        nextDot++;
+        drawDots(); // redraw to show next red dot
+        if(nextDot>=figures[currentFigure].dots.length-1){
+            // complete
+            ctx.fillStyle='rgba(59,130,246,0.3)';
+            ctx.beginPath();
+            figures[currentFigure].dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
+            ctx.closePath();ctx.fill();
+            document.getElementById('winText').style.display='block';
+            speak("Great Job");
+            drawing=false;
+        }
+    }
+}
+
+function end(){ drawing=false; }
+
+function nextFigure(){
+    currentFigure=(currentFigure+1)%figures.length;
     init();
 }
-
-function speak(text){
-    if('speechSynthesis' in window){
-        speechSynthesis.cancel();
-        const u=new SpeechSynthesisUtterance(text);
-        u.lang='en-US';u.rate=0.8;
-        speechSynthesis.speak(u);
-    }
-}
+function speak(t){if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(t);u.rate=0.8;speechSynthesis.speak(u);}}
 init();
-window.addEventListener('resize',init);
 </script>
 </body>
 </html>
