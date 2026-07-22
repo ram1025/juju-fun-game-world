@@ -2,7 +2,7 @@
   "name": "Juju Fun World",
   "short_name": "Juju",
   "description": "Fun learning app for kids with rhymes, alphabets, games",
-  "start_url": "/juju-fun-game-world/index.html?v=102",
+  "start_url": "/juju-fun-game-world/index.html?v=103",
   "display": "standalone",
   "background_color": "#3D8BFF",
   "theme_color": "#3D8BFF",
