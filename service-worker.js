@@ -1,4 +1,4 @@
-const CACHE_NAME = 'juju-v101-cache-first';
+const CACHE_NAME = 'juju-v102-cache-first';
 const urlsToCache = [
     '/juju-fun-game-world/',
     '/juju-fun-game-world/index.html',
@@ -28,7 +28,7 @@ const urlsToCache = [
     '/juju-fun-game-world/vehicles.html',
     '/juju-fun-game-world/vegetables.html',
     '/juju-fun-game-world/wild-animals.html',
-    '/juju-fun-game-world/t-puzzle.html',      // <-- IDI OKATE ADD CHEYYI
+    '/juju-fun-game-world/4-peices-puzzle.html',      // <-- IDI OKATE ADD CHEYYI
     '/juju-fun-game-world/twinkle-twinkle.mp3',
     '/juju-fun-game-world/baa-baa-black.mp3',
     '/juju-fun-game-world/wheels-on-bus.mp3',
