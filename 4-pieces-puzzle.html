@@ -9,15 +9,15 @@
 body{background:#3B82F6;font-family:'Nunito',sans-serif;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0}
 .header{width:100%;display:flex;align-items:center;justify-content:center;position:relative;padding:15px 20px}
 .back-btn{position:absolute;left:15px;background:#fff;border:0;border-radius:12px;padding:10px 14px;font-size:24px;font-weight:900;color:#1e40af;cursor:pointer}
-h1{font-size:24px;font-weight:900;text-align:center}
+h1{font-size:22px;font-weight:900;text-align:center;display:flex;align-items:center;gap:8px}
 .level{font-size:16px;margin:5px 0 10px;color:#FEF9C3;font-weight:800;text-align:center}
 .game-area{display:flex;flex-direction:column;align-items:center;width:100%;padding-bottom:20px}
 .board{width:90vw;max-width:350px;height:90vw;max-height:350px;background:#fff;border-radius:30px;position:relative;margin-bottom:15px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .outline{position:absolute;border:3px dashed #22C55E;background:rgba(34,197,94,0.1);border-radius:10px}
-.pieces-tray{width:90vw;max-width:350px;height:120px;background:rgba(255,255,255,0.2);border-radius:20px;position:relative;margin-bottom:15px;display:flex;align-items:center;justify-content:space-around;padding:10px}
+.pieces-tray{width:90vw;max-width:350px;height:100px;background:rgba(255,255,255,0.2);border-radius:20px;position:relative;margin-bottom:15px;display:flex;align-items:center;justify-content:space-around;padding:10px}
 .piece{position:absolute;cursor:grab;background:#FACC15;border:3px solid #1e293b;transition:all 0.1s;touch-action:none;z-index:5;border-radius:8px}
 .piece:active{cursor:grabbing;transform:scale(1.05);z-index:10}
-.piece.placed{border-color:#22C55E;background:#22C55E;cursor:default}
+.piece.placed{border-color:#22C55E;background:#22C55E}
 .buttons{display:flex;gap:10px;margin-bottom:10px}
 .btn{background:#fff;color:#1e40af;border:0;padding:12px 20px;border-radius:15px;font-size:15px;font-weight:900;cursor:pointer}
 .btn:active{transform:scale(0.95)}
@@ -82,7 +82,6 @@ function loadLevel(){
   board.innerHTML = ''; tray.innerHTML = '';
   document.getElementById('levelText').textContent = `Level ${currentLevel+1} / 5 - ${levels[currentLevel].name}`;
 
-  // Draw outline in board
   let outline = document.createElement('div');
   outline.className = 'outline';
   outline.style.width = levels[currentLevel].outline.w+'px';
@@ -91,11 +90,10 @@ function loadLevel(){
   outline.style.top = levels[currentLevel].outline.y+'px';
   board.appendChild(outline);
 
-  // Create pieces in TRAY - draggable
   levels[currentLevel].pieces.forEach((p,i)=>{
     let div = document.createElement('div');
     div.className = 'piece';
-    div.style.width = p.w/2+'px'; // tray lo chinna ga
+    div.style.width = p.w/2+'px';
     div.style.height = p.h/2+'px';
     div.style.position = 'relative';
     div.style.left = '0px';
@@ -104,6 +102,7 @@ function loadLevel(){
     div.dataset.targetY = p.targetY;
     div.dataset.w = p.w;
     div.dataset.h = p.h;
+    div.dataset.id = i;
     tray.appendChild(div);
   });
 }
@@ -111,10 +110,11 @@ function loadLevel(){
 function showHint(){
   if(hintUsed) return;
   hintUsed = true;
-  [...document.getElementById('board').children].forEach((piece)=>{
-    if(piece.classList.contains('piece')){
-      piece.style.left = piece.dataset.targetX + 'px';
-      piece.style.top = piece.dataset.targetY + 'px';
+  levels[currentLevel].pieces.forEach((p,i)=>{
+    let piece = [...document.getElementById('board').children].find(el => el.dataset.id == i);
+    if(piece){
+      piece.style.left = p.targetX + 'px';
+      piece.style.top = p.targetY + 'px';
       piece.classList.add('placed');
     }
   });
@@ -124,20 +124,13 @@ function resetLevel(){ loadLevel(); }
 
 function nextLevel(){
   document.getElementById('winBox').classList.remove('show');
-  if(!checkWinManual()){ alert("Inka level complete cheyyaledu! 🤔"); return; }
+  if(!checkWinManual()){ alert("Inka level complete cheyyaledu! 😅"); return; }
   currentLevel = (currentLevel + 1) % levels.length;
   loadLevel();
 }
 
+// FIX: 30px tolerance ichanu ippudu
 function checkWinManual(){
-  let correct = 0;
-  [...document.getElementById('board').children].forEach((piece)=>{
-    if(piece.classList.contains('piece') && piece.classList.contains('placed')) correct++;
-  });
-  return correct === 4;
-}
-
-function checkWin(){
   let correct = 0;
   [...document.getElementById('board').children].forEach((piece)=>{
     if(piece.classList.contains('piece')){
@@ -145,7 +138,7 @@ function checkWin(){
       let y = parseInt(piece.style.top);
       let tx = parseInt(piece.dataset.targetX);
       let ty = parseInt(piece.dataset.targetY);
-      if(Math.abs(x - tx) < 20 && Math.abs(y - ty) < 20){
+      if(Math.abs(x - tx) < 30 && Math.abs(y - ty) < 30){ // 20 nundi 30 ki penchanu
         piece.classList.add('placed');
         piece.style.left = tx + 'px';
         piece.style.top = ty + 'px';
@@ -153,10 +146,16 @@ function checkWin(){
       }
     }
   });
-  if(correct === 4 &&!hintUsed){ document.getElementById('winBox').classList.add('show'); }
+  return correct === 4;
 }
 
-// DRAG FROM TRAY TO BOARD
+function checkWin(){
+  if(checkWinManual() &&!hintUsed){ 
+    document.getElementById('winBox').classList.add('show'); 
+  }
+}
+
+// DRAG LOGIC
 const board = document.getElementById('board');
 document.addEventListener('mousedown', e=>{
   if(e.target.classList.contains('piece')){
@@ -164,7 +163,6 @@ document.addEventListener('mousedown', e=>{
     let rect = selected.getBoundingClientRect();
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
-    // Move piece to board
     if(selected.parentElement.id === 'tray'){
       board.appendChild(selected);
       selected.style.position = 'absolute';
