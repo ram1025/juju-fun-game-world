@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>JUJU Dashboard</title><link rel="manifest" href="./manifest.json?v=103"><meta name="theme-color" content="#3B82F6">
+<title>JU Dashboard</title><link rel="manifest" href="./manifest.json?v=104"><meta name="theme-color" content="#3B82F6">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -38,7 +38,7 @@ h1{text-align:center;font-size:32px;font-weight:900;margin-bottom:5px}
 </div>
 <div class="header"><button class="menu" onclick="openMenu()">≡</button></div>
 <img src="./icon-192.png" class="profile-img" id="profilePic">
-<h1 id="profileName">JUJU</h1>
+<h1 id="profileName">JU</h1>
 <p class="sub">Choose Your Adventure! 🎮</p>
 <div class="slider" id="slider"></div>
 <div class="dots" id="dots"></div>
@@ -53,20 +53,19 @@ function logout(){
 }
 
 const allGames = [
-{name:"Addition",file:"./addition.html",icon:"➕",color:"pink"},{name:"Alphabets",file:"./alphabets.html",icon:"abc",color:"blue"},
-{name:"Balloon Pop Edu",file:"./balloon-pop-edu.html",icon:"🎈",color:"orange"},{name:"Body Parts",file:"./body-parts.html",icon:"👂",color:"yellow"},
-{name:"Juju Car Race",file:"./juju-car-race.html",icon:"🚗",color:"purple"},{name:"Color Mixing",file:"./color-mixing.html",icon:"🧪",color:"purple"},
-{name:"Colors",file:"./colors.html",icon:"🎨",color:"green"},{name:"Drag & Drop",file:"./drag-drop.html",icon:"✋",color:"pink"},
-{name:"Free Draw",file:"./free-draw.html",icon:"🐒",color:"purple"},{name:"Fruits",file:"./fruits.html",icon:"🍎",color:"orange"},
-{name:"Matching",file:"./matching.html",icon:"🧩",color:"green"},{name:"Numbers",file:"./numbers.html",icon:"123",color:"blue"},
-{name:"Paint Letter",file:"./painting.html",icon:"🎨",color:"pink"},{name:"Pet Animals",file:"./pet-animals.html",icon:"🐶",color:"purple"},
-{name:"Rhymes",file:"./rhymes.html",icon:"🎵",color:"purple"},{name:"Shapes",file:"./shapes.html",icon:"⭐",color:"yellow"},
-{name:"Spell It",file:"./spell-it.html",icon:"🧩",color:"blue"},{name:"Temple Run",file:"./temple-run.html",icon:"🏃",color:"blue"},
-{name:"Vehicles",file:"./vehicles.html",icon:"🚗",color:"blue"},{name:"Vegetables",file:"./vegetables.html",icon:"🥕",color:"purple"},
-{name:"Wild Animals",file:"./wild-animals.html",icon:"🦁",color:"orange"},
-{name:"4-Pieces Puzzle", file:"./4-pieces-puzzle.html", icon:"🧩", color:"green"},  // <-- IDI KOTHA ADD CHESAM
-{name:"Coming Soon", file:"#", icon:"🔒", color:"locked"},
-{name:"Coming Soon", file:"#", icon:"🔒", color:"locked"}
+  {name:"Addition",file:"./addition.html",icon:"➕",color:"pink"},{name:"Alphabets",file:"./alphabets.html",icon:"abc",color:"blue"},
+  {name:"Balloon Pop Edu",file:"./balloon-pop-edu.html",icon:"🎈",color:"orange"},{name:"Body Parts",file:"./body-parts.html",icon:"👂",color:"yellow"},
+  {name:"Color Mixing",file:"./color-mixing.html",icon:"🧪",color:"purple"},{name:"Colors",file:"./colors.html",icon:"🎨",color:"green"},
+  {name:"Drag & Drop",file:"./drag-drop.html",icon:"✋",color:"pink"},{name:"Free Draw",file:"./free-draw.html",icon:"🐒",color:"purple"},
+  {name:"Fruits",file:"./fruits.html",icon:"🍎",color:"orange"},{name:"Juju Car Race",file:"./juju-car-race.html",icon:"🚗",color:"purple"},
+  {name:"Matching",file:"./matching.html",icon:"🧩",color:"green"},{name:"Numbers",file:"./numbers.html",icon:"123",color:"blue"},
+  {name:"Paint Letter",file:"./paint-letter.html",icon:"🎨",color:"pink"},{name:"Pet Animals",file:"./pet-animals.html",icon:"🐶",color:"purple"},
+  {name:"4-Pieces Puzzle", file:"./4-pieces-puzzle.html", icon:"🧩", color:"green"}, // <-- IDI
+  {name:"Rhymes",file:"./rhymes.html",icon:"🎵",color:"purple"},{name:"Shapes",file:"./shapes.html",icon:"⭐",color:"yellow"},
+  {name:"Spell It",file:"./spell-it.html",icon:"🧩",color:"blue"},{name:"Temple Run",file:"./temple-run.html",icon:"🏃",color:"blue"},
+  {name:"Vehicles",file:"./vehicles.html",icon:"🚗",color:"blue"},{name:"Vegetables",file:"./vegetables.html",icon:"🥕",color:"purple"},
+  {name:"Wild Animals",file:"./wild-animals.html",icon:"🦁",color:"orange"},
+  {name:"Coming Soon", file:"#", icon:"🔒", color:"locked"},{name:"Coming Soon", file:"#", icon:"🔒", color:"locked"}
 ];
 
 let currentPage = 0;
@@ -114,10 +113,13 @@ function loadGames(){
 
 function openGame(file){
  if(file === "#"){ alert('Coming Soon! 🚀'); return; }
- const sliderWidth = slider.offsetWidth;
- const page = Math.round(slider.scrollLeft / sliderWidth);
- savePage(page);
- location.href = file;
+ if(!slider) { location.href = file; return; } // <-- FIX: slider lekapoyina open avvali
+ try{
+   const sliderWidth = slider.offsetWidth;
+   const page = Math.round(slider.scrollLeft / sliderWidth);
+   savePage(page);
+ }catch(e){}
+ location.href = file; // <-- direct ga vellipovali
 }
 
 function createDots(){
@@ -152,7 +154,7 @@ window.addEventListener('pageshow', (event) => {
   }, 50);
 });
 
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=46'); }
+if('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=104'); }
 </script>
 </body>
 </html>
