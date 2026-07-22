@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>4 Pieces Puzzle</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#3B82F6;font-family:'Nunito',sans-serif;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+h1{font-size:28px;font-weight:900;margin-bottom:5px}
+.level{font-size:18px;margin-bottom:15px;color:#FEF9C3;font-weight:800}
+.board{width:320px;height:400px;background:#fff;border-radius:30px;position:relative;margin-bottom:20px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.piece{position:absolute;cursor:grab;background:#FACC15;border:3px solid #1e293b;transition:transform 0.1s;touch-action:none}
+.piece:active{cursor:grabbing;transform:scale(1.05);z-index:10}
+.piece.placed{background:#22C55E;border-color:#15803D}
+.buttons{display:flex;gap:12px;margin-bottom:20px}
+.btn{background:#fff;color:#1e40af;border:0;padding:12px 25px;border-radius:15px;font-size:16px;font-weight:900;cursor:pointer}
+.btn:active{transform:scale(0.95)}
+.win{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#1e40af;padding:30px;border-radius:25px;text-align:center;font-size:24px;font-weight:900;display:none;z-index:100}
+.win.show{display:block}
+</style>
+</head>
+<body>
+<h1>🧩 4 Pieces Puzzle</h1>
+<div class="level" id="levelText">Level 1 / 10</div>
+<div class="board" id="board"></div>
+<div class="buttons">
+  <button class="btn" onclick="resetLevel()">🔄 Reset</button>
+  <button class="btn" onclick="showHint()">💡 Hint</button>
+  <button class="btn" onclick="nextLevel()">➡️ Next</button>
+</div>
+<div class="win" id="winBox">Great Job! 🎉<br><button class="btn" onclick="nextLevel()" style="margin-top:15px">Next Level</button></div>
+
+<script>
+let currentLevel = 0;
+let selected = null;
+let offsetX = 0, offsetY = 0;
+
+const levels = [
+  // LEVEL 1: T Shape
+  {name:"T", pieces:[
+    {w:120,h:40,x:20,y:20},{w:120,h:40,x:140,y:20},
+    {w:40,h:120,x:60,y:70},{w:40,h:120,x:100,y:70}
+  ]},
+  // LEVEL 2: Square
+  {name:"Square", pieces:[
+    {w:80,h:80,x:20,y:20},{w:80,h:80,x:120,y:20},
+    {w:80,h:80,x:20,y:120},{w:80,h:80,x:120,y:120}
+  ]},
+  // LEVEL 3: House
+  {name:"House", pieces:[
+    {w:160,h:80,x:20,y:100},{w:160,h:80,x:20,y:190},
+    {w:80,h:80,x:20,y:10},{w:80,h:80,x:100,y:10}
+  ]},
+  // LEVEL 4: Cross
+  {name:"Cross", pieces:[
+    {w:60,h:180,x:80,y:20},{w:180,h:60,x:20,y:80},
+    {w:60,h:60,x:80,y:140},{w:60,h:60,x:140,y:80}
+  ]},
+  // LEVEL 5: Arrow
+  {name:"Arrow", pieces:[
+    {w:100,h:40,x:40,y:40},{w:40,h:100,x:70,y:90},
+    {w:40,h:40,x:30,y:30},{w:40,h:40,x:110,y:30}
+  ]},
+  // LEVEL 6: L Shape
+  {name:"L", pieces:[
+    {w:140,h:40,x:20,y:20},{w:40,h:140,x:20,y:70},
+    {w:40,h:40,x:70,y:20},{w:40,h:40,x:120,y:20}
+  ]},
+  // LEVEL 7: Diamond
+  {name:"Diamond", pieces:[
+    {w:100,h:100,x:30,y:30},{w:100,h:100,x:130,y:30},
+    {w:100,h:100,x:30,y:130},{w:100,h:100,x:130,y:130}
+  ]},
+  // LEVEL 8: Bridge
+  {name:"Bridge", pieces:[
+    {w:200,h:40,x:10,y:50},{w:200,h:40,x:10,y:150},
+    {w:40,h:80,x:40,y:100},{w:40,h:80,x:120,y:100}
+  ]},
+  // LEVEL 9: Star Base
+  {name:"Star", pieces:[
+    {w:80,h:80,x:40,y:40},{w:80,h:80,x:120,y:40},
+    {w:80,h:80,x:40,y:120},{w:80,h:80,x:120,y:120}
+  ]},
+  // LEVEL 10: Big T
+  {name:"Big T", pieces:[
+    {w:160,h:50,x:10,y:20},{w:160,h:50,x:10,y:80},
+    {w:50,h:160,x:60,y:140},{w:50,h:160,x:110,y:140}
+  ]}
+];
+
+function loadLevel(){
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  document.getElementById('levelText').textContent = `Level ${currentLevel+1} / 10 - ${levels[currentLevel].name}`;
+
+  levels[currentLevel].pieces.forEach((p,i)=>{
+    let div = document.createElement('div');
+    div.className = 'piece';
+    div.style.width = p.w+'px';
+    div.style.height = p.h+'px';
+    div.style.left = (Math.random()*180)+'px';
+    div.style.top = (Math.random()*50 + 320)+'px';
+    div.dataset.id = i;
+    board.appendChild(div);
+  });
+}
+
+function showHint(){
+  const board = document.getElementById('board');
+  [...board.children].forEach((piece,i)=>{
+    piece.style.left = levels[currentLevel].pieces[i].x + 'px';
+    piece.style.top = levels[currentLevel].pieces[i].y + 'px';
+    piece.classList.add('placed');
+  });
+  setTimeout(checkWin, 500);
+}
+
+function resetLevel(){
+  loadLevel();
+}
+
+function nextLevel(){
+  document.getElementById('winBox').classList.remove('show');
+  currentLevel = (currentLevel + 1) % 10;
+  loadLevel();
+}
+
+function checkWin(){
+  const board = document.getElementById('board');
+  let correct = 0;
+  [...board.children].forEach((piece,i)=>{
+    let x = parseInt(piece.style.left);
+    let y = parseInt(piece.style.top);
+    let target = levels[currentLevel].pieces[i];
+    if(Math.abs(x - target.x) < 15 && Math.abs(y - target.y) < 15){
+      piece.classList.add('placed');
+      correct++;
+    }
+  });
+  if(correct === 4){
+    document.getElementById('winBox').classList.add('show');
+  }
+}
+
+// Drag + Touch logic
+document.getElementById('board').addEventListener('mousedown', e=>{
+  if(e.target.classList.contains('piece')){
+    selected = e.target; selected.classList.remove('placed');
+    let rect = selected.getBoundingClientRect();
+    offsetX = e.clientX - rect.left; offsetY = e.clientY - rect.top;
+  }
+});
+document.addEventListener('mousemove', e=>{
+  if(selected){
+    let boardRect = document.getElementById('board').getBoundingClientRect();
+    selected.style.left = (e.clientX - boardRect.left - offsetX) + 'px';
+    selected.style.top = (e.clientY - boardRect.top - offsetY) + 'px';
+  }
+});
+document.addEventListener('mouseup', ()=>{if(selected){checkWin();} selected=null;});
+
+// Touch support
+document.getElementById('board').addEventListener('touchstart', e=>{
+  if(e.target.classList.contains('piece')){
+    selected = e.target; selected.classList.remove('placed');
+    let touch = e.touches[0];
+    let rect = selected.getBoundingClientRect();
+    offsetX = touch.clientX - rect.left; offsetY = touch.clientY - rect.top;
+  }
+});
+document.addEventListener('touchmove', e=>{
+  if(selected){
+    let touch = e.touches[0];
+    let boardRect = document.getElementById('board').getBoundingClientRect();
+    selected.style.left = (touch.clientX - boardRect.left - offsetX) + 'px';
+    selected.style.top = (touch.clientY - boardRect.top - offsetY) + 'px';
+  }
+});
+document.addEventListener('touchend', ()=>{if(selected){checkWin();} selected=null;});
+
+loadLevel();
+</script>
+</body>
+</html>
