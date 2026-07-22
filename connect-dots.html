@@ -3,64 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connect the Dots - Dolphin - Juju Fun World</title>
+<title>Connect the Dots - Juju Fun World</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
-body{font-family:'Baloo 2';background:#3B82F6;display:flex;flex-direction:column;align-items:center;justify-content:center; overscroll-behavior-y: auto} /* center + pull refresh */
-.header{display:flex;justify-content:space-between;width:100%;max-width:420px;padding:0 15px;margin-bottom:10px}
-.btn{background:white;border:none;padding:10px 20px;border-radius:15px;font-size:16px;font-weight:900;color:#F97316;cursor:pointer}
-.container{background:#FFF7ED;padding:15px;border-radius:30px;width:90%;max-width:420px;text-align:center}
-.topbar{background:#3B82F6;color:white;padding:10px;border-radius:15px;font-size:22px;font-weight:900;margin-bottom:10px}
-#canvas{background:#FFFFFF;border:4px solid #FDBA74;border-radius:20px;width:100%;height:380px; touch-action:none}
-.title{font-size:20px;font-weight:900;color:#F97316;margin:10px 0}
-.win{font-size:18px;color:#10B981;font-weight:900;margin-top:8px;display:none}
-.ref-img{width:60px;float:right}
+body{font-family:'Baloo 2';background:#3B82F6;display:flex;flex-direction:column;align-items:center;justify-content:center; overscroll-behavior-y: auto}
+.header{display:flex;justify-content:space-between;width:100%;max-width:380px;padding:0 10px;margin-bottom:8px}
+.btn{background:white;border:none;padding:8px 14px;border-radius:12px;font-size:14px;font-weight:900;color:#F97316;cursor:pointer}
+.container{background:#FFF7ED;padding:12px;border-radius:25px;width:92%;max-width:380px;text-align:center}
+.topbar{background:#3B82F6;color:white;padding:8px;border-radius:12px;font-size:18px;font-weight:900;margin-bottom:8px}
+#canvas{background:#FFFFFF;border:3px solid #FDBA74;border-radius:15px;width:100%;height:320px; touch-action:none}
+.title{font-size:18px;font-weight:900;color:#F97316;margin:8px 0}
+.win{font-size:16px;color:#10B981;font-weight:900;margin-top:6px;display:none; animation:pop 0.5s}
+@keyframes pop{0%{transform:scale(0.5)}100%{transform:scale(1)}}
+.ref-img{width:45px;float:right}
 </style>
 </head>
 <body>
 <div class="header">
     <button class="btn" onclick="location.href='./dashboard.html'">← Back</button>
-    <button class="btn" style="background:#3B82F6;color:white" onclick="resetGame()">Reset</button>
+    <button class="btn" onclick="prevFigure()">← Prev</button>
+    <button class="btn" onclick="resetGame()">Reset</button>
+    <button class="btn" style="background:#3B82F6;color:white" onclick="nextFigure()">Next →</button>
 </div>
 <div class="container">
     <div class="topbar">Connect the Dots</div>
-    <div class="title"><img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" class="ref-img">Make a Dolphin 🐬</div>
+    <div class="title" id="titleText"><img id="refImg" src="" class="ref-img">Make a Fish 🐟</div>
     <canvas id="canvas"></canvas>
-    <div class="win" id="winText">Wow! You made a Dolphin 🎉</div>
+    <div class="win" id="winText">Great Job! 🎉</div>
 </div>
 
 <script>
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let cw,ch;
-let currentDot=1;
+let currentFigure=0;
+let currentDot=0;
 let drawing=false;
-let drawnLines=[]; // store lines so they don't disappear
+let drawnLines=[];
 
-const dots=[
-    {x:80,y:320},{x:100,y:280},{x:120,y:240},{x:140,y:200},{x:160,y:170},
-    {x:200,y:160},{x:240,y:170},{x:270,y:190},{x:290,y:210},{x:280,y:220},
-    {x:260,y:225},{x:240,y:225},{x:220,y:240},{x:200,y:230},{x:180,y:250}
+const figures=[
+    {
+        name:"Fish", emoji:"🐟", img:"https://cdn-icons-png.flaticon.com/512/616/616408.png",
+        dots:[{x:60,y:180},{x:100,y:140},{x:160,y:120},{x:220,y:140},{x:260,y:180},{x:220,y:220},{x:160,y:240},{x:100,y:220}]
+    },
+    {
+        name:"Star", emoji:"⭐", img:"",
+        dots:[{x:180,y:80},{x:200,y:140},{x:260,y:140},{x:210,y:180},{x:230,y:240},{x:180,y:200},{x:130,y:240},{x:150,y:180},{x:100,y:140},{x:160,y:140}]
+    },
+    {
+        name:"Heart", emoji:"❤️", img:"",
+        dots:[{x:180,y:120},{x:140,y:90},{x:100,y:120},{x:100,y:160},{x:180,y:230},{x:260,y:160},{x:260,y:120},{x:220,y:90}]
+    },
+    {
+        name:"Cat", emoji:"🐱", img:"",
+        dots:[{x:120,y:100},{x:100,y:70},{x:140,y:60},{x:180,y:80},{x:220,y:60},{x:260,y:70},{x:240,y:100},{x:240,y:180},{x:120,y:180}]
+    },
+    {
+        name:"Car", emoji:"🚗", img:"",
+        dots:[{x:80,y:200},{x:80,y:160},{x:120,y:140},{x:240,y:140},{x:280,y:160},{x:280,y:200},{x:240,y:220},{x:120,y:220}]
+    }
 ];
 
 function init(){
-    cw=canvas.width=canvas.offsetWidth; ch=380; canvas.height=ch;
-    currentDot=1;
+    cw=canvas.width=canvas.offsetWidth; ch=320; canvas.height=ch;
+    currentDot=0;
     drawing=false;
     drawnLines=[];
-    drawAll();
+    const f=figures[currentFigure];
+    document.getElementById('titleText').innerHTML=`<img id="refImg" src="${f.img}" class="ref-img">Make a ${f.name} ${f.emoji}`;
+    document.getElementById('refImg').style.display = f.img? 'inline' : 'none';
     document.getElementById('winText').style.display='none';
-    speak("Connect the dots to make a Dolphin");
+    drawAll();
 }
 
 function drawAll(){
     ctx.clearRect(0,0,cw,ch);
 
-    // 1. Draw all connected lines first
+    // 1. Draw full figure outline in light gray first - so kids see what to make
+    ctx.strokeStyle='rgba(200,200,200,0.4)';
+    ctx.lineWidth=3;
+    ctx.setLineDash([5,5]);
+    ctx.beginPath();
+    const dots=figures[currentFigure].dots;
+    dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
+    ctx.closePath();ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 2. Draw connected blue lines
     ctx.strokeStyle='#3B82F6';
-    ctx.lineWidth=7;
+    ctx.lineWidth=6;
     ctx.lineCap='round';
     drawnLines.forEach(line=>{
         ctx.beginPath();
@@ -69,14 +102,14 @@ function drawAll(){
         ctx.stroke();
     });
 
-    // 2. Draw all dots
+    // 3. Draw dots
     dots.forEach((d,i)=>{
-        ctx.fillStyle= (i+1)===currentDot? '#EF4444' : '#374151';
-        ctx.beginPath();ctx.arc(d.x,d.y,10,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle= i===currentDot? '#EF4444' : '#374151';
+        ctx.beginPath();ctx.arc(d.x,d.y,9,0,Math.PI*2);ctx.fill();
         ctx.fillStyle='white';
-        ctx.font='900 14px Baloo 2';
+        ctx.font='900 12px Baloo 2';
         ctx.textAlign='center';
-        ctx.fillText(i+1, d.x, d.y+5);
+        ctx.fillText(i+1, d.x, d.y+4);
     });
 }
 
@@ -87,17 +120,17 @@ function getPos(e){
     return {x,y};
 }
 
-canvas.addEventListener('touchstart',start,{passive:true}); // passive:true = pull refresh work
+canvas.addEventListener('touchstart',start,{passive:true});
 canvas.addEventListener('mousedown',start);
-canvas.addEventListener('touchmove',move,{passive:false}); // only prevent when drawing
+canvas.addEventListener('touchmove',move,{passive:false});
 canvas.addEventListener('mousemove',move);
 canvas.addEventListener('touchend',end);
 canvas.addEventListener('mouseup',end);
 
 function start(e){
     const pos=getPos(e);
-    const d=dots[currentDot-1];
-    if(Math.sqrt((pos.x-d.x)**2 + (pos.y-d.y)**2) < 22){
+    const d=figures[currentFigure].dots[currentDot];
+    if(Math.sqrt((pos.x-d.x)**2 + (pos.y-d.y)**2) < 20){
         drawing=true;
     }
 }
@@ -105,28 +138,46 @@ function start(e){
 function move(e){
     if(!drawing) return;
     const pos=getPos(e);
-    const next=dots[currentDot];
-    if(next && Math.sqrt((pos.x-next.x)**2 + (pos.y-next.y)**2) < 32){
-        // save line
-        const prev=dots[currentDot-1];
+    const dots=figures[currentFigure].dots;
+    const next=dots[currentDot+1];
+    if(next && Math.sqrt((pos.x-next.x)**2 + (pos.y-next.y)**2) < 28){
+        const prev=dots[currentDot];
         drawnLines.push({x1:prev.x,y1:prev.y,x2:next.x,y2:next.y});
         currentDot++;
-        drawAll(); // redraw everything with new line
-        if(currentDot>dots.length){
-            document.getElementById('winText').style.display='block';
-            speak("Great Job! Dolphin Complete");
+        drawAll();
+        if(currentDot>=dots.length-1){
             drawing=false;
-            // fill
-            ctx.fillStyle='rgba(59,130,246,0.2)';
+            // Fill with color
+            ctx.fillStyle='rgba(59,130,246,0.25)';
             ctx.beginPath();
             dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
             ctx.closePath();ctx.fill();
+            // Win
+            document.getElementById('winText').style.display='block';
+            speak("Great Job! " + figures[currentFigure].name);
+            // Confetti
+            for(let i=0;i<30;i++){
+                setTimeout(()=>{
+                    const x = Math.random()*cw;
+                    const y = Math.random()*ch/2;
+                    ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
+                    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+                }, i*50)
+            }
         }
     }
 }
 
 function end(){ drawing=false; }
 function resetGame(){ init(); }
+function nextFigure(){
+    currentFigure=(currentFigure+1)%figures.length;
+    init();
+}
+function prevFigure(){
+    currentFigure=(currentFigure-1+figures.length)%figures.length;
+    init();
+}
 function speak(t){if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(t);u.rate=0.8;speechSynthesis.speak(u);}}
 init();
 </script>
