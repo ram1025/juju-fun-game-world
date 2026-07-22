@@ -28,7 +28,7 @@ const urlsToCache = [
     '/juju-fun-game-world/vehicles.html',
     '/juju-fun-game-world/vegetables.html',
     '/juju-fun-game-world/wild-animals.html',
-    
+    '/juju-fun-game-world/t-puzzle.html',      // <-- IDI OKATE ADD CHEYYI
     '/juju-fun-game-world/twinkle-twinkle.mp3',
     '/juju-fun-game-world/baa-baa-black.mp3',
     '/juju-fun-game-world/wheels-on-bus.mp3',
