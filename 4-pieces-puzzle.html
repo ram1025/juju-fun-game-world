@@ -1,212 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>4 Pieces Puzzle</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Alphabet Puzzle - Juju Fun World</title>
+<link rel="manifest" href="./manifest.json">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#3B82F6;font-family:'Nunito',sans-serif;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0}
-.header{width:100%;display:flex;align-items:center;justify-content:center;position:relative;padding:15px 20px}
-.back-btn{position:absolute;left:15px;background:#fff;border:0;border-radius:12px;padding:10px 14px;font-size:24px;font-weight:900;color:#1e40af;cursor:pointer}
-h1{font-size:22px;font-weight:900;text-align:center;display:flex;align-items:center;gap:8px}
-.level{font-size:16px;margin:5px 0 10px;color:#FEF9C3;font-weight:800;text-align:center}
-.game-area{display:flex;flex-direction:column;align-items:center;width:100%;padding-bottom:20px}
-.board{width:90vw;max-width:350px;height:90vw;max-height:350px;background:#fff;border-radius:30px;position:relative;margin-bottom:15px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.outline{position:absolute;border:3px dashed #22C55E;background:rgba(34,197,94,0.1);border-radius:10px}
-.pieces-tray{width:90vw;max-width:350px;height:100px;background:rgba(255,255,255,0.2);border-radius:20px;position:relative;margin-bottom:15px;display:flex;align-items:center;justify-content:space-around;padding:10px}
-.piece{position:absolute;cursor:grab;background:#FACC15;border:3px solid #1e293b;transition:all 0.1s;touch-action:none;z-index:5;border-radius:8px}
-.piece:active{cursor:grabbing;transform:scale(1.05);z-index:10}
-.piece.placed{border-color:#22C55E;background:#22C55E}
-.buttons{display:flex;gap:10px;margin-bottom:10px}
-.btn{background:#fff;color:#1e40af;border:0;padding:12px 20px;border-radius:15px;font-size:15px;font-weight:900;cursor:pointer}
-.btn:active{transform:scale(0.95)}
-.win{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#1e40af;padding:30px;border-radius:25px;text-align:center;font-size:24px;font-weight:900;display:none;z-index:100}
-.win.show{display:block}
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;touch-action:none}
+body{font-family:'Baloo 2';background:#3B82F6;min-height:100vh;padding:15px}
+.header{display:flex;justify-content:space-between;margin-bottom:10px}
+.btn{background:white;border:none;padding:10px 20px;border-radius:15px;font-size:16px;font-weight:900;color:#F97316;cursor:pointer}
+.container{background:#FFF7ED;padding:20px;border-radius:30px;max-width:400px;margin:0 auto;text-align:center}
+.title{font-size:28px;font-weight:900;color:#F97316;margin-bottom:5px}
+.subtitle{font-size:18px;color:#92400E;margin-bottom:10px}
+.canvas-wrap{background:#FFFFFF;border:4px solid #FDBA74;border-radius:20px;position:relative;height:350px}
+#canvas{width:100%;height:100%;display:block;border-radius:16px;background:#fff}
+.pieces{margin-top:15px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;min-height:80px}
+.piece{width:70px;height:70px;background:#10B981;color:white;font-size:36px;font-weight:900;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:grab;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.piece:active{transform:scale(0.9)}
+.win{font-size:20px;color:#10B981;font-weight:900;margin-top:10px;display:none}
 </style>
 </head>
 <body>
 <div class="header">
-  <button class="back-btn" onclick="goBack()">←</button>
-  <h1>🧩 4 Pieces Puzzle</h1>
+    <button class="btn" onclick="location.href='./dashboard.html'">← Back</button>
+    <button class="btn" style="background:#3B82F6;color:white" onclick="nextLetter()">Next →</button>
 </div>
-<div class="level" id="levelText">Level 1 / 5 - T Shape</div>
-
-<div class="game-area">
-  <div class="board" id="board"></div>
-  <div class="pieces-tray" id="tray"></div>
-  <div class="buttons">
-    <button class="btn" onclick="resetLevel()">🔄 Reset</button>
-    <button class="btn" onclick="showHint()">💡 Hint</button>
-    <button class="btn" onclick="nextLevel()">➡️ Next</button>
-  </div>
+<div class="container">
+    <div class="title" id="letterTitle">Letter A</div>
+    <div class="subtitle" id="letterWord">A for Apple 🍎</div>
+    <div class="canvas-wrap"><canvas id="canvas"></canvas></div>
+    <div class="win" id="winText">Great Job! 🎉</div>
+    <div class="pieces" id="pieces"></div>
 </div>
-
-<div class="win" id="winBox">Great Job! 🎉<br><button class="btn" onclick="nextLevel()" style="margin-top:15px">Next Level</button></div>
 
 <script>
-let currentLevel = 0;
-let selected = null;
-let offsetX = 0, offsetY = 0;
-let hintUsed = false;
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js?v=106')}
 
-function goBack(){ location.href = './dashboard.html'; }
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let cw,ch,cx,cy;
+let currentLetter = 0; // 0=A, 1=B
 
-const levels = [
-  {name:"T Shape", outline:{w:200,h:200,x:75,y:75}, pieces:[
-    {w:100,h:50,targetX:75, targetY:75},{w:100,h:50,targetX:175, targetY:75},
-    {w:50,h:100,targetX:125, targetY:125},{w:50,h:50,targetX:125, targetY:225}
-  ]},
-  {name:"Square", outline:{w:160,h:160,x:95,y:95}, pieces:[
-    {w:80,h:80,targetX:95, targetY:95},{w:80,h:80,targetX:175, targetY:95},
-    {w:80,h:80,targetX:95, targetY:175},{w:80,h:80,targetX:175, targetY:175}
-  ]},
-  {name:"House", outline:{w:160,h:160,x:95,y:95}, pieces:[
-    {w:160,h:80,targetX:95, targetY:175},{w:160,h:80,targetX:95, targetY:95},
-    {w:80,h:80,targetX:95, targetY:15},{w:80,h:80,targetX:175, targetY:15}
-  ]},
-  {name:"Cross", outline:{w:180,h:180,x:85,y:85}, pieces:[
-    {w:60,h:180,targetX:145, targetY:85},{w:180,h:60,targetX:85, targetY:145},
-    {w:60,h:60,targetX:145, targetY:205},{w:60,h:60,targetX:205, targetY:145}
-  ]},
-  {name:"L Shape", outline:{w:140,h:140,x:105,y:105}, pieces:[
-    {w:140,h:40,targetX:105, targetY:105},{w:40,h:140,targetX:105, targetY:145},
-    {w:40,h:40,targetX:145, targetY:105},{w:40,h:40,targetX:185, targetY:105}
-  ]}
+const letters = [
+    {
+        letter: 'A',
+        word: 'A for Apple 🍎',
+        pieces: [
+            {id:'a1', char:'/', color:'#EF4444'},
+            {id:'a2', char:'\\', color:'#3B82F6'},
+            {id:'a3', char:'-', color:'#F97316'} // cross line
+        ]
+    },
+    {
+        letter: 'B',
+        word: 'B for Ball ⚽',
+        pieces: [
+            {id:'b1', char:'|', color:'#EF4444'},
+            {id:'b2', char:')', color:'#3B82F6'},
+            {id:'b3', char:')', color:'#F97316'}
+        ]
+    }
 ];
 
-function loadLevel(){
-  hintUsed = false;
-  const board = document.getElementById('board');
-  const tray = document.getElementById('tray');
-  board.innerHTML = ''; tray.innerHTML = '';
-  document.getElementById('levelText').textContent = `Level ${currentLevel+1} / 5 - ${levels[currentLevel].name}`;
+let placed = {};
 
-  let outline = document.createElement('div');
-  outline.className = 'outline';
-  outline.style.width = levels[currentLevel].outline.w+'px';
-  outline.style.height = levels[currentLevel].outline.h+'px';
-  outline.style.left = levels[currentLevel].outline.x+'px';
-  outline.style.top = levels[currentLevel].outline.y+'px';
-  board.appendChild(outline);
-
-  levels[currentLevel].pieces.forEach((p,i)=>{
-    let div = document.createElement('div');
-    div.className = 'piece';
-    div.style.width = p.w/2+'px';
-    div.style.height = p.h/2+'px';
-    div.style.position = 'relative';
-    div.style.left = '0px';
-    div.style.top = '0px';
-    div.dataset.targetX = p.targetX;
-    div.dataset.targetY = p.targetY;
-    div.dataset.w = p.w;
-    div.dataset.h = p.h;
-    div.dataset.id = i;
-    tray.appendChild(div);
-  });
+function init(){
+    cw=canvas.offsetWidth; ch=350;
+    canvas.width=cw; canvas.height=ch;
+    cx=cw/2; cy=ch/2;
+    placed = {};
+    drawOutline();
+    createPieces();
+    document.getElementById('letterTitle').textContent = `Letter ${letters[currentLetter].letter}`;
+    document.getElementById('letterWord').textContent = letters[currentLetter].word;
+    document.getElementById('winText').style.display='none';
+    speak(letters[currentLetter].letter);
 }
 
-function showHint(){
-  if(hintUsed) return;
-  hintUsed = true;
-  levels[currentLevel].pieces.forEach((p,i)=>{
-    let piece = [...document.getElementById('board').children].find(el => el.dataset.id == i);
-    if(piece){
-      piece.style.left = p.targetX + 'px';
-      piece.style.top = p.targetY + 'px';
-      piece.classList.add('placed');
+function drawOutline(){
+    ctx.clearRect(0,0,cw,ch);
+    ctx.strokeStyle='#374151';
+    ctx.lineWidth=18;
+    ctx.lineCap='round';
+    ctx.font='900 200px Baloo 2';
+    ctx.textAlign='center';
+    ctx.strokeText(letters[currentLetter].letter, cx, cy+70);
+}
+
+function createPieces(){
+    const piecesDiv = document.getElementById('pieces');
+    piecesDiv.innerHTML='';
+    letters[currentLetter].pieces.forEach(p=>{
+        const div = document.createElement('div');
+        div.className='piece';
+        div.textContent=p.char;
+        div.id=p.id;
+        div.style.background = p.color;
+        div.draggable=true;
+        div.addEventListener('touchstart',dragStart);
+        div.addEventListener('mousedown',dragStart);
+        piecesDiv.appendChild(div);
+    });
+}
+
+let dragEl=null;
+function dragStart(e){
+    dragEl=e.target;
+}
+canvas.addEventListener('touchend',drop);
+canvas.addEventListener('mouseup',drop);
+
+function drop(e){
+    if(!dragEl) return;
+    const rect=canvas.getBoundingClientRect();
+    const x=(e.changedTouches?e.changedTouches[0].clientX:e.clientX)-rect.left;
+    const y=(e.changedTouches?e.changedTouches[0].clientY:e.clientY)-rect.top;
+
+    if(x>50 && x<cw-50 && y>50 && y<ch-50){
+        placed[dragEl.id]=true;
+        dragEl.style.display='none';
+        drawPieceOnCanvas(dragEl.textContent, dragEl.style.background, x, y);
+        checkWin();
     }
-  });
+    dragEl=null;
 }
 
-function resetLevel(){ loadLevel(); }
-
-function nextLevel(){
-  document.getElementById('winBox').classList.remove('show');
-  if(!checkWinManual()){ alert("Inka level complete cheyyaledu! 😅"); return; }
-  currentLevel = (currentLevel + 1) % levels.length;
-  loadLevel();
-}
-
-// FIX: 30px tolerance ichanu ippudu
-function checkWinManual(){
-  let correct = 0;
-  [...document.getElementById('board').children].forEach((piece)=>{
-    if(piece.classList.contains('piece')){
-      let x = parseInt(piece.style.left);
-      let y = parseInt(piece.style.top);
-      let tx = parseInt(piece.dataset.targetX);
-      let ty = parseInt(piece.dataset.targetY);
-      if(Math.abs(x - tx) < 30 && Math.abs(y - ty) < 30){ // 20 nundi 30 ki penchanu
-        piece.classList.add('placed');
-        piece.style.left = tx + 'px';
-        piece.style.top = ty + 'px';
-        correct++;
-      }
-    }
-  });
-  return correct === 4;
+function drawPieceOnCanvas(char, color, x, y){
+    ctx.fillStyle = color;
+    ctx.font='900 100px Baloo 2';
+    ctx.textAlign='center';
+    ctx.fillText(char, x, y);
 }
 
 function checkWin(){
-  if(checkWinManual() &&!hintUsed){ 
-    document.getElementById('winBox').classList.add('show'); 
-  }
+    if(Object.keys(placed).length === letters[currentLetter].pieces.length){
+        document.getElementById('winText').style.display='block';
+        speak("Great Job");
+    }
 }
 
-// DRAG LOGIC
-const board = document.getElementById('board');
-document.addEventListener('mousedown', e=>{
-  if(e.target.classList.contains('piece')){
-    selected = e.target;
-    let rect = selected.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-    if(selected.parentElement.id === 'tray'){
-      board.appendChild(selected);
-      selected.style.position = 'absolute';
-      selected.style.width = selected.dataset.w + 'px';
-      selected.style.height = selected.dataset.h + 'px';
-    }
-  }
-});
-document.addEventListener('mousemove', e=>{
-  if(selected){
-    let rect = board.getBoundingClientRect();
-    selected.style.left = (e.clientX - rect.left - offsetX) + 'px';
-    selected.style.top = (e.clientY - rect.top - offsetY) + 'px';
-  }
-});
-document.addEventListener('mouseup', ()=>{if(selected){checkWin();} selected=null;});
+function nextLetter(){
+    currentLetter = (currentLetter + 1) % letters.length;
+    init();
+}
 
-// TOUCH
-document.addEventListener('touchstart', e=>{
-  if(e.target.classList.contains('piece')){
-    selected = e.target;
-    let touch = e.touches[0];
-    let rect = selected.getBoundingClientRect();
-    offsetX = touch.clientX - rect.left;
-    offsetY = touch.clientY - rect.top;
-    if(selected.parentElement.id === 'tray'){
-      board.appendChild(selected);
-      selected.style.position = 'absolute';
-      selected.style.width = selected.dataset.w + 'px';
-      selected.style.height = selected.dataset.h + 'px';
+function speak(text){
+    if('speechSynthesis' in window){
+        speechSynthesis.cancel();
+        const u=new SpeechSynthesisUtterance(text);
+        u.lang='en-US';u.rate=0.8;
+        speechSynthesis.speak(u);
     }
-  }
-});
-document.addEventListener('touchmove', e=>{
-  if(selected){ e.preventDefault();
-    let touch = e.touches[0];
-    let rect = board.getBoundingClientRect();
-    selected.style.left = (touch.clientX - rect.left - offsetX) + 'px';
-    selected.style.top = (touch.clientY - rect.top - offsetY) + 'px';
-  }
-});
-document.addEventListener('touchend', ()=>{if(selected){checkWin();} selected=null;});
-
-loadLevel();
+}
+init();
+window.addEventListener('resize',init);
 </script>
 </body>
 </html>
