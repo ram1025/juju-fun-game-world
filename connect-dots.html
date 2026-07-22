@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect the Dots - Dolphin - Juju Fun World</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Baloo 2';background:#3B82F6;padding:15px; overscroll-behavior-y: contain}
+.header{display:flex;justify-content:space-between;margin-bottom:10px}
+.btn{background:white;border:none;padding:10px 20px;border-radius:15px;font-size:16px;font-weight:900;color:#F97316;cursor:pointer}
+.container{background:#FFF7ED;padding:15px;border-radius:30px;max-width:420px;margin:0 auto;text-align:center}
+.topbar{background:#3B82F6;color:white;padding:10px;border-radius:15px;font-size:24px;font-weight:900;margin-bottom:10px}
+#canvas{background:#FFFFFF;border:4px solid #FDBA74;border-radius:20px;width:100%;height:400px; touch-action:none}
+.title{font-size:22px;font-weight:900;color:#F97316;margin:10px 0}
+.win{font-size:20px;color:#10B981;font-weight:900;margin-top:10px;display:none}
+.ref-img{width:80px;float:right}
+</style>
+</head>
+<body>
+<div class="header">
+    <button class="btn" onclick="location.href='./dashboard.html'">← Back</button>
+    <button class="btn" style="background:#3B82F6;color:white" onclick="resetGame()">Reset</button>
+</div>
+<div class="container">
+    <div class="topbar">Connect the Dots</div>
+    <div class="title"><img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" class="ref-img">Make a Dolphin 🐬</div>
+    <canvas id="canvas"></canvas>
+    <div class="win" id="winText">Wow! You made a Dolphin 🎉</div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let cw,ch;
+let currentDot=1;
+let drawing=false;
+
+// Dolphin dot positions
+const dots=[
+    {x:80,y:320}, //1 tail
+    {x:100,y:280}, //2
+    {x:120,y:240}, //3
+    {x:140,y:200}, //4 fin
+    {x:160,y:170}, //5
+    {x:200,y:160}, //6
+    {x:240,y:170}, //7
+    {x:270,y:190}, //8
+    {x:290,y:210}, //9 mouth
+    {x:280,y:220}, //10
+    {x:260,y:225}, //11
+    {x:240,y:225}, //12
+    {x:220,y:240}, //13
+    {x:200,y:230}, //14
+    {x:180,y:250} //15 body
+];
+
+function init(){
+    cw=canvas.width=canvas.offsetWidth; ch=400; canvas.height=ch;
+    currentDot=1;
+    drawDots();
+    document.getElementById('winText').style.display='none';
+    speak("Connect the dots to make a Dolphin");
+}
+
+function drawDots(){
+    ctx.clearRect(0,0,cw,ch);
+    dots.forEach((d,i)=>{
+        ctx.fillStyle= (i+1)===currentDot? '#EF4444' : '#374151'; // next dot red
+        ctx.beginPath();ctx.arc(d.x,d.y,9,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='white';
+        ctx.font='900 13px Baloo 2';
+        ctx.textAlign='center';
+        ctx.fillText(i+1, d.x, d.y+4);
+    });
+}
+
+function getPos(e){
+    const rect=canvas.getBoundingClientRect();
+    const x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+    const y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+    return {x,y};
+}
+
+canvas.addEventListener('touchstart',start,{passive:false});
+canvas.addEventListener('mousedown',start);
+canvas.addEventListener('touchmove',move,{passive:false});
+canvas.addEventListener('mousemove',move);
+canvas.addEventListener('touchend',end);
+canvas.addEventListener('mouseup',end);
+
+function start(e){
+    e.preventDefault();
+    const pos=getPos(e);
+    const d=dots[currentDot-1];
+    if(Math.sqrt((pos.x-d.x)**2 + (pos.y-d.y)**2) < 22){
+        drawing=true;
+        ctx.strokeStyle='#3B82F6';
+        ctx.lineWidth=7;
+        ctx.lineCap='round';
+        ctx.beginPath();
+        ctx.moveTo(d.x,d.y);
+    }
+}
+
+function move(e){
+    if(!drawing) return;
+    e.preventDefault();
+    const pos=getPos(e);
+    const next=dots[currentDot];
+    if(next && Math.sqrt((pos.x-next.x)**2 + (pos.y-next.y)**2) < 32){
+        ctx.lineTo(next.x,next.y);
+        ctx.stroke();
+        currentDot++;
+        drawDots();
+        ctx.beginPath();
+        ctx.moveTo(next.x,next.y);
+        if(currentDot>dots.length){
+            document.getElementById('winText').style.display='block';
+            speak("Great Job! Dolphin Complete");
+            drawing=false;
+            // fill color
+            ctx.fillStyle='rgba(59,130,246,0.2)';
+            ctx.beginPath();
+            dots.forEach((d,i)=>{if(i===0)ctx.moveTo(d.x,d.y); else ctx.lineTo(d.x,d.y);});
+            ctx.closePath();ctx.fill();
+        }
+    }
+}
+
+function end(){ drawing=false; }
+function resetGame(){ init(); }
+function speak(t){if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(t);u.rate=0.8;speechSynthesis.speak(u);}}
+init();
+</script>
+</body>
+</html>
