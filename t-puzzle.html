@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JUJU - 10 Shape Puzzles</title>
+<style>
+* {box-sizing: border-box; margin:0; padding:0; font-family: 'Comic Sans MS', cursive;}
+body {background: #4A90E2; padding:15px;}
+
+.header {text-align:center; color:white; margin-bottom:15px;}
+.header h1 {font-size:24px; text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
+.level-bar {display:flex; gap:8px; overflow-x:auto; padding:10px 0; margin-bottom:15px;}
+.level-btn {min-width:50px; padding:10px; background:white; border:none; border-radius:12px; font-weight:800; font-size:16px; cursor:pointer; box-shadow:0 3px 6px rgba(0,0,0,0.2);}
+.level-btn.active {background:#FF8C00; color:white;}
+.level-btn.done {background:#16a34a; color:white;}
+
+.game-box {background:white; border-radius:20px; padding:15px; box-shadow:0 8px 20px rgba(0,0,0,0.2);}
+.hint {text-align:center; margin-bottom:10px;}
+.hint img {width:120px; height:120px; border:3px dashed #16a34a; border-radius:12px; background:#f0fdf4;}
+.hint p {color:#0B3D91; font-weight:700; margin-top:5px;}
+
+.play-area {position:relative; width:100%; height:300px; background:#E8F4FF; border-radius:15px; border:2px solid #0B3D91; margin-bottom:15px; overflow:hidden;}
+.target-outline {position:absolute; opacity:0.2; pointer-events:none;}
+
+.pieces-area {display:flex; gap:10px; flex-wrap:wrap; justify-content:center; min-height:80px; background:#FFF9C4; padding:10px; border-radius:12px;}
+.block {width:60px; height:60px; cursor:pointer; transition:0.3s; border:2px solid white; border-radius:8px;}
+.block:hover {transform:scale(1.1);}
+
+.win {display:none; background:#16a34a; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:800; margin-top:10px;}
+.btn {width:100%; padding:12px; background:linear-gradient(90deg, #16a34a, #0B3D91); color:white; border:none; border-radius:12px; font-weight:800; font-size:16px; margin-top:10px; cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧩 JUJU Shape Puzzles</h1>
+</div>
+
+<!-- LEVEL SELECTOR -->
+<div class="level-bar" id="levelBar"></div>
+
+<div class="game-box">
+  <div class="hint">
+    <img id="hintImg" src="" alt="Hint">
+    <p id="hintText">Tap a block to place it!</p>
+  </div>
+
+  <!-- WHERE BLOCKS GO -->
+  <div class="play-area" id="playArea"></div>
+
+  <!-- BLOCKS TO CHOOSE -->
+  <div class="pieces-area" id="piecesArea"></div>
+
+  <div class="win" id="winMsg">🎉 Great Job! Level Complete!</div>
+  <button class="btn" onclick="nextLevel()">Next Level →</button>
+</div>
+
+<script>
+const puzzles = [
+  // 1. STAR
+  {name:"Star", hint:"⭐", color:"#FFD700", pieces:5, shape:"star"},
+  // 2. HOUSE
+  {name:"House", hint:"🏠", color:"#FF8C00", pieces:4, shape:"house"},
+  // 3. ROCKET
+  {name:"Rocket", hint:"🚀", color:"#EF4444", pieces:5, shape:"rocket"},
+  // 4. FISH
+  {name:"Fish", hint:"🐟", color:"#0EA5E9", pieces:4, shape:"fish"},
+  // 5. TREE
+  {name:"Tree", hint:"🌳", color:"#16a34a", pieces:3, shape:"tree"},
+  // 6. CAT
+  {name:"Cat", hint:"🐱", color:"#F97316", pieces:5, shape:"cat"},
+  // 7. CAR
+  {name:"Car", hint:"🚗", color:"#3B82F6", pieces:4, shape:"car"},
+  // 8. BUTTERFLY
+  {name:"Butterfly", hint:"🦋", color:"#A855F7", pieces:4, shape:"butterfly"},
+  // 9. LETTER A
+  {name:"Letter A", hint:"A", color:"#EC4899", pieces:3, shape:"letterA"},
+  // 10. BOAT
+  {name:"Boat", hint:"⛵", color:"#06B6D4", pieces:3, shape:"boat"}
+];
+
+let currentLevel = 0;
+let placedPieces = 0;
+
+// CREATE LEVEL BUTTONS
+function createLevelButtons(){
+  const bar = document.getElementById('levelBar');
+  puzzles.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'level-btn' + (i===0? ' active' : '');
+    btn.innerText = i+1;
+    btn.onclick = () => loadLevel(i);
+    bar.appendChild(btn);
+  });
+}
+
+// LOAD LEVEL
+function loadLevel(level){
+  currentLevel = level;
+  placedPieces = 0;
+  document.querySelectorAll('.level-btn').forEach((b,i) => {
+    b.classList.remove('active');
+    if(i===level) b.classList.add('active');
+  });
+
+  const puzzle = puzzles[level];
+  document.getElementById('hintImg').innerText = puzzle.hint;
+  document.getElementById('hintImg').src = `https://via.placeholder.com/120/${puzzle.color.replace('#','')}/FFFFFF?text=${puzzle.hint}`;
+  document.getElementById('hintText').innerText = `Make a ${puzzle.name}! Tap blocks`;
+  document.getElementById('winMsg').style.display = 'none';
+
+  // CREATE PLAY AREA OUTLINE
+  const playArea = document.getElementById('playArea');
+  playArea.innerHTML = `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:80px; opacity:0.15;">${puzzle.hint}</div>`;
+
+  // CREATE PIECES
+  const piecesArea = document.getElementById('piecesArea');
+  piecesArea.innerHTML = '';
+  for(let i=0; i<puzzle.pieces; i++){
+    const block = document.createElement('div');
+    block.className = 'block';
+    block.style.background = puzzle.color;
+    block.dataset.index = i;
+    block.onclick = () => placeBlock(block, i);
+    piecesArea.appendChild(block);
+  }
+}
+
+// PLACE BLOCK - AUTO SNAP TO CORRECT PLACE
+function placeBlock(block, index){
+  if(block.parentElement.id === 'playArea') return; // already placed
+
+  const playArea = document.getElementById('playArea');
+  const puzzle = puzzles[currentLevel];
+
+  // Calculate position in a circle/grid
+  const positions = getPositions(puzzle.pieces, puzzle.shape);
+  const pos = positions[index];
+
+  block.style.position = 'absolute';
+  block.style.left = pos.x + 'px';
+  block.style.top = pos.y + 'px';
+  playArea.appendChild(block);
+
+  placedPieces++;
+
+  if(placedPieces === puzzle.pieces){
+    document.getElementById('winMsg').style.display = 'block';
+    document.querySelectorAll('.level-btn')[currentLevel].classList.add('done');
+  }
+}
+
+// GET POSITIONS FOR EACH SHAPE
+function getPositions(count, shape){
+  const centerX = 175, centerY = 150;
+  let positions = [];
+
+  if(shape === "star"){
+    for(let i=0; i<count; i++){
+      const angle = (i * 72) * Math.PI / 180;
+      positions.push({x: centerX + 60*Math.cos(angle) - 30, y: centerY + 60*Math.sin(angle) - 30});
+    }
+  } else {
+    // Grid layout for others
+    for(let i=0; i<count; i++){
+      positions.push({x: 80 + (i%3)*70, y: 100 + Math.floor(i/3)*70});
+    }
+  }
+  return positions;
+}
+
+function nextLevel(){
+  if(currentLevel < puzzles.length - 1){
+    loadLevel(currentLevel + 1);
+  } else {
+    alert("🎉 All 10 Puzzles Complete! You are a genius!");
+  }
+}
+
+// INIT
+createLevelButtons();
+loadLevel(0);
+</script>
+
+</body>
+</html>
