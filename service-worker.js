@@ -53,7 +53,10 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   e.respondWith(
     caches.match(e.request).then(cachedResponse => {
-      return cachedResponse || fetch(e.request);
+      return cachedResponse || fetch(e.request).catch(() => {
+        // Net lekapothe fallback page
+        return caches.match('./index.html');
+      });
     })
   );
 });
