@@ -1,62 +1,83 @@
-const CACHE_NAME = 'juju-v108-force';
+const CACHE_NAME = 'juju-v109-cache-first';
 const urlsToCache = [
-  './',
-  './dashboard.html',
-  './rhymes.html',
-  './manifest.json?v=108',
-  './twinkle-twinkle.mp3',
-  './baa-baa-black.mp3',
-  './wheels-on-bus.mp3',
-  './you-are-my-sunshine.mp3',
-  './johnny-johnny.mp3',
-  './humpty-dumpty.mp3',
-  './ring-ring-roses.mp3',
-  './abc-rhyme.mp3',
-  './icon-512.png'
+    './',
+    './index.html',
+    './dashboard.html',
+    './manifest.json',
+    './icon-192.png',
+    './icon-512.png',
+    './addition.html',
+    './alphabets.html',
+    './balloon-pop-edu.html',
+    './body-parts.html',
+    './juju-car-race.html',
+    './color-mixing.html',
+    './colors.html',
+    './drag-drop.html',
+    './free-draw.html',
+    './fruits.html',
+    './matching.html',
+    './numbers.html',
+    './painting.html',
+    './pet-animals.html',
+    './rhymes.html',
+    './shapes.html',
+    './spell-it.html',
+    './temple-run.html',
+    './vehicles.html',
+    './vegetables.html',
+    './wild-animals.html',
+    './connect-dots.html'
+    // MP3 FILES NI IKKADA NUNCHI TEESANU - install time lo add cheyyadam valla crash avthundi
 ];
 
-// Install - anni files cache chey
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
+self.addEventListener('install', e => {
   self.skipWaiting();
-});
-
-// Activate - old cache delete
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => 
-      Promise.all(keys.map(key => {
-        if(key !== CACHE_NAME) return caches.delete(key);
-      }))
-    )
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache); // no-cors teesesanu
+    })
   );
-  self.clients.claim();
 });
 
-// Fetch - MP3 ki correct header tho ivvadam IDHE KEY
-self.addEventListener('fetch', event => {
-  if(event.request.url.endsWith('.mp3')){
-    event.respondWith(
-      caches.match(event.request).then(response => {
-        if(response){
-          // Cache nunchi teeskoni correct header tho malli ivvu
-          return response.blob().then(blob => {
-            return new Response(blob, {
-              headers: {'Content-Type': 'audio/mpeg'}
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys => Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k))))
+    .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', e => {
+  const url = e.request.url;
+  
+  // MP3 KI SPECIAL HANDLING - IDHE FINAL FIX
+  if(url.endsWith('.mp3')){
+    e.respondWith(
+      caches.open(CACHE_NAME).then(cache => 
+        cache.match(e.request).then(cached => {
+          if(cached){
+            // Cache nunchi teesi correct header tho ivvu
+            return cached.blob().then(blob => {
+              return new Response(blob, {headers: {'Content-Type': 'audio/mpeg'}});
             });
+          }
+          // Cache lo lekapothe network nunchi teesi cache chey
+          return fetch(e.request).then(res => {
+            cache.put(e.request, res.clone());
+            return res;
           });
-        }
-        return fetch(event.request);
-      })
+        })
+      )
     );
     return;
   }
   
-  // Migata files normal cache-first
-  event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+  // MIGATA FILES - CACHE FIRST
+  e.respondWith(
+    caches.match(e.request).then(cachedResponse => {
+      return cachedResponse || fetch(e.request).catch(() => {
+        return caches.match('./index.html');
+      });
+    })
   );
 });
