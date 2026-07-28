@@ -40,7 +40,13 @@ const urlsToCache = [
 
 self.addEventListener('install', e => {
   self.skipWaiting();
-  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return Promise.all(
+        urlsToCache.map(url => cache.add(new Request(url, {mode: 'no-cors'})))
+      );
+    })
+  );
 });
 
 self.addEventListener('activate', e => {
