@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rhymes - Juju</title>
-<link rel="manifest" href="/juju-fun-game-world/manifest.json?v=100"> <!-- v58 ki marchanu -->
+<link rel="manifest" href="./manifest.json?v=106"> <!-- v106 ki marchanu -->
 <meta name="theme-color" content="#A855F7">
 <style>
-  /* 🔥 Google Font teesesa - system font use chestham */
   *{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation}
   body{font-family:'Nunito', sans-serif, system-ui;background:#A855F7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;color:#fff}
 .header{width:100%;max-width:400px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:10px}
@@ -35,7 +34,7 @@
 <body>
 
   <div class="header">
-    <button class="back-btn" onclick="location.href='/juju-fun-game-world/dashboard.html#rhymes'">←</button>
+    <button class="back-btn" onclick="location.href='./dashboard.html#rhymes'">←</button>
   </div>
 
   <div class="card">
@@ -52,7 +51,7 @@
     <div class="audio-controls">
       <button class="play-btn" id="playBtn" onclick="playAudio()">▶️ Play</button>
       <button class="repeat-btn" id="repeatBtn" onclick="toggleRepeat()">🔁 Repeat</button>
-      <audio id="rhymeAudio" playsinline webkit-playsinline preload="auto" src="/juju-fun-game-world/twinkle-twinkle.mp3"></audio>
+      <audio id="rhymeAudio" playsinline webkit-playsinline preload="auto" src="./twinkle-twinkle.mp3"></audio>
     </div>
 
     <div class="controls">
@@ -64,14 +63,14 @@
 
 <script>
   const rhymes = [
-  {icon:'⭐', title:'Twinkle Twinkle', audio: '/juju-fun-game-world/twinkle-twinkle.mp3', text:`Twinkle, twinkle, little star,
+  {icon:'⭐', title:'Twinkle Twinkle', audio: './twinkle-twinkle.mp3', text:`Twinkle, twinkle, little star,
 How I wonder what you are!
 Up above the world so high,
 Like a diamond in the sky.
 Twinkle, twinkle, little star,
 How I wonder what you are!`},
 
-  {icon:'🐑', title:'Baa Baa Black Sheep', audio: '/juju-fun-game-world/baa-baa-black.mp3', text:`Baa, baa, black sheep,
+  {icon:'🐑', title:'Baa Baa Black Sheep', audio: './baa-baa-black.mp3', text:`Baa, baa, black sheep,
 Have you any wool?
 Yes sir, yes sir,
 Three bags full.
@@ -80,7 +79,7 @@ And one for the dame,
 And one for the little boy
 Who lives down the lane.`},
 
-  {icon:'🚌', title:'Wheels on the Bus', audio: '/juju-fun-game-world/wheels-on-bus.mp3', text:`The wheels on the bus go round and round,
+  {icon:'🚌', title:'Wheels on the Bus', audio: './wheels-on-bus.mp3', text:`The wheels on the bus go round and round,
 Round and round, round and round.
 The wheels on the bus go round and round,
 All through the town.
@@ -90,26 +89,26 @@ Swish, swish, swish, swish, swish, swish.
 The wipers on the bus go swish, swish, swish,
 All through the town.`},
 
-  {icon:'☀️', title:'You Are My Sunshine', audio: '/juju-fun-game-world/you-are-my-sunshine.mp3', text:`You are my sunshine, my only sunshine,
+  {icon:'☀️', title:'You Are My Sunshine', audio: './you-are-my-sunshine.mp3', text:`You are my sunshine, my only sunshine,
 You make me happy when skies are gray.
 You'll never know dear, how much I love you.
 Please don't take my sunshine away.`},
 
-  {icon:'🐰', title:'Johnny Johnny', audio: '/juju-fun-game-world/johnny-johnny.mp3', text:`Johnny, Johnny
+  {icon:'🐰', title:'Johnny Johnny', audio: './johnny-johnny.mp3', text:`Johnny, Johnny
 Yes, Papa?
 Eating sugar?
 No, Papa.
 Telling lies?
 No, Papa.
 Open your mouth.
-Ha ha ha!`},
+Ha ha!`},
 
-  {icon:'🥚', title:'Humpty Dumpty', audio: '/juju-fun-game-world/humpty-dumpty.mp3', text:`Humpty Dumpty sat on a wall,
+  {icon:'🥚', title:'Humpty Dumpty', audio: './humpty-dumpty.mp3', text:`Humpty Dumpty sat on a wall,
 Humpty Dumpty had a great fall.
 All the king's horses and all the king's men,
 Couldn't put Humpty together again.`},
 
-  {icon:'🌹', title:'Ring-a-Ring O Roses', audio: '/juju-fun-game-world/ring-ring-roses.mp3', text:`Ring-a-ring o' roses,
+  {icon:'🌹', title:'Ring-a-Ring O Roses', audio: './ring-ring-roses.mp3', text:`Ring-a-ring o' roses,
 A pocket full of posies,
 A-tishoo! A-tishoo!
 We all fall down.
@@ -118,7 +117,7 @@ Eating buttercups,
 A-tishoo! A-tishoo!
 We all fall down!`},
 
-  {icon:'🔤', title:'ABC Song', audio: '/juju-fun-game-world/abc-rhyme.mp3', text:`A for Apple, B for Ball,
+  {icon:'🔤', title:'ABC Song', audio: './abc-rhyme.mp3', text:`A for Apple, B for Ball,
 C for Cat and D for Doll.
 E for Elephant, F for Fish,
 G for Goat and H for Hen.
@@ -153,7 +152,7 @@ Now I know my ABC!`}
       navigator.mediaSession.metadata = new MediaMetadata({
         title: rhyme.title,
         artist: 'Juju Fun World',
-        artwork: [{src: '/juju-fun-game-world/icon-512.png', sizes: '512x512', type: 'image/png'}]
+        artwork: [{src: './icon-512.png', sizes: '512x512', type: 'image/png'}]
       });
       navigator.mediaSession.setActionHandler('play', () => rhymeAudio.play());
       navigator.mediaSession.setActionHandler('pause', () => rhymeAudio.pause());
