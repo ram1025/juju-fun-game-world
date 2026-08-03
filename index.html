@@ -24,9 +24,9 @@ html,body{margin:0;background:#3D8BFF;font-family:Nunito,sans-serif;color:#fff;m
 .btn:active{transform:translateY(5px)}
 </style>
 <script>
-// 1. SW Register
+// 1. SW Register - ONLY v106 -> v110 changed
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker.js?v=106');
+  navigator.serviceWorker.register('./service-worker.js?v=110', {scope: './'});
 }
 
 // 2. Pull to refresh
@@ -44,7 +44,7 @@ document.addEventListener('touchmove', e => {
 <div id="welcome">
   <div class="card">
     <img id="welcomeLogo" src="./icon-512.png" onclick="goDashboard()">
-    <h2 id="welcomeName">JUJU</h2>
+    <h2 id="welcomeName">JU</h2>
     <p>Let's get started!</p>
     <button class="btn btn-orange" onclick="goDashboard()">Start Adventure! 🎮</button>
     <button class="btn btn-blue" id="installBtn" style="display:none">📲 Install App</button>
@@ -67,12 +67,10 @@ function loadWelcome(){
     document.getElementById('welcomeLogo').src = p.image || './icon-512.png';
   }
 
-  // FIX: Akkada auto dashboard ki velladam teesesa
   if(skipSplash === 'true'){
     document.getElementById('splash').style.display = 'none';
     document.getElementById('welcome').style.display = 'flex';
   } else {
-    // Splash 1.2s tarvata welcome chupinchu, akkada aagipovu
     setTimeout(()=>{
       document.getElementById('splash').style.display = 'none';
       document.getElementById('welcome').style.display = 'flex';
@@ -80,7 +78,6 @@ function loadWelcome(){
   }
 }
 
-// FIX: Button click cheste matrame dashboard ki vellali
 function goDashboard(){
   window.location.href = './dashboard.html';
 }
